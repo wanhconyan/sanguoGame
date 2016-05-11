@@ -1,0 +1,33 @@
+package
+{
+	import com.sanguo.manager.App;
+	import com.sanguo.manager.LoopManager;
+	
+	import flash.display.Sprite;
+	import flash.events.Event;
+	import flash.text.TextField;
+
+	[SWF(frameRate = 60, width = 1440, height = 900, backgroundColor = 0xaa8866)]
+	public class sanguoGame extends Sprite
+	{
+		
+		
+		private var _textFiled:TextField ;
+		public function sanguoGame()
+		{
+			addEventListener(Event.ADDED_TO_STAGE,init);
+			_textFiled = new TextField();
+			_textFiled.text = "开始战斗"
+			
+		}
+		
+		protected function init(e:Event):void
+		{
+			App.ins.init(stage);
+			LoopManager.init(stage);
+			
+		}
+		
+	
+	}
+}

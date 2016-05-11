@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 creationComplete="group1_creationCompleteHandler(event)"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="19" height="16">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.data.symbols.material.factory.ImageFactory;
+			
+			import mx.events.FlexEvent;
+			
+			public  var isEnemy:Boolean = false;
+			private var _solderType:int = -1;
+			private var _key:String = MaterialKeys.OTHER;
+			private var _bit:Bitmap = null;
+			public function set solderType(value:int):void
+			{
+				var armyTypeStr:String = '';
+				_solderType = value;
+				if(!initialized)
+				{
+					return ;
+				}
+				var armType:int = Math.floor(_solderType/5);
+				switch(armType)
+				{
+					case 0: //枪兵
+						armyTypeStr = 'pikemanIcon';
+						break;
+					case 1: //骑兵
+						armyTypeStr = 'cavalrymanIcon'
+						break;
+					case 2: //弓兵
+						armyTypeStr = 'archerIcon'
+						break;
+					case 3: //器械
+						armyTypeStr = 'instrumentIcon'
+						break;
+					case 4: //城墙
+						break;
+					default:
+						throw new Error("solderType"+armType+":"+_solderType);
+				}
+				
+				while(img_aramy.numChildren)
+				{
+					img_aramy.removeChildAt(0);
+				}
+				if(!isEnemy)
+				{
+					
+					img_aramy.addChild(MaterialManager.getInstance().getIcon(_key,armyTypeStr));
+				}else
+				{
+					img_aramy.addChild(MaterialManager.getInstance().getIcon(_key,'enemy'+armyTypeStr));
+				}
+			}
+			
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				if(_solderType != -1)
+				{
+					solderType = _solderType;
+				}
+			}
+
+			public function get solderType():int
+			{
+				return _solderType;
+			}
+
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<mx:Image id="img_aramy" x="1" y="0" width="19" height="16"/>
+</s:Group>

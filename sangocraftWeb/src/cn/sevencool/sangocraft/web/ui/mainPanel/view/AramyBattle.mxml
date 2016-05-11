@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 creationComplete="group1_creationCompleteHandler(event)"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="50" height="76" xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.model.FightDataInfoVO;
+			import cn.sevencool.sangocraft.data.symbols.ItemsManager;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.data.symbols.material.factory.ImageFactory;
+			import cn.sevencool.sangocraft.data.vo.FightDataVo;
+			import cn.sevencool.sangocraft.data.vo.ItemDescription;
+			
+			import mx.events.FlexEvent;
+			
+			import spark.filters.GlowFilter;
+			
+			
+			/**
+			 * 唯一ID
+			 * */
+			private var _nNumberID:Number = -1 ;
+			
+			/**
+			 * itemRender数据发生变化
+			 * */
+			private var _key:String = MaterialKeys.OTHER;
+			private var _imgBack:Bitmap = null;
+			private var _imgEmptyBack:Bitmap = null;
+			private var _imgBar:Bitmap = null;
+			private var _imgHead:Bitmap = null;
+			private var _mater:MaterialManager = null;
+			private var itemDes:ItemDescription = null;
+			private var _fightData:FightDataVo = null;
+			private var battle:int = -1;
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_imgBack = new Bitmap();
+				_imgEmptyBack =new Bitmap();
+				_imgBar = new Bitmap();
+				_imgHead = new Bitmap();
+				_mater = MaterialManager.getInstance();
+				
+				var backUrl:String = MaterialManager.getInstance().getURL(_key,"generalPos");
+				ImageFactory.getBitmap(backUrl,_imgBack);
+				_imgBack.addEventListener(Event.COMPLETE,onBackComplete);
+				
+				var emptyUrl:String = MaterialManager.getInstance().getURL(_key,"emptyPos");
+				ImageFactory.getBitmap(emptyUrl,_imgEmptyBack);
+				_imgEmptyBack.addEventListener(Event.COMPLETE,onEmptyComplete);
+				
+				var barUrl:String = MaterialManager.getInstance().getURL(_key,"armBar");
+				ImageFactory.getBitmap(barUrl,_imgBar);
+				_imgBar.addEventListener(Event.COMPLETE,onBarComplete);
+				
+				_imgHead.addEventListener(Event.COMPLETE,onHeadComplete);
+			}
+			
+			
+			private function onBackComplete(e:Event):void
+			{
+				
+				img_back.source = _imgBack;
+			}
+			
+			private function onEmptyComplete(e:Event):void
+			{
+				img_Emptyback.source =_imgEmptyBack;
+			}
+			
+			private function onBarComplete(e:Event):void
+			{
+				img_bar.source = _imgBar;
+			}
+			
+			private function onHeadComplete(e:Event):void
+			{
+				img_head.source = _imgHead;
+			}
+
+			public function get fightData():FightDataVo
+			{
+				return _fightData;
+			}
+
+			public function set fightData(value:FightDataVo):void
+			{
+				_fightData = value;
+				if(!fightData)
+				{
+					clearDisplay();
+					return;
+				}
+				if(battle!=fightData.nNumberID)
+				{
+					uiDisplay();
+					battle = fightData.nNumberID;
+				}else
+				{
+					refreshData()					
+					
+				}
+			}
+			
+			/**
+			 * 刷新数据显示
+			 * */
+			private function refreshData():void
+			{
+				lab_currValue.text = fightData.nNowHp.toString();
+			}
+			
+			
+			/**
+			 * ui显示
+			 * */
+			private function uiDisplay():void
+			{
+				if(!fightData)
+				{
+					clearDisplay();
+					return;					
+				}
+				uiShow();
+				var itemDes:ItemDescription = ItemsManager.getInstance().ItemInfo[fightData.nBaseID];
+				var headUrl:String = '';
+				if(itemDes)
+				{
+					headUrl = _mater.getURL(MaterialKeys.SMALL_HEAD,itemDes.nHeadId.toString());
+				}else
+				{
+					headUrl = _mater.getURL(MaterialKeys.SMALL_HEAD,'1');
+				}
+				ImageFactory.getBitmap(headUrl,_imgHead);
+				img_aramy.solderType = fightData.nArmsType ;
+				lab_currValue.text = fightData.nNowHp.toString();	
+			}
+			
+			/**
+			 * ui擦除
+			 * */
+			private function clearDisplay():void
+			{
+				img_back.visible = false;
+				img_aramy.visible = false;
+				img_bar.visible = false;
+				img_Emptyback.visible = true;
+				img_head.visible = false;
+				img_head.source = null;
+				lab_currValue.text = '';
+			
+			}
+			
+			/**
+			 * ui显示
+			 * */
+			private function uiShow():void
+			{
+				img_back.visible = true;
+				img_aramy.visible = true;
+				img_bar.visible = true;
+				img_Emptyback.visible = false;
+				img_head.visible = true;
+			
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:Image id="img_back" width="58" height="77" horizontalCenter="0" verticalCenter="0" />
+	<s:Image id="img_Emptyback" width="58" height="77" horizontalCenter="0" verticalCenter="0" />
+	<s:Label id="lbl_back" width="53" height="92" horizontalCenter="0" verticalCenter="-6"/>
+	<s:Image id="img_bar" x="-4" top="-3" width="53" height="22"/>
+	<symbols:SolderType id="img_aramy" x="-4" top="-3" />
+	<s:Label x="17" y="-1" width="52" color="#FFFFFF" id="lab_currValue"
+			 filters="{[new spark.filters.GlowFilter(0x231f02, 100, 2, 2, 5, 1, false, false)]}" text="123456"
+			 textAlign="left" verticalAlign="middle"/>
+	<s:Image right="0" bottom="0" width="17" height="17" id="img_strLev"/>
+	<s:Image id="img_head" x="1" y="15"/>
+</s:Group>

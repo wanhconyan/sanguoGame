@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009"  title="创建地图"
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   close="titlewindow1_closeHandler(event)"
+			   creationComplete="titlewindow1_creationCompleteHandler(event)"
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="323">
+	<fx:Script>
+		<![CDATA[
+			import com.sevenCool.mainView.map.MapControl;
+			import com.sevenCool.map.MapData;
+			import com.sevenCool.map.Node;
+			import com.sevenCool.uiControl.UIManager;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			
+			import spark.events.IndexChangeEvent;
+			
+			private var arrColl:ArrayCollection = null;
+			
+			private var _gridWidthNum:ArrayCollection = null;
+			private var _gridWidth:ArrayCollection = null;
+			private var _urlColl:ArrayCollection = null;
+			
+			/**当前地图*/
+			public var mapData:MapData = null;
+			
+			protected function titlewindow1_creationCompleteHandler(event:FlexEvent):void
+			{
+				mapData.mapUrl = urlColl.source[0];
+				mapData.col = gridWidth.source[com_col.selectedIndex];
+				mapData.row = gridWidth.source[com_row.selectedIndex];
+				mapData.nodeHegiht = gridWidth.source[com_size.selectedIndex];
+				mapData.nodeWidth = gridWidth.source[com_size.selectedIndex];
+			}
+			
+			//确认面板
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				mapData.nodes = new Vector.<Vector.<Node>>();
+				MapControl.getIntance().mapData = mapData;	
+				MapControl.getIntance().createMap();
+				UIManager.instance.hide(this);		
+			}
+			
+			//取消面板
+			protected function button2_clickHandler(event:MouseEvent):void
+			{
+				UIManager.instance.hide(this);
+			}
+			
+			protected function titlewindow1_closeHandler(event:CloseEvent):void
+			{
+				UIManager.instance.hide(this);				
+			}
+			
+			
+			
+			public function get gridWidthNun():ArrayCollection
+			{
+				if(_gridWidthNum)
+				{
+					return _gridWidthNum ;
+				}
+				var source:Array = [];
+				var index:int = 4;
+				while(index<100)
+				{
+					source.push(index*2);
+					index *=2 ;
+				}
+				_gridWidthNum = new ArrayCollection();
+				_gridWidthNum.source = source ;
+				return _gridWidthNum;
+			}
+
+			
+			public function get gridWidth():ArrayCollection
+			{
+				if(_gridWidth)
+				{
+					return _gridWidth ;
+				}
+				var source:Array = [];
+				var index:int = 16;
+				while(index<=100)
+				{
+					source.push(index*2);
+					index ++ ;
+				}
+				_gridWidth = new ArrayCollection();
+				_gridWidth.source = source ;
+				return _gridWidthNum;
+			}
+
+			
+			public function get urlColl():ArrayCollection
+			{
+				if(_urlColl)
+				{
+					return _urlColl;
+				}
+				var source:Array = [];
+				var dict:Dictionary = null;
+				var file:File = File.applicationDirectory;
+				anysisFil(file);
+				function anysisFil($file:File):void
+				{
+					var fillPool:Array = $file.getDirectoryListing();
+					var fileRef:File = null;
+					for(var i:int = 0 ; i < fillPool.length ; i++)
+					{
+						fileRef = fillPool[i] ;
+						if(fileRef.isDirectory)
+						{
+							anysisFil(fileRef);
+						}else
+						{
+							if(fileRef.nativePath.indexOf(".png") != -1 ||fileRef.nativePath.indexOf(".jpg") != -1 )
+							{
+								source.push(fileRef.nativePath);							
+							}						
+						}
+					}
+				}
+				_urlColl = new ArrayCollection();
+				_urlColl.source =source ;
+				return _urlColl ;
+			}
+			
+			protected function com_url_changeHandler(event:IndexChangeEvent):void
+			{
+				pre_img.source = urlColl.source[com_url.selectedIndex] as String;
+				mapData.mapUrl = urlColl.source[com_url.selectedIndex] as String;
+			}
+			
+			
+			protected function com_row_changeHandler(event:IndexChangeEvent):void
+			{
+				mapData.row = gridWidthNun.source[com_row.selectedIndex];
+			}
+			
+			protected function com_col_changeHandler(event:IndexChangeEvent):void
+			{
+				mapData.col = gridWidthNun.source[com_col.selectedIndex];
+			}
+			
+			protected function com_size_changeHandler(event:IndexChangeEvent):void
+			{
+				mapData.nodeWidth = mapData.nodeHegiht = gridWidthNun.source[com_size.selectedIndex];
+				
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:Rect id="shadow" left="-1" right="-1" top="-1" bottom="-1" radiusX="2">
+		<s:fill>
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry color="0xf0f0f0" 
+								 alpha="1" />
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
+	<s:Button id="btn_ok" x="242" y="259" width="60" label="确定" click="button1_clickHandler(event)"/>
+	<s:Button id="btn_can" x="317" y="259" width="60" label="取消" click="button2_clickHandler(event)"/>
+	<s:Label x="17" y="13" fontFamily="宋体" fontSize="16" fontWeight="bold" text="地图尺寸"/>
+	<s:Label x="52" y="39" text="宽度"/>
+	<s:ComboBox id="com_row" x="80" y="34" width="45" dataProvider="{gridWidthNun}" selectedIndex="1" change="com_row_changeHandler(event)"/>
+	<s:ComboBox id="com_col" x="182" y="34" width="45" dataProvider="{gridWidthNun}" selectedIndex="1" change="com_col_changeHandler(event)"/>
+	<s:Label x="154" y="39" text="高度"/>
+	<s:Label x="17" y="128" fontSize="16" fontFamily="宋体" fontWeight="bold" text="地图背景"/>
+	<s:ComboBox id="com_url" x="81" y="159" dataProvider="{urlColl}" selectedIndex="0" change="com_url_changeHandler(event)"/>
+	<s:Label x="52" y="165" text="URL"/>
+	<s:Image id="pre_img" x="255" y="140" width="100" height="60" />
+	<s:Label x="255" y="120" text="缩略图"/>
+	<s:Label x="267" y="39" text="格子尺寸"/>
+	<s:ComboBox id="com_size" x="323" y="34" width="45"  dataProvider="{gridWidth}" selectedIndex="1" change="com_size_changeHandler(event)"/>
+</s:TitleWindow>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:GridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:s="library://ns.adobe.com/flex/spark" 
+					dataChange="griditemrenderer1_dataChangeHandler(event)"
+					xmlns:mx="library://ns.adobe.com/flex/mx" clipAndEnableScrolling="true">
+	
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.vo.EMailVO;
+			
+			import mx.events.FlexEvent;
+			override public function prepare(hasBeenRecycled:Boolean):void {
+			
+			}
+			
+			protected function griditemrenderer1_dataChangeHandler(event:FlexEvent):void
+			{
+				var email:EMailVO = data as EMailVO;
+				
+//				var Sendtimer = parseInt(email.rgetMail.szSendTime);
+				lblData.text  = email.rgetMail.szSendTime;
+				
+					
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Label id="lblData" top="9" left="7"/>
+	
+</s:GridItemRenderer>

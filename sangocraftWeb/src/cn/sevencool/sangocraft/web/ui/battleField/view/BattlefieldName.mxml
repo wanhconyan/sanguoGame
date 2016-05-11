@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   width="273" height="50" >
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.data.symbols.SoundManager;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.data.vo.ChapterParam;
+			import cn.sevencool.sangocraft.web.ui.battleField.mediator.BattleFieldMediator;
+			
+			import mx.events.FlexEvent;
+			
+			private var _mediator:BattleFieldMediator = null ;
+			private var _chapterID:int = -1;
+			private var _bit:Bitmap =  null;
+			[Bindable]
+			private var _isPass:Boolean = false;
+			
+			private var _dic:Dictionary = null;
+			override public function set mediatorUI($value:AbstractMediator):void 
+			{
+				_mediator = $value  as BattleFieldMediator ;
+			}
+			
+			
+			/**
+			 * 上一章节
+			 * */
+			protected function btn_left_clickHandler(event:MouseEvent):void
+			{
+				SoundManager.getInstance().musicPlay("Interface03");
+				chapterID = chapterID - 1;
+				isPass = (dic[chapterID] as ChapterParam).btFactor == 100 ? true : false;
+				_mediator.chapterLevelInfo(chapterID,1,isPass)
+				
+			}
+			
+			
+			public override function get needBundleList():Array
+			{
+				var urlArr:Array  = [];
+				
+				for(var i:int = 101;i<=115 ; i++)
+				{
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.FIGHTCHAPTER,i.toString()));
+				}
+				return urlArr;
+			}
+			
+			/**
+			 * 下一章节
+			 * */
+			protected function btn_right_clickHandler(event:MouseEvent):void
+			{
+				SoundManager.getInstance().musicPlay("Interface03");
+				chapterID = chapterID +1;
+				isPass = (dic[chapterID] as ChapterParam).btFactor == 100 ? true : false;
+				_mediator.chapterLevelInfo(chapterID,1)
+			}
+			
+			public function get chapterID():int
+			{
+				return _chapterID;
+			}
+			
+			public function set chapterID(value:int):void
+			{
+				_chapterID = value;
+				if(chapterID<=101)
+				{
+					btn_left.enabled = false;
+					_chapterID = 101;
+				}else
+				{
+					btn_left.enabled = true;
+				}
+				if(chapterID >=115)
+				{
+					btn_right.enabled = false;
+				}
+				isPass = (dic[chapterID] as ChapterParam).btFactor == 100 ? true : false;
+				img_name.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.FIGHTCHAPTER,chapterID.toString(),_bit));
+			}
+			
+			
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_bit = new Bitmap();
+				dic = new Dictionary();
+			}
+			
+			
+			[Bindable]
+			private function get isPass():Boolean
+			{
+				return 	_isPass;
+			}
+
+			private function set isPass(value:Boolean):void
+			{
+				_isPass = value;
+			}
+
+			public function get dic():Dictionary
+			{
+				return _dic;
+			}
+
+			public function set dic(value:Dictionary):void
+			{
+				_dic = value;
+			}
+			
+		]]>
+	</fx:Script>
+	<symbols:layout>
+		<s:BasicLayout/>
+	</symbols:layout>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:SpriteVisualElement id="img_name" width="185" height="48" horizontalCenter="0"/>
+	<s:Button id="btn_left" width="44" height="49"  left="0" click="btn_left_clickHandler(event)"  skinClass="cn.sevencool.sangocraft.web.skin.button.LeftClickBtnSkin" enabled="false"/>
+	<s:Button id="btn_right" width="44" height="49"  right="0" click="btn_right_clickHandler(event)" skinClass="cn.sevencool.sangocraft.web.skin.button.RightClickBtnSkin" enabled="{isPass}"/>
+</symbols:BasePanel>

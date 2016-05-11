@@ -1,0 +1,13 @@
+package com.starling.battle.view.component
+{
+	import starling.display.Sprite;
+	
+	public class BattlePolygon extends Sprite
+	{
+		private var _polygon:Polygon ;
+		public function BattlePolygon()
+		{
+			
+		}
+	}
+}

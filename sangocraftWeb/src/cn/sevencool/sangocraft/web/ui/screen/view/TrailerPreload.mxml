@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	project: sangocraftWeb
+	@class: TrailerPreload
+	@author: zhouyan
+	@usage: 加载资源面板
+	@since: 2013-8-26
+	@modified: 2013-8-26
+	@modifier: zhouyan
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"  
+		 implements="cn.sevencool.sangocraft.web.symbols.IUIView"
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 creationComplete="creationCompleteHandler(event)"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="1000" height="600" 
+		 xmlns:trailer="cn.sevencool.shipjourney.ui.trailer.*">
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
+	
+	<fx:Metadata>   
+		[Event(name="complete", type="flash.events.Event")]
+	</fx:Metadata> 
+	
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.data.symbols.JSUtil;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialLoader;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialVO;
+			import cn.sevencool.sangocraft.data.symbols.material.factory.ImageFactory;
+			import cn.sevencool.sangocraft.data.symbols.material.net.ConnectInfoSender;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.ui.screen.mediator.ScreenMediator;
+			
+			import mx.events.FlexEvent;
+			import mx.utils.StringUtil;
+			
+			import org.oswxf.rpc.util.ByteArrayTransform;
+			
+			/**
+			 * 加载时间
+			 * */
+			private var _loadTime:Number;
+			
+			/**
+			 * 素材管理器 
+			 */
+			private var _materialManager:MaterialManager = MaterialManager.getInstance() ;
+			
+			/**
+			 * 加载的文件数组
+			 * */
+			private var _preloaders:Array = null ;
+			
+			/**
+			 * 需要加载的文件个数
+			 * */
+			private var _loadLength:int; 
+			
+			/**当前加载至的文件索引*/
+			private var _suffix:uint = 0 ;
+			
+			private var _loadIndex:int = 0;
+			
+			/**
+			 * 进度条的描述
+			 * */
+			public var discrationArr:Array = [];
+			
+			private var _gameDisTimer:Timer = null ;
+			
+			/**
+			 * interface impl
+			 */
+			
+			
+			public function get usableCount():int
+			{
+				return 1 ;
+			}
+			
+			public function get needExclude():Boolean
+			{
+				return false;
+			}
+			
+			/**
+			 * 需要预加载的文件
+			 * */
+			private function getLoadLength():void
+			{
+				_loadLength = 0;
+				for(var i:int=0;i<_preloaders.length;i++)
+				{
+					var key:String = _preloaders[i] as String ;
+					var vo:MaterialVO = _materialManager.getMaterialVO(key) ;
+					if(vo.bty != "true")
+					{
+						_loadLength ++;
+					}
+				}
+			}
+			
+			
+			private function load():void{
+				if(_suffix > _preloaders.length - 1)
+				{
+					return ;
+				}
+//				ConnectInfoSender.send(300+ _suffix);
+				var key:String = _preloaders[_suffix] as String ;
+				var vo:MaterialVO = _materialManager.getMaterialVO(key) ;
+				if(vo.bty == 'true')
+				{
+					_suffix ++ ;
+					if(_suffix >= _preloaders.length)
+					{	
+						//游戏预载入完成
+						complete() ;
+						return ;
+					}else{
+						load() ;
+					}
+				}
+				else
+				{
+					_loadIndex ++;
+//					_preloaderDispaly.showTimeTxt("资源加载：" + _suffix.toString() +"/"+ _preloaders.length.toString());
+					var loader:MaterialLoader = MaterialManager.create(_materialManager.getURL(key) , vo.type) ;
+					loader.addEventListener(Event.COMPLETE , completeHandler) ;
+					loader.addEventListener(ProgressEvent.PROGRESS,progressHandler);
+					_loadTime = new Date().getTime();
+					loader.load(vo.timely) ;
+				}	
+			}
+			
+			private function progressHandler(event:ProgressEvent):void
+			{
+				_preloaderDispaly.p1Progress(Math.sqrt(event.bytesLoaded / event.bytesTotal));
+				_preloaderDispaly.showTimeTxt(proHadler(Math.sqrt(event.bytesLoaded / event.bytesTotal)));
+//				_preloaderDispaly.showTimeTxt('我正在努力加载：' + Math.sqrt(event.bytesLoaded / event.bytesTotal) + '');
+			}
+
+			private function proHadler($value:Number):String
+			{
+				var s:String = '正在努力加载：{0}%';
+				return StringUtil.substitute(s,Math.floor($value*100).toString());
+			}
+			private function completeHandler(evt:Event):void
+			{
+				var loader:MaterialLoader = evt.currentTarget as MaterialLoader ;
+				loader.removeEventListener(Event.COMPLETE , completeHandler) ;
+				_suffix ++ ;
+				if(_suffix >= _preloaders.length){	
+					//游戏预载入完成
+					complete() ;
+					return ;
+				}else{
+					load() ;
+				} 
+			}
+			
+			/**
+			 * 解析二进制文件
+			 * */
+			private function decompressionFun($data:ByteArray):void
+			{
+				var data:ByteArray = new ByteArray();
+				data.writeBytes($data)
+				data.uncompress();
+				data.position = 0;
+				/**获取总文件长度*/
+				var length:uint = data.readUnsignedInt();
+				for(var i:int = 0 ; i < length ; i++)
+				{
+					/**单个文件长度*/
+					var _length:uint = data.readUnsignedInt();
+					/**获取文件名称*/
+					var str:String =data.readUTFBytes(data.readUnsignedInt());
+					/**获取文件*/
+					var offset:int = data.position;
+					var byte:ByteArray = new ByteArray();
+					byte.position = 0;
+					data.position = 0;
+					byte.writeBytes(data,offset,_length);
+					data.position = _length + offset;
+					
+					var key:String = _preloaders[_suffix] as String ;
+					var vo:MaterialVO = _materialManager.getMaterialVO(str) ;
+					var loader:MaterialLoader = MaterialManager.create(str , "binary") ;
+					loader.data = byte;
+					trace("Parsing binary package :",str);
+				}
+			}
+			
+			
+			private function complete():void
+			{
+				_gameDisTimer.stop();
+				decompressionFun(_materialManager.getContentByKey('compression') as ByteArray);
+				_materialManager.fit() ;
+				//dispatchEvent(new Event(Event.COMPLETE)) ;
+				//加载嵌入字体
+				_fontLibURL= MaterialManager.getInstance().getURL(MaterialKeys.FONT) ;
+				
+				loadFontlib();
+			}
+			
+			private function loadFontlib():void
+			{
+				var stream:URLStream = new URLStream();
+				stream.addEventListener(Event.COMPLETE,onloadFontlibComplete);
+				stream.addEventListener(ProgressEvent.PROGRESS,onloadFontlibProgress);
+				stream.load(new URLRequest(_fontLibURL));
+			}
+			private var _fontLibURL:String = '';			
+			
+			protected function onloadFontlibProgress(event:ProgressEvent):void
+			{
+				_preloaderDispaly.p1Progress(Math.sqrt(event.bytesLoaded / event.bytesTotal));
+				_preloaderDispaly.showTimeTxt(proHadler(Math.sqrt(event.bytesLoaded / event.bytesTotal)));
+			}
+			
+			protected function onloadFontlibComplete(event:Event):void
+			{
+				var _stream:URLStream = event.currentTarget as URLStream;
+				var bytes:ByteArray = new ByteArray();
+				var length:int = _stream.bytesAvailable;
+				_stream.readBytes(bytes, 0, length);
+				_stream.close();
+			
+				ImageFactory.cachedBytes(_fontLibURL,bytes);
+				
+				var fontlib:Sprite = new Sprite();
+				fontlib.addEventListener(Event.COMPLETE,fontlibHandler);
+				ImageFactory.getImage(_fontLibURL,fontlib) ;
+			}
+			
+			/**
+			 * 预加载显示
+			 */
+			private var _preloaderDispaly:PreloaderDisplay = null ;
+			
+			/**
+			 * creationCompleteHandler
+			 */
+			protected function creationCompleteHandler(event:FlexEvent):void
+			{
+				readLoadingXML();
+				_preloaderDispaly = new PreloaderDisplay();
+				_preloaderDispaly.p1Progress(0.06) ;
+				_preloaderDispaly.showTimeTxt(proHadler(0.06));
+				displayContainer.addChild(_preloaderDispaly) ;
+				var str:String=getRandomStr();
+				_preloaderDispaly.showInfoTxt(str);
+				_preloaderDispaly.showTimeTxt('60');
+				_preloaders = _materialManager.getPreloaders() ;
+				getLoadLength();
+				load() ;
+				_preloaderDispaly.showTimeTxt(proHadler(0.1));
+				_preloaderDispaly.p1Progress(0.1) ;
+				_gameDisTimer = new Timer(3000);
+				_gameDisTimer.addEventListener(TimerEvent.TIMER,refreshgameDiscraptionHandler);
+				_gameDisTimer.start();
+			}
+			
+			/**
+			 * 获取随机描述
+			 * */
+			private function getRandomStr():String
+			{
+				var random:int=Math.random()*20;
+				var str:String = discrationArr[random] ;
+				return str;
+			}
+			
+			/**
+			 * 读取策划的描述
+			 * */
+			private function readLoadingXML():void
+			{
+				discrationArr=[];
+				var loadingXml:XML = XML(new loadingTxt());
+				for each(var loadingXML:XML in loadingXml.children())
+				{
+					var id:int = parseInt(loadingXML.attribute("id").toString());
+					var str:String =  loadingXML.attribute("str").toString();
+					discrationArr[id-1]=str;
+				}
+			}
+			
+			protected function refreshgameDiscraptionHandler($evt:TimerEvent):void
+			{
+				var str:String=getRandomStr();
+				_preloaderDispaly.showInfoTxt(str);
+			}
+			
+			protected function fontlibHandler(e:Event):void
+			{
+				var sp:Sprite = e.target as Sprite ;
+				
+				var jj:* = sp.getChildAt(0) ;
+				var xml:XML=describeType(jj);
+				var vlist:XMLList = xml.elements('variable');
+				for (var i:int = 0; i < vlist.length(); i++) 
+				{
+					var name:String = vlist[i].@name;
+					Font.registerFont(jj[name]);
+				}
+				dispatchEvent(new Event(Event.COMPLETE)) ;
+			}
+			[Embed(source="../../../../../../../../assets/loadingTxt.xml", mimeType="application/octet-stream")]
+			private var  loadingTxt:Class;
+			
+		public function get type():int
+		{
+			return UIMananger.TYPE_PANEL;				
+		}
+		public function get needTween():Boolean
+		{
+			return false;
+		}	
+			
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:SpriteVisualElement id="displayContainer" />
+</s:Group>

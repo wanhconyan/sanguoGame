@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*" width="86" height="86">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.data.manager.utils.MediatorUtil;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.web.ui.battleField.mediator.BattleFieldMediator;
+			import cn.sevencool.sangocraft.web.ui.mainPanel.mediator.BasicInforMediator;
+			import cn.sevencool.sangocraft.web.ui.mainPanel.mediator.MainPanelMediator;
+			
+			import com.sevencool.rtslogic.Battlefield;
+			
+			import mx.events.FlexEvent;
+			
+			import spark.filters.GlowFilter;
+			
+			private static const TIME:uint = 9000; 
+			private var _battleM:BattleFieldMediator ;
+			
+			/**
+			 * 快进速度显示
+			 * */
+			private var _bit_0:Bitmap = null;
+			private var _bit_1:Bitmap = null;
+			private var _bit_2:Bitmap = null;
+			private var _bit_3:Bitmap = null;
+			private var _bit_4:Bitmap = null;
+			
+			/**
+			 * 默认为播放
+			 * */
+			public var isPause:Boolean = false;
+			
+			private var _accelerate:int = 0;
+			
+			private var _key:String = MaterialKeys.OTHER;
+			
+			private var _mater:MaterialManager = MaterialManager.getInstance();
+			
+			private var _mediator:MainPanelMediator = null;
+			
+			private var _maxFightTimer:int ;			
+			
+			private var _basic:BasicInforMediator = null; 
+			
+			private var _maxAcc:int = 0;
+			
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_bit_0 = _mater.getIcon(_key,'1x');
+				_bit_1 = _mater.getIcon(_key,'1x');
+				_bit_2 = _mater.getIcon(_key,'2x');
+				_bit_3 = _mater.getIcon(_key,'3x');
+				_bit_4 = _mater.getIcon(_key,'4x');
+				sp_playState.addChild(_bit_0);
+				
+				_basic= MediatorUtil.getMediatorByInterface(BasicInforMediator) as BasicInforMediator;
+				Battlefield.getActivityBattlefield().addEventListener(Event.CHANGE,onBattleChange);
+			}
+			
+			
+			/**
+			 * 战斗帧数发生改变
+			 * */
+			private function onBattleChange(e:Event):void
+			{
+				if(!_mediator || maxFightTimer == 0)
+				{
+					return ;
+				}
+				var fightTimer:int = maxFightTimer - (Battlefield.getActivityBattlefield().round+1);
+				if(fightTimer < 0)
+				{
+					fightTimer =  0;
+					_mediator.btnclick_home();
+				}
+				lbl_fps.text = fightTimer.toString();
+			}
+			
+			/**
+			 * 设置控制器
+			 * */
+			public override  function set  mediatorUI($value:AbstractMediator):void
+			{
+				_mediator = $value as MainPanelMediator ;
+			}
+			
+			
+			/**
+			 * 加速按钮
+			 * */
+			protected function radio_acc_clickHandler(event:MouseEvent):void
+			{
+				accelerate ++; 
+				this.dispatchEvent(new Event('FPSChange'));
+			}
+			
+			
+			/**
+			 * 减速按钮
+			 * */
+			protected function radio_slow_clickHandler(event:MouseEvent):void
+			{
+				accelerate --;
+				this.dispatchEvent(new Event('FPSChange'));
+			}
+			
+			
+			/**
+			 * 暂停或者播放 选择为暂停否者播放
+			 * */
+			protected function check_pause_clickHandler(event:MouseEvent):void
+			{
+				isPause =!isPause
+				if(isPause)
+				{
+					radio_acc.enabled = false;
+					radio_slow.enabled = false;
+				}else
+				{
+					radio_acc.enabled = true;
+					radio_slow.enabled = true;
+				}
+				
+				if(check_pause.selected)
+				{
+					Battlefield.getActivityBattlefield().pause();
+					
+				}else
+				{
+					Battlefield.getActivityBattlefield().play();
+				}
+			}
+			
+			/**
+			 * 加速等级
+			 * */
+			public function get accelerate():int
+			{
+				return _accelerate;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set accelerate(value:int):void
+			{
+				if(value<0)
+				{
+					value = 1;
+				}
+				if(value>maxAcc)
+				{
+					value = maxAcc;
+				}
+				_accelerate = value;
+				
+				
+				if(accelerate == 1)
+				{
+					radio_slow.enabled = false;
+					
+				}else
+				{
+					radio_slow.enabled = true;
+				}
+				
+				if(accelerate == maxAcc)
+				{
+					radio_acc.enabled = false ;
+				}else
+				{
+					radio_acc.enabled = true;
+				}
+				
+				if(sp_playState.numChildren)
+				{
+					sp_playState.removeChildAt(0);
+					
+				}
+				sp_playState.addChild(this["_bit_"+accelerate]);
+			}
+			
+			public function get maxFightTimer():int
+			{
+				return _maxFightTimer;
+			}
+			
+			public function set maxFightTimer(value:int):void
+			{
+				_maxFightTimer = value;
+			}
+
+			public function set maxAcc(value:int):void
+			{
+				_maxAcc = value;
+				if(maxAcc == 1)
+				{
+					group_tool.toolTip = "20开放2倍加速."
+				}else if(maxAcc == 2)
+				{
+					group_tool.toolTip = "50开放4倍加速."
+				}else
+				{
+					group_tool.toolTip = '';
+				}
+			}
+			public function get maxAcc():int
+			{
+				return _maxAcc;
+			}
+
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<s:RadioButtonGroup id="group_timer"/>
+	</fx:Declarations>
+	<fx:Metadata>
+		
+		[Event(name="FPSChange", type="flash.events.Event")]
+	</fx:Metadata>
+	<s:Group x="0" y="0" width="86" height="86">
+		<s:Label id="lbl_fps" y="0" width="64" height="28" color="#2BE23D" fontSize="26"
+				 horizontalCenter="0"  textAlign="center" verticalAlign="middle"/>
+		<mx:Image id="sp_playState" x="26" y="22" height="27"/>
+		<s:RadioButton id="radio_slow" x="11" bottom="7" width="18" height="20"
+					   click="radio_slow_clickHandler(event)" groupName="group_timer"
+					   skinClass="cn.sevencool.sangocraft.web.skin.radionButton.SlowRadioBtnSkin"/>
+		<s:CheckBox id="check_pause" x="34" bottom="7" width="18" height="20"
+					click="check_pause_clickHandler(event)"
+					skinClass="cn.sevencool.sangocraft.web.skin.checkBox.PauseCheckBoxSkin"/>
+		<s:Group right="12" bottom="6" width="18" height="20" id="group_tool">
+			<s:RadioButton id="radio_acc" width="18" height="20" 
+						   click="radio_acc_clickHandler(event)" groupName="group_timer"
+						   skinClass="cn.sevencool.sangocraft.web.skin.radionButton.AccelerateRadioBtnSkin"/>
+		</s:Group>
+	</s:Group>
+</symbols:BasePanel>

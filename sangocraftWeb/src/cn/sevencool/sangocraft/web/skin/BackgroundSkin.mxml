@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- containers\spark\mySkins\MyBorderSkin.mxml -->
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:mx="library://ns.adobe.com/flex/mx" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		alpha.disabled="0.5">
+	
+	<fx:Metadata>
+		[HostComponent("spark.components.SkinnableContainer")]
+	</fx:Metadata> 
+	
+	<!-- Define the skin states. -->
+	<s:states>
+		<s:State name="normal" />
+		<s:State name="disabled" />
+	</s:states>
+	
+	<s:BitmapImage smooth="true"  source="@Embed('../../../../../../assets/images/test/beijing_01.png')"  visible="true" left="0" top="0" fillMode="repeat" />
+	<s:BitmapImage smooth="true"  source="@Embed('../../../../../../assets/images/test/beijing_02.png')"  visible="true" left="5" top="0"  right="5" fillMode="repeat"/>
+	<s:BitmapImage smooth="true"  source="@Embed('../../../../../../assets/images/test/beijing_03.png')"  visible="true" right="0" top="0" fillMode="repeat" />
+	<s:BitmapImage smooth="true"  source="@Embed('../../../../../../assets/images/test/beijing_04.png')"  visible="true" left="0" top="5" bottom="6" fillMode="repeat" />
+	<s:BitmapImage smooth="true"  source="@Embed('../../../../../../assets/images/test/beijing_05.png')"  visible="true" left="5" right="5" top="5" bottom="6" fillMode="repeat" />
+	<s:BitmapImage smooth="true"  source="@Embed('../../../../../../assets/images/test/beijing_06.png')"  visible="true" right="0" top="5" bottom="6" fillMode="repeat"  />
+	<s:BitmapImage smooth="true"  source="@Embed('../../../../../../assets/images/test/beijing_07.png')"  visible="true" left="0" bottom="0" fillMode="repeat" />
+	<s:BitmapImage smooth="true"  source="@Embed('../../../../../../assets/images/test/beijing_08.png')"  visible="true" left="5" right="5" bottom="0" fillMode="repeat" />
+	<s:BitmapImage smooth="true"  source="@Embed('../../../../../../assets/images/test/beijing_09.png')"  visible="true" right="0" bottom="0" fillMode="repeat"/>
+	
+</s:Skin>

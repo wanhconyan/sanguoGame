@@ -1,0 +1,18 @@
+package com.starling.battle.view
+{
+	import starling.display.Sprite;
+	
+	/**
+	 * @class Unit
+	 * @author wcy
+	 * @usage : 单位基本类 定义单位行为和动作
+	 */	
+	public class BaseUnit extends Sprite
+	{
+		public const 
+		public function BaseUnit()
+		{
+			super();
+		}
+	}
+}

@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	project: sangocraft_Web
+	@class: CombatInfo
+	@author: zhouyan
+	@usage:战斗帧信息 
+	@since: 2013-9-5
+	@modified: 2013-9-5
+	@modifier: wangcongyan
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   width="282" height="113" xmlns:view="cn.sevencool.sangocraft.web.ui.mainPanel.view.*">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.data.model.FightDataInfoVO;
+			import cn.sevencool.sangocraft.data.model.GeneralFightInfoVO;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.data.symbols.material.factory.ImageFactory;
+			import cn.sevencool.sangocraft.web.symbols.FilterFctory;
+			import cn.sevencool.sangocraft.web.ui.mainPanel.mediator.MainPanelMediator;
+			
+			import com.sevencool.rtslogic.Battlefield;
+			
+			import mx.events.FlexEvent;
+			
+			import spark.filters.GlowFilter;
+			private var _mediator:MainPanelMediator = null ;
+			
+			private var _aramyTotal:int = -1;
+			
+			private var _myTotal:int = -1;
+			
+			private var _stayAramyNum:int = -1;
+			
+			private var _stayNum:int =-1;
+			
+			private var _myAllTotal:int = -1;
+			
+			private var _aramyAllTotal:int = -1;
+			
+			private var _backImg:Bitmap = null;
+			
+			override public function set mediatorUI($value:AbstractMediator):void
+			{
+				_mediator = $value as MainPanelMediator ;
+				if(!_mediator||!initialized)
+				{
+					return ;
+				}
+				onShow();
+			}
+			
+			/**
+			 * 显示数据设置
+			 * */
+			public function set fightIDInfo($fightDataInfoVO:FightDataInfoVO):void
+			{
+				
+			}
+			
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				panelID =5;
+				onShow();
+				img_enemySolderNum.filters = FilterFctory.AllSoldierFilter;
+				img_totalSoldera.filters = FilterFctory.AllSoldierFilter;
+				img_enemyAramy.filters = FilterFctory.EnemyFilter;
+				img_army.filters = FilterFctory.EnemyFilter;
+				_backImg = new Bitmap();
+				var timerUrl:String = MaterialManager.getInstance().getURL(MaterialKeys.OTHER,"timerBar");
+				ImageFactory.getBitmap(timerUrl,_backImg);
+				_backImg.addEventListener(Event.COMPLETE,onTimerBackComplete);
+			}
+			
+			
+			/**
+			 * onShow
+			 * */
+			protected override function onShow():void
+			{
+				if(!initialized)
+				{
+					return ;
+				}
+				
+				img_blood.width = 50;
+				img_mblood.width = 50;
+			}
+			
+			/**
+			 * 帧显示变化
+			 * */
+			protected function timerControl_FPSChangeHandler(event:Event):void
+			{
+				if(timerControl.isPause)
+				{
+					
+				}else
+				{
+					Battlefield.getActivityBattlefield().frameSpeed = timerControl.accelerate;
+					
+				}
+				
+			}
+			
+			/**
+			 * 我军驻留兵量
+			 * */
+			public function get stayNum():int
+			{
+				return _stayNum;
+			}
+
+			/**
+			 * @private
+			 */
+			public function set stayNum(value:int):void
+			{
+				_stayNum = value;
+				lbl_myStay.text = stayNum.toString();
+			}
+
+			/**
+			 * 敌军驻留兵量
+			 * */
+			public function get stayAramyNum():int
+			{
+				return _stayAramyNum;
+			}
+
+			/**
+			 * @private
+			 */
+			public function set stayAramyNum(value:int):void
+			{
+				_stayAramyNum = value;
+				lbl_aramyStay.text = stayAramyNum.toString();
+			}
+
+			/**
+			 * 我军总数
+			 * */
+			public function get myTotal():int
+			{
+				return _myTotal;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set myTotal(value:int):void
+			{
+				_myTotal = value;
+				lbl_my.text = myTotal.toString();
+				_myAllTotal = _myAllTotal>myTotal?_myAllTotal:myTotal;
+				if(myTotal == 0)
+				{
+					_myAllTotal = 0;
+					img_mblood.width = 0;
+				}else
+				{
+					img_mblood.width = myTotal/_myAllTotal * 105;
+				}
+				
+			}
+
+			/**
+			 * 敌军数量总数
+			 * */
+			public function get aramyTotal():int
+			{
+				return _aramyTotal;
+			}
+
+			/**
+			 * @private
+			 */
+			public function set aramyTotal(value:int):void
+			{
+				_aramyTotal = value;
+				lbl_enemy.text = aramyTotal.toString();
+				
+				_aramyAllTotal = _aramyAllTotal>aramyTotal?_aramyAllTotal:aramyTotal;
+				if(aramyTotal == 0)
+				{
+					_aramyAllTotal = 0;
+					img_blood.width = 0
+				}else
+				{
+					img_blood.width = _aramyTotal/_aramyAllTotal * 105;
+				}
+			}
+			
+			private function onTimerBackComplete(e:Event):void
+			{
+				img_back.source = _backImg;
+			}
+
+			
+		]]>
+	</fx:Script>
+	<symbols:layout>
+		<s:BasicLayout/>
+	</symbols:layout>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:Image id="img_back" width="282" height="113"/>
+	
+	<s:VGroup  y="3" x="96">
+	<s:Group width="182">
+		<s:Label id="img_enemySolderNum" x="2" y="12" color="#d9a34f" fontSize="14"
+				 filters="{[new spark.filters.GlowFilter(0x190202,1,2,2,5,1,false,false)]}"
+				 fontFamily="hyxl" text="总兵力"/>
+	<mx:Image id="img_solderBar" x="47" y="13" width="105" height="11"
+			 source="@Embed('../../../../../../../../assets/images/battle/solderBar.png')"/>
+	<s:BitmapImage x="47" y="13" width="105" height="9"  source="@Embed('../../../../../../../../assets/images/battle/enemySolderNumBar.png')" fillMode="repeat"/>
+	<s:BitmapImage id="img_blood" x="47" y="13" height="9" fillMode="repeat"
+				   source="@Embed('../../../../../../../../assets/images/battle/enemySolderNum.png')"/>
+	<s:Label id="lbl_enemy" x="47" y="11" width="105" height="13" color="#FFFFFF"
+			 filters="{[new spark.filters.GlowFilter(0x310705, 100, 2, 2, 5, 1, false, false)]}"
+			 textAlign="center" verticalAlign="middle"/>
+	<!--<mx:Image x="47" y="24" id="img_enemyAramy" width="45" height="20"  source="@Embed('../../../../../../../../assets/images/battle/enemyAramy.png')"/>-->
+	
+		<s:Label x="47" y="28" id="img_enemyAramy" text="敌方军" fontFamily="hyxl" color="#ffffff" fontSize="14"
+				 filters="{[new spark.filters.GlowFilter(0x100201,1,2,2,5,1,false,false)]}"/>
+		
+		<mx:Image x="92" y="28" id="img_enemyRedif" width="57" height="14"  source="@Embed('../../../../../../../../assets/images/battle/enemyRedif.png')"/>
+	<s:Label x="115" y="28" width="57" height="13" color="#FFFFFF" fontSize="12" id="lbl_aramyStay"
+			 textAlign="left" verticalAlign="middle"/>
+	</s:Group>
+		<s:Group width="184" height="49">
+			<s:Label y="1" id="img_totalSoldera" left="4" text="总兵力" fontFamily="hyxl" color="#d9a34f" fontSize="14"
+					 filters="{[new spark.filters.GlowFilter(0x190202,1,2,2,5,1,false,false)]}"/>
+			<mx:Image  x="47" id="img_solderBara" y="2" width="105" height="11"
+					 source="@Embed('../../../../../../../../assets/images/battle/solderBar.png')"/>
+			<s:BitmapImage x="47" y="3" width="105" height="9"  source="@Embed('../../../../../../../../assets/images/battle/solderNumBar.png')" fillMode="repeat"/>
+			<s:BitmapImage id="img_mblood" x="47" y="3" height="9" fillMode="repeat"
+						   source="@Embed('../../../../../../../../assets/images/battle/solderNum.png')"/>
+			<mx:Image x="92" id="img_redif" y="17" width="57" height="14" source="@Embed('../../../../../../../../assets/images/battle/redif.png')"/>
+			<s:Label x="47" id="img_army" y="17" text="我方军" fontFamily="hyxl" filters="{[new spark.filters.GlowFilter(0x100201,1,2,2,5,1,false,false)]}"
+					 color="#ffffff" fontSize="14"/>
+			<s:Label x="47" y="0" width="105" height="13" chromeColor="#FFFFFF" color="#FFFFFF" id="lbl_my"
+					  filters="{[new spark.filters.GlowFilter(0x231f02, 100, 2, 2, 5, 1, false, false)]}"
+					  fontSize="12"  textAlign="center" verticalAlign="middle"/>
+			<s:Label id="lbl_myStay" x="112" y="18" width="62" height="13" chromeColor="#FFFFFF" 
+					 filters="{[new spark.filters.GlowFilter(0x310705, 100, 2, 2, 5, 1, false, false)]}"
+					 textAlign="left" verticalAlign="middle"/>
+		</s:Group>
+	</s:VGroup>
+	<view:BattleTimerControl id="timerControl" x="11" y="28" FPSChange="timerControl_FPSChangeHandler(event)"/>
+</symbols:BasePanel>

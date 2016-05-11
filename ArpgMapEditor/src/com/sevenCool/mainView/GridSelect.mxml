@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 creationComplete="group1_creationCompleteHandler(event)"
+		 addedToStage="group1_addedToStageHandler(event)"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="26" height="26">
+	<fx:Script>
+		<![CDATA[
+			import com.sevenCool.mainView.map.MapControl;
+			import com.sevenCool.mainView.vo.GridSelectVO;
+			import com.sevenCool.manager.MapManager;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.events.SliderEvent;
+			private var _arr:ArrayCollection = null;
+
+			[Bindable]
+			public function get arr():ArrayCollection
+			{
+				return _arr;
+			}
+
+			public function set arr(value:ArrayCollection):void
+			{
+				_arr = value;
+				list_select.dataProvider = arr;
+				list_select.height = arr.length * 27 ;
+				showIndex(0);
+			}
+
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				list_select.visible = false;
+			}
+			
+			private function showIndex(param0:int = 0):void
+			{
+				var gridSelectVO:GridSelectVO = arr.source[param0];
+				sp.graphics.clear();
+				sp.graphics.beginFill(gridSelectVO.color);
+				sp.graphics.drawRect(0,0,this.width,this.height);
+				this.toolTip = gridSelectVO.toolTip;
+			}
+			
+			protected function list_select_clickHandler(event:MouseEvent):void
+			{
+				var index:int = list_select.selectedIndex ;
+				MapControl.getIntance().brush = index;	
+				showIndex(index);
+			}
+			
+			protected function group1_addedToStageHandler(event:Event):void
+			{
+				stage.addEventListener(MouseEvent.CLICK,onMouseClick);		
+			}
+			
+			protected function onMouseClick(event:MouseEvent):void
+			{
+				if(event.target != sp)
+				{
+					list_select.visible = false;
+				}
+				
+			}
+			
+			protected function sp_clickHandler(event:MouseEvent):void
+			{
+				list_select.visible = true;
+			}
+			
+			protected function slider_changeHandler(event:SliderEvent):void
+			{
+				return;
+				var radious:int = slider.thumbCount * 40 ;
+				brush.graphics.clear();
+				brush.graphics.beginFill(0x002c0b);
+				brush.graphics.drawCircle(sp.x,sp.y,radious);
+				slider.x = brush.x + brush.width;
+				group_slider.width = brush.width + slider.width;
+				var bitmapData:BitmapData = new BitmapData(sp.width,sp.height);
+				bitmapData.draw(sp);
+				var mouseCourseData:MouseCursorData = new MouseCursorData();
+				mouseCourseData.data = new Vector.<BitmapData>();
+				mouseCourseData.data.push(bitmapData);
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	
+	<s:HGroup>
+		<s:Group>
+			<s:SpriteVisualElement id="sp" width="100%" height="100%" click="sp_clickHandler(event)"/>
+			<s:List id="list_select" y="28" width="26"
+					click="list_select_clickHandler(event)"
+					itemRenderer="com.sevenCool.mainView.ItemRender.GridRender"/>
+		</s:Group>
+		<s:Group id="group_slider" visible="false">
+			<s:SpriteVisualElement id="brush" x="0" minWidth="5" minHeight="5" verticalCenter="0"/>
+			<mx:Slider id="slider" change="slider_changeHandler(event)" verticalCenter="0"/>
+		</s:Group>
+	</s:HGroup>
+</s:Group>

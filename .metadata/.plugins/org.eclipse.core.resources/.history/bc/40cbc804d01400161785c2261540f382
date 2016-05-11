@@ -1,0 +1,26 @@
+package com.sanguo.manager
+{
+	import com.module.battle.BattleModule;
+
+	public class ModuleManager
+	{
+		private var modules:Array = [];
+		public function ModuleManager()
+		{
+			
+			
+		}
+		
+		public function addModule():void
+		{
+			modules=[
+				new BattleModule();
+			
+			
+			
+			
+			]
+		
+		}
+	}
+}

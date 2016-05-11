@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gamecfg>
+  <!-- [nActivityID=活动id][nMapID=对应的地图id][deleted=] -->
+  <dtcq_ActivityMapInfo>
+     <id_1 id="1" name="冒险森林" countryid="2" deleted="0" needminlevel="1" musicid="1" enterType="0" bySever="1"/>
+    <id_2 id="2" name="英雄小镇" countryid="2" deleted="0"   needminlevel="20" musicid="2" enterType="0" bySever="1"/>
+    <id_3 id="3" name="风暴城堡" countryid="2" deleted="0"   needminlevel="30" musicid="3" enterType="0" bySever="1"/>
+    <id_4 id="4" name="永恒神迹" countryid="2" deleted="0"  needminlevel="60" musicid="4" enterType="0" bySever="1"/>
+    <id_110 id="110" name="quest" countryid="2" deleted="0"  needminlevel="0" musicid="1000" enterType="1" bySever="1"/>
+    <id_111 id="111" name="stand" countryid="2" deleted="0"  needminlevel="0" musicid="8" enterType="102" bySever="1"/>
+    <id_501 id="103" name="虚空幻境一层" countryid="2" deleted="0"   needminlevel="33" musicid="201" enterType="103" bySever="1"/>
+    <id_601 id="103" name="虚空幻境二层" countryid="2" deleted="0"  needminlevel="40" musicid="201" enterType="103" bySever="1"/>
+    <id_701 id="103" name="虚空幻境三层" countryid="2" deleted="0"  needminlevel="50" musicid="201" enterType="103" bySever="1"/>
+    <id_801 id="103" name="虚空幻境四层" countryid="2" deleted="0"   needminlevel="60" musicid="201" enterType="103" bySever="1"/>
+    <id_901 id="103" name="虚空幻境五层" countryid="2" deleted="0"  needminlevel="70" musicid="201" enterType="103" bySever="1"/>
+    <id_1001 id="1001" name="虚空幻境六层" countryid="2" deleted="0"   needminlevel="80" musicid="201" enterType="103" bySever="1"/>
+	<id_202 id="202" name="试炼之地" countryid="2" deleted="0"   needminlevel="33" musicid="201" enterType="5" bySever="0"/>
+	<id_201 id="201" name="精英副本" countryid="2" deleted="0"   needminlevel="80" musicid="201" enterType="4" bySever="0"/>
+	<id_301 id="301" name="精英副本" countryid="2" deleted="0"   needminlevel="80" musicid="201" enterType="4" bySever="0"/>
+	<id_401 id="401" name="精英副本" countryid="2" deleted="0"   needminlevel="80" musicid="201" enterType="4" bySever="0"/>
+	<id_100 id="100" name="進入戰鬥地圖" countryid="2" deleted="0"   needminlevel="80" musicid="6" enterType="100" bySever="0"/>
+	<id_101 id="101" name="進入戰鬥" countryid="2" deleted="0"   needminlevel="80" musicid="6" enterType="101" bySever="0"/>
+	<id_2 id="2" name="地精洞穴" countryid="2" deleted="0"   needminlevel="80" musicid="6" enterType="2" bySever="0"/>
+  </dtcq_ActivityMapInfo>
+</gamecfg>

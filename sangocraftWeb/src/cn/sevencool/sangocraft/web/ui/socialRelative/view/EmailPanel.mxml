@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   width="530" height="360">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.data.model.SRGetMailNumVO;
+			import cn.sevencool.sangocraft.data.symbols.SystemModelLocator;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.symbols.AlertPanel;
+			import cn.sevencool.sangocraft.web.ui.socialRelative.mediator.SocialRelativeMediator;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			
+			[Bindable]
+			public var emailListColl:ArrayCollection = new ArrayCollection();
+			
+			[Bindable]
+			private var _socialM:SocialRelativeMediator = null;
+			
+			/**
+			 * 装载图片的容器
+			 * */
+			private var _titleBarMap:Bitmap = null;
+			
+			/**
+			 * 当前页
+			 * */
+			private var _nowPage:int = 1;
+			
+			/**
+			 * 每一页邮件数
+			 * */	
+			private var perPage:int =10 ;
+			
+			override public function set mediatorUI($value:AbstractMediator):void
+			{
+				_socialM =  $value as SocialRelativeMediator;
+				if(!initialized||!_socialM)
+				{
+					return ;				
+				}else
+				{
+					onShow();
+				}
+			}
+			
+			
+			public function get mediator():SocialRelativeMediator
+			{
+				
+				return _socialM;
+			}
+			
+			
+			protected function titlewindow1_closeHandler(event:CloseEvent):void
+			{
+				UIMananger.getInstance().hide(this);
+			}
+			
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_titleBarMap = new Bitmap();
+				img_backBar.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,"email_titleBar",_titleBarMap));
+			}
+			
+			
+			override public function get needBundleList():Array
+			{
+				var urlArr:Array = [] ;
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'email_titleBar'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'emailSelect'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'emailSender'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'emailTitle'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'emailTime'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'emailState'));
+				return urlArr;
+			}
+			
+			
+			override protected function onDataChange(type:String=""):void
+			{
+				switch(type)
+				{
+					case "SRGetMailNumVO":
+						var sr:SRGetMailNumVO = SystemModelLocator.getInstance().getPropertyByVo(SRGetMailNumVO) as SRGetMailNumVO;
+						break;
+					default:
+						throw new Error("type"+type);
+				}
+				
+				
+			}
+			override protected function resourcesChanged():void
+			{
+				
+				dataArray = new Vector.<Class>();
+				dataArray.push(SRGetMailNumVO);
+			}
+			
+			
+			override protected function onShow():void
+			{
+				
+				if(!initialized&&!_socialM)
+				{
+					return;
+				}
+			}
+			
+			
+			/**
+			 * 选择当前页邮件
+			 * */
+			private var isBool:Boolean = false;
+			protected function selectAll_clickHandler(event:MouseEvent):void
+			{
+				isBool = !isBool;
+				if(isBool)
+				{
+					_socialM.selectAll()
+				}else
+				{
+					_socialM.disSelectAll()
+				}
+			}
+			
+			
+			/**
+			 * 删除当前选择邮件
+			 * */
+			protected function del_clickHandler(event:MouseEvent):void
+			{
+				if(isBool)
+				{
+					Alert.okLabel = "确定";
+					Alert.cancelLabel = '取消';
+					AlertPanel.show("确定删除本页所有邮件么？","",Alert.OK|Alert.CANCEL,closefun);
+				}else
+				{
+					_socialM.delAllSelectEmail();
+				}
+			}
+			
+			/**
+			 * 删除本页所有邮件
+			 * */
+			private function closefun(e:CloseEvent):void
+			{
+				if(e.detail == Alert.OK)
+				{
+					_socialM.delAllSelectEmail();
+				}
+			}
+			
+			
+			/**
+			 * 删除所有已读邮件
+			 * */
+			protected function delRead_clickHandler(event:MouseEvent):void
+			{
+				
+				AlertPanel.show("是否删除本页已读邮件","",Alert.OK|Alert.CANCEL,closeHandle);
+				
+			}
+			
+			
+			/**
+			 * alert点击事件删除本页已读邮件
+			 * */
+			private function closeHandle(e:CloseEvent):void
+			{
+				if(e.detail==Alert.OK)
+				{
+					_socialM.deleteNowSelect();
+				}
+			}
+			
+			/**
+			 * 写邮件
+			 * */
+			protected function btn_write_clickHandler(event:MouseEvent):void
+			{
+				
+				_socialM.sendEmail()
+				
+			}
+			
+			protected function grouppagination1_PageChangeHandler(event:Event):void
+			{
+				_socialM.refreshPage(_nowPage,2);
+			}
+			
+			
+		]]>
+	</fx:Script>
+	<symbols:layout>
+		<s:BasicLayout/>
+	</symbols:layout>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<mx:Image id="img_backBar" x="2" y="8" width="530" height="31"/>
+	<s:Button id="selectAll" x="88" y="314" width="96" height="36" click="selectAll_clickHandler(event)" label="全选"/>
+	<s:Button id="del" y="314" width="96" height="36" click="del_clickHandler(event)" horizontalCenter="2" label="删除"/>
+	<s:Button id="delRead" x="352" y="314" width="105" height="36" click="delRead_clickHandler(event)" label="删除已读"/>
+	<s:Button x="12" y="318" label="写邮件" 
+			  id="btn_write" click="btn_write_clickHandler(event)" visible="false"/>
+	<s:DataGroup id="list_email" x="0" y="41" width="530" height="264" dataProvider="{emailListColl}"
+				 itemRenderer="cn.sevencool.sangocraft.web.ui.socialRelative.view.itemrender.EmailListIR">
+		<s:layout>
+			<s:TileLayout requestedRowCount="7"/>
+		</s:layout>
+	</s:DataGroup>
+	<s:Label id="img_select" x="34" y="12" width="41" height="20" text="选择" verticalAlign="middle" fontFamily="hyxl" fontSize="20" color="#341812"/>
+	<s:Label id="img_sender" x="109" y="12" width="62" height="20" text="发件人" verticalAlign="middle" fontFamily="hyxl" fontSize="20" color="#341812"/>
+	<s:Label id="img_title" x="281" y="12" width="41" height="20" text="标题" verticalAlign="middle" fontFamily="hyxl" fontSize="20" color="#341812"/>
+	<s:Label id="img_time" x="400" y="12" width="41" height="20" text="时间" verticalAlign="middle" fontFamily="hyxl" fontSize="20" color="#341812"/>
+	<s:Label id="img_state" x="467" y="12" width="41" height="20" text="状态" verticalAlign="middle" fontFamily="hyxl" fontSize="20" color="#341812"/>
+</symbols:BasePanel>

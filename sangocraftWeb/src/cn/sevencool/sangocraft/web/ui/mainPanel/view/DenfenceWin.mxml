@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	project: sangocraft_Web
+	@class: DenfenceWin
+	@author: zhouyan
+	@usage: 防沉迷信息
+	@since: 2013-9-9
+	@modified: 2013-9-9
+	@modifier: zhouyan 
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 mouseFocusEnabled="false"  mouseEnabled="false"
+		 focusEnabled="false" mouseChildren="false"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 height="12" creationComplete="group1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.model.RDenfenceWin;
+			import cn.sevencool.sangocraft.web.symbols.MyDateFormat;
+			
+			import mx.events.FlexEvent;
+			import mx.utils.StringUtil;
+			
+			import org.oswxf.rpc.event.ModelEvent;
+			import cn.sevencool.sangocraft.data.symbols.SystemModelLocator;
+			
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				SystemModelLocator.getInstance().addRemoteEventListener(RDenfenceWin,recDenfenceWinHandler);	
+			}
+			
+			
+			/**
+			 * 0x0705 接到战斗数据
+			 * 切换至战斗显示面板
+			 * @param $evt
+			 */		
+			protected function recDenfenceWinHandler($evt:ModelEvent):void
+			{
+				var denfenceWin:RDenfenceWin = SystemModelLocator.getInstance().getPropertyByVo(RDenfenceWin) as RDenfenceWin;
+				txt_time.text = StringUtil.substitute( '沉迷时间：{0}' , MyDateFormat.getTimeStringBySecondWithDay(denfenceWin.nSeconds));
+				txt_exp.text = StringUtil.substitute('经验衰减率：{0}/100',denfenceWin.nRate.toString());
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:HGroup gap="5">
+		<s:Label text="防沉迷信息：" textAlign="center" verticalAlign="middle"/>
+		<s:Label textAlign="center" verticalAlign="middle" id="txt_time"/>
+		<s:Label textAlign="center" verticalAlign="middle" id="txt_exp"/>
+	</s:HGroup>
+</s:Group>

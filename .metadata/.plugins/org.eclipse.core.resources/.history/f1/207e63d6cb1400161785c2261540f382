@@ -1,0 +1,14 @@
+package com.module.battle
+{
+	import com.core.view.BaseMediator;
+	import com.core.view.BaseModule;
+
+	public class BattleModule extends BaseModule
+	{
+		
+		public function BattleModule()
+		{
+			_baseMediator = new BattleMediator();
+		}
+	}
+}

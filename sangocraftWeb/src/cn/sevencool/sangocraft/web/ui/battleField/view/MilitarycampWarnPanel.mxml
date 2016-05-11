@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+project: sangocraft_Web
+@class: ExpeditionPanel
+@author: wangcongyan
+@usage: 背包检测面板
+@since: 2013-8-27
+@modified: 2013-8-27
+@modifier: wangcongyan
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*" width="400" height="300">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.CloseEvent;
+			
+			protected function titlewindow1_closeHandler(event:CloseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			protected function btn_enlarge_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			protected function btn_enStrength_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			protected function btn_sell_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	
+	<s:TitleWindow close="titlewindow1_closeHandler(event)" width="100%" height="100%">
+		<s:Label x="74" y="66" width="241" height="47" color="#EECB08" fontSize="24"
+				 text="兵营容量不足不能征战" textAlign="center" verticalAlign="middle"/>
+		<s:Button x="53" y="181" label="扩充" id="btn_enlarge" click="btn_enlarge_clickHandler(event)" width="115" height="40"/>
+		<s:Button x="154" y="181" label="强化" id="btn_enStrength" click="btn_enStrength_clickHandler(event)" width="115" height="40" />
+		<s:Button x="262" y="181" label="出售" id="btn_sell" click="btn_sell_clickHandler(event)" width="115" height="40"/>
+		
+	</s:TitleWindow>
+</symbols:BasePanel>

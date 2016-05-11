@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 creationComplete="group1_creationCompleteHandler(event)"
+		 addedToStage="group1_addedToStageHandler(event)"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
+	<fx:Script>
+		<![CDATA[
+			import com.sevenCool.manager.MenuManager;
+			
+			import mx.controls.Menu;
+			import mx.events.FlexEvent;
+			import mx.events.MenuEvent;
+			
+			
+			private var _menuManager:MenuManager = null;
+			
+			
+			private var _menu:Menu = null;
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_menuManager = MenuManager.getInstance();
+				_menu = Menu.createMenu(this.stage,fileItem,false);
+				_menu.labelField ='@label'
+				_menu.addEventListener(MenuEvent.ITEM_CLICK,onItemClick);
+			}
+			
+			protected function onMouseClick(event:MouseEvent):void
+			{
+				if(event.target != open)
+				{
+					_menu.hide();
+				}
+			}
+			
+			protected function onOpenMouseClick(event:MouseEvent):void
+			{
+				if(!_menu.visible)
+				{
+					_menu.show(open.x,open.y + open.height);
+				}else
+				{
+					_menu.hide();
+				}
+			
+			}
+			
+			protected function group1_addedToStageHandler(event:Event):void
+			{
+				this.stage.addEventListener(MouseEvent.CLICK,onMouseClick);
+			}
+			
+			protected function onItemClick(event:MenuEvent):void
+			{
+				var item:Object = event.item;
+				var index:int = event.item.@data[0] ; 
+				MenuManager.getInstance().menuClick(index);
+			}
+			
+			protected function save_clickHandler(event:MouseEvent):void
+			{
+				
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<fx:XML id="fileItem">
+			<root>
+				<menuitem label="新建阵型" data="1"/>
+				<menuitem label="打开阵型" data="2"/>
+				<menuitem label="保存" data="3"/>
+				<menuitem label="退出" data="4"/>
+			</root>
+		</fx:XML>
+	</fx:Declarations>
+	
+	
+	<s:Rect id="shadow" left="-1" right="-1" top="-1" bottom="-1" radiusX="2">
+		<s:fill>
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry color="0x777777" 
+								 alpha="1" />
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
+	<s:HGroup id="btnGroup" width="100%" y="2" gap="5">
+	<mx:LinkButton id="open" width="51" height="26" label="文件" color="0xffffff" click="onOpenMouseClick(event)"/>
+	<mx:LinkButton id="save" width="51" height="26" label="预览" color="0xffffff" click="save_clickHandler(event)"/>
+	</s:HGroup>
+</s:Group>

@@ -1,0 +1,37 @@
+package com.module.battle
+{
+	import com.sanguo.manager.App;
+	import com.sanguo.manager.LoopManager;
+	import com.starling.battle.view.GameRoot;
+	
+	import flash.display.Sprite;
+	import flash.events.Event;
+	import flash.geom.Rectangle;
+	
+	import starling.core.Starling;
+	
+	public class Battle extends Sprite
+	{
+		private var sta:Starling ;
+
+		public function Battle()
+		{
+			super();
+		}
+		
+		public function start():void
+		{
+			sta = new Starling(GameRoot,App.ins.stage,new Rectangle(0,0,1280,1250));
+			sta.antiAliasing =1;
+			sta.showStats=true;
+			sta.showStatsAt("right","top");
+			sta.start();
+		}
+		
+		public function end():void
+		{
+		
+		
+		}
+	}
+}

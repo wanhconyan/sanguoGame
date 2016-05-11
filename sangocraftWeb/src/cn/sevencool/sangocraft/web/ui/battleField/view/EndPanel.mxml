@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   width="952" height="368"
+				   creationComplete="basepanel1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.utils.MediatorUtil;
+			import cn.sevencool.sangocraft.data.symbols.SoundManager;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.ui.screen.mediator.ScreenMediator;
+			
+			import mx.events.FlexEvent;
+			
+			public var isUp:Boolean = false;
+			
+			private var _failure:Bitmap = null;
+			
+			private var _success:Bitmap = null;
+			
+			private var _types:int = 0;
+			/**
+			 * 
+			 * 面板创建完成
+			 * */
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_success = new Bitmap();
+				_failure = new Bitmap();
+				onShow();
+			}
+			
+			
+			protected override function onShow():void
+			{
+				if(!initialized)
+					return;
+			}
+			
+			
+			/**
+			 * 成功时
+			 * */
+			private function setTime():void
+			{
+				UIMananger.getInstance().hide(this);
+				var battle:BattleEndPanel = 	UIMananger.getInstance().getUIObj(BattleEndPanel) as BattleEndPanel
+					UIMananger.getInstance().show(BattleEndPanel) ;
+					SoundManager.getInstance().musicPlay("Interface15");
+				if(!isUp)
+				{
+					battle.currentState = "normal";
+				}else
+				{
+					battle.currentState = "upLvl";
+				}
+			}
+			
+			
+			/**
+			 * 失败时
+			 * */
+			private function setTime1():void
+			{
+				UIMananger.getInstance().hide(this);
+				var screenM:ScreenMediator = MediatorUtil.getMediatorByInterface(ScreenMediator) as ScreenMediator ;
+				screenM.showCity();
+			}
+
+			public function get types():int
+			{
+				return _types;
+			}
+
+			public function set types(value:int):void
+			{
+				_types = value;
+				if(!initialized)
+					return;
+				switch(types)
+				{
+					case 1:
+						success.visible = true;
+						failure.visible = false;
+						success.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'success',_success));
+						setTimeout(setTime,2000);   //延迟时间
+						break;
+					case 2:
+						failure.visible = true;
+						success.visible = false;
+						failure.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'failure',_failure));
+						setTimeout(setTime1,2000);   //延迟时间
+						break;
+					default:
+						throw new Error("you have error type" + type);
+				}
+				
+			}
+
+		]]>
+	</fx:Script>
+	<symbols:layout>
+		<s:BasicLayout/>
+	</symbols:layout>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<mx:Image id="success" left="1" right="771" top="-1" bottom="207" horizontalCenter="-385"
+			  verticalCenter="-104" visible="false" />
+	<mx:Image id="failure" left="1" right="771" top="-1" bottom="207" horizontalCenter="-385"
+			  verticalCenter="-104" visible="false" />
+</symbols:BasePanel>

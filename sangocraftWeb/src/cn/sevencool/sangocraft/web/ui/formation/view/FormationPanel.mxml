@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+project: sangocraft_Web
+@class: FormationPanel
+@author: zhoujingye
+@usage: 编队面板
+@since: 2013-8-26
+@modified: 2013-8-26
+@modifier: zhoujingye 
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   width="670" height="440" xmlns:itemsBox="cn.sevencool.sangocraft.web.symbols.itemsBox.*">  
+	<fx:Script>
+			<![CDATA[
+				import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+				import cn.sevencool.sangocraft.data.manager.barracks.mediator.IUIOperatableBarracksMediator;
+				import cn.sevencool.sangocraft.data.manager.utils.MediatorUtil;
+				import cn.sevencool.sangocraft.data.symbols.CommonData;
+				import cn.sevencool.sangocraft.data.symbols.ItemManager;
+				import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+				import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+				import cn.sevencool.sangocraft.data.vo.FormationArrVO;
+				import cn.sevencool.sangocraft.data.vo.MonsterInfo;
+				import cn.sevencool.sangocraft.data.vo.SkillInfo;
+				import cn.sevencool.sangocraft.web.manager.UIMananger;
+				import cn.sevencool.sangocraft.web.ui.barracks.mediator.BarracksMediator;
+				import cn.sevencool.sangocraft.web.ui.barracks.view.BarracksPanel;
+				import cn.sevencool.sangocraft.web.ui.formation.mediator.FormationMediator;
+				
+				import mx.collections.ArrayCollection;
+				import mx.events.CloseEvent;
+				import mx.events.FlexEvent;
+				import mx.utils.StringUtil;
+				
+				import spark.filters.GlowFilter;
+				/**
+				 * 默认字符串
+				 */		
+				private static const GREENSTR:String='<font color="#FFFFFF">{0}</font>';
+				/**
+				 * 红色字符串
+				 */		
+				private static const REDSTR:String='<font color="#F90808">{0}</font>';
+				/**
+				 * 编队Mediator
+				 * */
+				private var _militaryM:FormationMediator = null;
+				/**
+				 * 兵营Mediator
+				 * */
+				private var _barrM:BarracksMediator = null;
+				/**
+				 * 编队信息
+				 * */
+				[Bindable]
+				private var _dataValueArr:ArrayCollection=null;
+				/**
+				 * 从战斗页面打开编队
+				 * */
+				private var _openType:int = 0;
+				
+				/**
+				 * 装载图片的容器
+				 * */
+				private var _formationBarMap1:Bitmap = null;
+				private var _formationBarMap2:Bitmap = null;
+				private var _chiefSkillMap:Bitmap = null;
+				private var _skillMap:Bitmap = null;
+				private var _mainGenPicMap:Bitmap = null;
+				private var _formationMap:Bitmap = null;
+				private var _formationBottomMap:Bitmap = null;
+				private var _mainSkillNameMap:Bitmap = null;
+				private var _teamNumMap:Bitmap = null;
+				/**
+				 * 资源管理器
+				 * */
+				private var _materialManager:MaterialManager=null;
+				/**
+				 * 显示管理器
+				 * */
+				private var _uiManager:UIMananger=null;
+				/**
+				 * 物品管理器
+				 * */
+				private var _itemManager:ItemManager = null;
+				/**
+				 * 编队编号切换
+				 * */
+				private var _btnIndex:int=0;
+
+				public function setformationSetBack():void
+				{
+					setData();
+				}
+				
+				/**
+				 * 从战斗页面打开编队
+				 * */
+				public function get openType():int
+				{
+					return _openType;
+				}
+				
+				
+				/**
+				 * @private
+				 */
+				public function set openType(value:int):void
+				{
+					_openType = value;
+				}
+
+				
+				public override function get usableCount():int
+				{
+					return 1 ;
+				}
+				
+				/**
+				 * 设置mediatorUI
+				 * */
+				override public function set mediatorUI($value:AbstractMediator):void
+				{
+					_militaryM = $value as FormationMediator;
+				}
+				
+				
+				override public function get needBundleList():Array
+				{
+					var urlArr:Array = [] ;
+					_materialManager=MaterialManager.getInstance();
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'0'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'1'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'2'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'3'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'4'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'5'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'6'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'7'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'8'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'9'));   
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'0'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'1'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'2'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'3'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'4'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'5'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'6'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'7'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'8'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'9'));   
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'emptyCommand'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'askIcon'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'formationName'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'generalCell'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'foamationCommand'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,''));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'formationTeamValue'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'formationBar'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'chiefSkill'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'skill_2'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'mainGeneral'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'formation1'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'formationBottom'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'genBottom'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'genCard'));
+					return urlArr;
+				}
+				
+				
+				/***
+				 * 面板打开
+				 * */
+				override protected function onShow():void
+				{
+					if(!initialized)
+						return;
+					_militaryM.getFormationInfo();
+					setData();
+				} 
+				
+				/**
+				 *面板关闭时调用  需要override 
+				 * 
+				 */		
+				protected override function onClose():void
+				{
+					_barrM.clearItemsStateInterface();
+				}
+				
+				/**
+				 * 面板创建完成
+				 * */
+				protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+				{
+					_uiManager=UIMananger.getInstance();
+					_itemManager=ItemManager.getInstance();
+					_formationBarMap1 = new Bitmap();
+					_formationBarMap2 = new Bitmap(); 
+					_chiefSkillMap = new Bitmap();
+					_skillMap = new Bitmap();
+					_mainGenPicMap = new Bitmap();
+					_formationMap = new Bitmap();
+					_formationBottomMap = new Bitmap();
+					_mainSkillNameMap = new Bitmap();
+					_teamNumMap = new Bitmap();
+					_dataValueArr=new ArrayCollection();
+					onShow();
+					addImg();
+					_barrM=MediatorUtil.getMediatorByInterface(IUIOperatableBarracksMediator) as BarracksMediator;
+				}
+				
+				              
+				/**
+				 * 面板关闭
+				 * */
+				protected function titlewindow1_closeHandler(event:CloseEvent):void
+				{
+					_barrM.clearItemsStateInterface();
+					if(openType)
+					{
+						_uiManager.hide(this);
+						openType = 0;
+					}
+					if(!openType)
+					{
+						_uiManager.hide(this);
+						_uiManager.show(BarracksPanel);
+					}
+				}
+				
+				
+				/**
+				 * 点击切换按钮
+				 * */
+				protected function change_clickHandler(event:MouseEvent):void
+				{
+					if(_btnIndex==4)
+					{
+						_btnIndex=0;
+						setData();
+						return;
+					} 
+					if(_btnIndex!=4)
+					{
+						_btnIndex++;
+						setData();
+						return;
+					}
+				}
+				
+				
+				/**
+				 * 加载人物图片    
+				 * */
+				private function addImg():void
+				{
+					
+					teamDetailBottom.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'formationBar',_formationBarMap1));
+					mainSkillBottom.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'formationBar',_formationBarMap2));
+					mainSkill1.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'chiefSkill',_chiefSkillMap));
+					mainGen.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'mainGenPic',_mainGenPicMap));
+					teamNum.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'formation1',_formationMap));
+					teamBottom.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'formationBottom',_formationBottomMap));
+				}
+				
+				/**
+				 * 设置主将属性
+				 * */
+				private function setGeneralInfo(arr:Array):void
+				{
+					generalInfo.text='';
+					if(arr.length<=0)
+					{
+						return;
+					}
+					var mon:MonsterInfo=arr[0];
+					var skill:SkillInfo=_itemManager.skillDic[mon.monsterSkillID];
+					if(skill)
+					{
+						generalInfo.text=skill.szDescribe;
+						mainSkillName.addChild(_materialManager.getIcon(MaterialKeys.SKILLNAME,skill.nSkillID.toString(),_mainSkillNameMap));
+					}
+				}
+				
+				
+				/**
+				 * 设置数据
+				 * */
+				private function setData():void
+				{
+					while(teamNum.numChildren !=0 )
+					{
+						teamNum.removeChildAt(0);
+					}
+					var str:String='formation'+(_btnIndex+1).toString();
+					teamNum.addChild(_materialManager.getIcon(MaterialKeys.OTHER,str,_teamNumMap));
+					var formationArrVO:FormationArrVO = _militaryM.btnClickHandler(_btnIndex);
+					_dataValueArr.source=formationArrVO.formationInfo;
+					data_formation.dataProvider=_dataValueArr;
+					generalInfoShow(formationArrVO);
+					setGeneralInfo(formationArrVO.formationInfo);
+				}
+				
+				
+				/**
+				 * 将领信息显示
+				 * */
+				private function generalInfoShow(formationArrVO:FormationArrVO):void
+				{
+					gunAttack.text=formationArrVO.robAttack.toString();
+					gunSoldier.text=formationArrVO.gunArm.toString();
+					bowAttack.text=formationArrVO.bowAttack.toString();
+					bowSoldier.text=formationArrVO.bowArm.toString();
+					cavalryAttack.text=formationArrVO.rideAttack.toString();
+					cavalrySoldier.text=formationArrVO.rideArm.toString();
+					weaponsAttack.text=formationArrVO.instrumentAttack.toString();
+					weapons.text=formationArrVO.instrument.toString();
+					allSoldierNum.text=formationArrVO.allArm.toString();
+					if(formationArrVO.teamCommand>CommonData.nCommander)
+					{
+						command.htmlText= StringUtil.substitute(REDSTR,formationArrVO.teamCommand.toString())+StringUtil.substitute(GREENSTR,'/'+CommonData.nCommander.toString())
+						return;
+					}
+					if(formationArrVO.teamCommand<=CommonData.nCommander)
+					{
+						command.htmlText= StringUtil.substitute(GREENSTR,formationArrVO.teamCommand.toString()+'/'+CommonData.nCommander.toString());
+						return;
+					}
+				}
+			]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:TitleWindow x="1" y="1" id="win" width="670" height="440" close="titlewindow1_closeHandler(event)" title="編 隊">
+		<mx:Image id="teamDetailBottom" y="177" width="559" height="52" horizontalCenter="1"/>
+		<s:Label id="teamDetail" y="196" width="121" height="29" horizontalCenter="3" text="队伍参数" textAlign="center" verticalAlign="top"
+				 fontFamily="hyxl" color="#f9ffa8" fontSize="22" filters="{[new spark.filters.GlowFilter(0xFFFFBE,0.75,7,7,2,1,false,false)]}"/>
+		<mx:Image id="mainSkillBottom" y="297" width="559" height="52" horizontalCenter="1"/>
+		<mx:Image  x="117" y="314" height="27" width="110" id="mainSkill1"/>
+		<mx:Image id="mainSkillName" y="314" width="110" height="27" horizontalCenter="20"/>
+		<mx:Image  x="465" y="9" height="19" width="62" id="teamBottom"/>
+		<mx:Image  x="471" y="12" height="19" width="62" id="teamNum"/>
+		<mx:Image id="mainGen" y="5" width="93" height="23" horizontalCenter="-221"/>
+		<s:HGroup y="236" height="69" gap="0" horizontalCenter="1">
+			<s:VGroup width="130" gap="8">
+				<s:HGroup gap="0">
+					<s:Label color="#FFFFFF"
+							 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+							 fontSize="14" text="枪攻：" textAlign="center" verticalAlign="middle"/>
+					<s:Label id="gunAttack" color="#FFFFFF"
+							 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+							 fontSize="14" text="12345678" textAlign="center" verticalAlign="middle"/>
+				</s:HGroup>
+				<s:HGroup gap="0">
+					<s:Label text="枪兵：" textAlign="center" color="#FFFFFF"  fontSize="14"
+							 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+							 verticalAlign="middle"/>
+					<s:Label text="12355" textAlign="center" id="gunSoldier" color="#FFFFFF"
+							 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"  fontSize="14"
+							 verticalAlign="middle"/>
+				</s:HGroup>
+				<s:HGroup gap="0">
+					<s:Label text="总兵量：" textAlign="center" color="#FFFFFF"  fontSize="14"
+							 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+							 verticalAlign="middle"/>
+					<s:Label text="12355" textAlign="center" id="allSoldierNum" color="#FFFFFF"
+							 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"  fontSize="14"
+							 verticalAlign="middle"/>
+				</s:HGroup>
+			</s:VGroup>
+			
+			<s:VGroup width="130"  gap="8">
+				<s:HGroup gap="0" >
+					<s:Label text="弓攻：" textAlign="center"  color="#FFFFFF"  fontSize="14"
+							 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+							 verticalAlign="middle"/>
+					<s:Label text="12345678" textAlign="center" id="bowAttack" color="#FFFFFF"
+							 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"  fontSize="14"
+							 verticalAlign="middle"/>
+				</s:HGroup>
+				<s:HGroup gap="0" >
+					<s:Label text="弓兵：" textAlign="center" color="#FFFFFF" fontSize="14"
+							 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+							 verticalAlign="middle"/>
+					<s:Label text="12355" textAlign="center" id="bowSoldier" color="#FFFFFF"
+							 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"  fontSize="14"
+							 verticalAlign="middle"/>
+				</s:HGroup>
+			</s:VGroup>
+			
+			<s:VGroup width="130"  gap="8">
+				<s:HGroup gap="0" >
+					<s:Label text="骑攻：" textAlign="center" color="#FFFFFF"  fontSize="14"
+							 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+							 verticalAlign="middle"/>
+					<s:Label text="12345678" textAlign="center" id="cavalryAttack" color="#FFFFFF"
+							 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"  fontSize="14"
+							 verticalAlign="middle"/>
+				</s:HGroup>
+				<s:HGroup gap="0" >
+					<s:Label text="骑兵：" textAlign="center" color="#FFFFFF"  fontSize="14"
+							 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+							 verticalAlign="middle"/>
+					<s:Label text="12355" textAlign="center" id="cavalrySoldier" color="#FFFFFF"
+							 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"  fontSize="14"
+							 verticalAlign="middle"/>
+				</s:HGroup>
+			</s:VGroup>
+			
+			<s:VGroup width="130"  gap="8">
+				<s:HGroup gap="0" >
+					<s:Label text="器械攻：" textAlign="center" color="#FFFFFF"  fontSize="14"
+							 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+							 verticalAlign="middle"/> 
+					<s:Label text="12345678" textAlign="center" id="weaponsAttack" color="#FFFFFF"
+							 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"  fontSize="14"
+							 verticalAlign="middle"/>
+				</s:HGroup>
+				<s:HGroup gap="0" >
+					<s:Label text="器械：" textAlign="center" color="#FFFFFF"  fontSize="14"
+							 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+							 verticalAlign="middle"/>
+					<s:Label text="12355" textAlign="center" id="weapons" color="#FFFFFF"
+							 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"  fontSize="14"
+							 verticalAlign="middle"/>
+				</s:HGroup>
+			</s:VGroup>
+		</s:HGroup>
+		<s:Label id="generalInfo" y="351" width="559" height="46" color="#FFFFFF"
+				 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+				 fontSize="14" horizontalCenter="1" textAlign="center" verticalAlign="top"/>
+			<s:Label x="470" y="195" height="22" color="#FFFFFF"
+					 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+					 fontSize="14" text="统率力：" textAlign="center" verticalAlign="middle"/>
+			<mx:Text id="command" x="527" y="197" width="70" color="#FFFFFF"
+					 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+					 fontSize="14" text="999/999" textAlign="left"/>
+	<s:Button x="542" y="11"  id="change" click="change_clickHandler(event)" skinClass="cn.sevencool.sangocraft.web.skin.button.SwitchBtnSkin"
+			  label="切换"/>
+	<s:DataGroup id="data_formation" y="40" width="561" height="138" dataProvider="{_dataValueArr}"
+				 horizontalCenter="-13"
+				 itemRenderer="cn.sevencool.sangocraft.web.ui.formation.view.FomationIR">
+		<s:layout>
+			<s:TileLayout requestedColumnCount="5" requestedRowCount="1"/>
+		</s:layout>
+	</s:DataGroup>
+	
+</s:TitleWindow>
+</symbols:BasePanel>

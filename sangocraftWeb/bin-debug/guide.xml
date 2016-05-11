@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+	quest  小组
+	id 引导步骤
+	direction  偏移类型 0居中 /1左上角/2右上角 / 3右下角/4左下角
+	arrow_X  arrow_Y 箭头坐标信息
+	arrow_rotation 箭头旋转角度
+	arrowmoveSpeed  箭头的移动速度（以毫秒为单位）
+	mask_X   mask_Y  mask_W  mask_H 蒙版坐标信息 
+	maskAlpha 蒙版透明度
+	text_X  text_Y txt 文本坐标以及文本内容
+	hint_X  hint_Y  hint_W  hint_H 圈出的框
+	findArticleID 寻找物品ID
+	 nextQuest='1' nextstep='2' 下一步骤
+-->
+<config>
+	<quest id="1" >
+		<step id='1' direction='3' arrowX_Start='-257' arrowY_Start='-51' arrowRotation_Start='0' arrowX_End='-257' arrowY_End='-51' arrowRotation_End='0' arrowmoveSpeed='2000' mask_X='-329' mask_Y='-64' mask_W='72' mask_H='62' maskAlpha='0.1' findArticleID='0' nextQuest='1' nextStep='2'>
+		</step>
+		<step id='2' direction='0' arrowX_Start='-185' arrowY_Start='-100' arrowRotation_Start='0' arrowX_End='-185' arrowY_End='-100' arrowRotation_End='0' arrowmoveSpeed='2000' mask_X='-378' mask_Y='-168' mask_W='195' mask_H='178' maskAlpha='0.1' findArticleID='0' nextQuest='1' nextStep='3'>
+		</step>
+		<step id='3' direction='0' arrowX_Start='-191' arrowY_Start='-90' arrowRotation_Start='0' arrowX_End='-191' arrowY_End='-90' arrowRotation_End='0' arrowmoveSpeed='2000' mask_X='-290' mask_Y='-124' mask_W='112' mask_H='98' maskAlpha='0.1' findArticleID='0' nextQuest='1' nextStep='4'>
+		</step>
+		<step id='4' direction='0' arrowX_Start='-151' arrowY_Start='-135' arrowRotation_Start='0' arrowX_End='-151' arrowY_End='-135' arrowRotation_End='0' arrowmoveSpeed='2000' mask_X='-250' mask_Y='-185' mask_W='102' mask_H='128' maskAlpha='0.1' findArticleID='0' nextQuest='1' nextStep='5'>
+			<descriptions leg='1'>
+				<description direction='0' text_X='-120' text_Y='-72' txt='战胜后获得5点援军点'/>
+			</descriptions>
+			<frames leg='1'>
+				<frame direction='0' hint_X='-147' hint_Y='-97' hint_W='114' hint_H='27'/>
+			</frames>
+		</step>
+		<step id='5' direction='0' arrowX_Start='170' arrowY_Start='-67' arrowRotation_Start='180' arrowX_End='170' arrowY_End='-67' arrowRotation_End='180' arrowmoveSpeed='2000' mask_X='176' mask_Y='-101' mask_W='122' mask_H='122' maskAlpha='0.1' findArticleID='0' nextQuest='0' nextStep='0'>
+		</step>
+	</quest>
+	<quest id="2" >
+		<step id='1' direction='4' arrowX_Start='161' arrowY_Start='-76' arrowRotation_Start='0' arrowX_End='161' arrowY_End='-76' arrowRotation_End='0' arrowmoveSpeed='2000' mask_X='95' mask_Y='-147' mask_W='57' mask_H='107' maskAlpha='0.1' findArticleID='0' nextQuest='2' nextStep='2'>
+		</step>
+	</quest>
+</config>

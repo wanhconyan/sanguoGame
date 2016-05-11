@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+  	2012-3-22 14:35                        
+
+    
+	
+	 Compile And Deploy ant script                   
+     dan                                                                
+     ====================================================================== -->
+<project name="7cool_sanguo" default="default" basedir="../">
+	<description>
+		 Compile And Deploy ant script        
+    </description>
+	<property environment="env" />
+
+
+	<!-- Configuration -->
+	<property file="${basedir}/build/build.properties" />
+
+	<!-- Setup Flex Ant Resources -->
+	<property name="FLEX_HOME" location="${env.FLEX_SDK4.6.0}" />
+
+	<taskdef resource="flexTasks.tasks" classpath="${FLEX_HOME}/ant/lib/flexTasks.jar" />
+
+
+	<!-- ================================= 
+          target: default          
+         ================================= -->
+	<target name="default" depends="clean,init,compile" description="--> default compile">
+
+	</target>
+
+
+	<target name="compile" depends="init,clean" description="Compile the library .swc file">
+		<echo>start</echo>
+		<mxmlc file="${src.dir}/Main.mxml" output="${bin.dir}/Main.swf" debug="false">
+			<load-config filename="${FLEX_HOME}/frameworks/flex-config.xml" />
+			
+			<compiler.library-path dir="${basedir}" append="true">
+				<include name="libs" />
+			</compiler.library-path>
+			<compiler.source-path path-element="${src.dir}" />
+			<source-path path-element="${basedir}/../gamelogic/src" />
+			<source-path path-element="${basedir}/../IamSanguoCore/src" />
+			<source-path path-element="${basedir}/../RTSShow/src" />
+			<source-path path-element="${basedir}/../sangocraftDataProcessing/src" />
+			<runtime-shared-library-path path-element="${FLEX_HOME}/frameworks/libs/framework.swc">
+				<url rsl-url=" http://fpdownload.adobe.com/pub/swz/flex/4.6.0.23201/framework_4.6.0.23201.swz" policy-file-url="http://fpdownload.adobe.com/pub/swz/crossdomain.xml" />
+			</runtime-shared-library-path>
+			<runtime-shared-library-path path-element="${FLEX_HOME}/frameworks/libs/textLayout.swc">
+				<url rsl-url=" http://fpdownload.adobe.com/pub/swz/tlf/2.0.0.232/textLayout_2.0.0.232.swz" policy-file-url="http://fpdownload.adobe.com/pub/swz/crossdomain.xml" />
+			</runtime-shared-library-path>
+			<runtime-shared-library-path path-element="${FLEX_HOME}/frameworks/libs/spark.swc">
+				<url rsl-url=" http://fpdownload.adobe.com/pub/swz/flex/4.6.0.23201/spark_4.6.0.23201.swz" policy-file-url="http://fpdownload.adobe.com/pub/swz/crossdomain.xml" />
+			</runtime-shared-library-path>
+			<runtime-shared-library-path path-element="${FLEX_HOME}/frameworks/libs/sparkskins.swc">
+				<url rsl-url=" http://fpdownload.adobe.com/pub/swz/flex/4.6.0.23201/sparkskins_4.6.0.23201.swz" policy-file-url="http://fpdownload.adobe.com/pub/swz/crossdomain.xml" />
+			</runtime-shared-library-path>
+			<runtime-shared-library-path path-element="${FLEX_HOME}/frameworks/libs/mx/mx.swc">
+				<url rsl-url=" http://fpdownload.adobe.com/pub/swz/flex/4.6.0.23201/mx_4.6.0.23201.swz" policy-file-url="http://fpdownload.adobe.com/pub/swz/crossdomain.xml" />
+			</runtime-shared-library-path>
+			
+		</mxmlc>
+	</target>
+
+
+	<!-- ================================= 
+          target: init              
+         ================================= -->
+	<target name="init" description="Initializes project and destination folders">
+		<echo message="Project: ${ant.project.name}" />
+		<echo message="Flex SDK: ${FLEX_HOME}" />
+
+		<!-- Create direectories -->
+		<mkdir dir="${bin.dir}" />
+		<mkdir dir="${bin.dir}/assets/" />
+
+	</target>
+
+	<!-- ================================= 
+          target: clean              
+         ================================= -->
+	<target name="clean" description="Removes artifacts from previous builds">
+		<delete includeemptydirs="true" failonerror="false">
+			<fileset dir="${bin.dir}" defaultexcludes="false">
+				<include name="**/*" />
+			</fileset>
+		</delete>
+	</target>
+</project>

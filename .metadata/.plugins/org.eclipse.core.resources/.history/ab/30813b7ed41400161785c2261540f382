@@ -1,0 +1,29 @@
+package
+{
+	import com.sanguo.manager.App;
+	import com.sanguo.manager.LoopManager;
+	
+	import flash.display.Bitmap;
+	import flash.display.Sprite;
+	import flash.events.Event;
+
+	[SWF(frameRate = 60, width = 1440, height = 900, backgroundColor = 0xaa8866)]
+	public class sanguoGame extends Sprite
+	{
+		
+		
+		public function sanguoGame()
+		{
+			addEventListener(Event.ADDED_TO_STAGE,init);
+			
+		}
+		
+		protected function init(e:Event):void
+		{
+			App.ins.init(stage);
+			LoopManager.init(stage);
+		}
+		
+	
+	}
+}

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+
+    ADOBE SYSTEMS INCORPORATED
+    Copyright 2008 Adobe Systems Incorporated
+    All Rights Reserved.
+
+    NOTICE: Adobe permits you to use, modify, and distribute this file
+    in accordance with the terms of the license agreement accompanying it.
+
+-->
+
+<!--- The default wireframe skin class for the Spark Button component. 
+        Skin classes in the wireframe package are useful for using as a simple base for a custom skin.
+      
+       @see spark.components.Button
+        
+      @langversion 3.0
+      @playerversion Flash 10
+      @playerversion AIR 1.5
+      @productversion Flex 4
+-->
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		minWidth="25" minHeight="25" creationComplete="skin1_creationCompleteHandler(event)"
+		removedFromStage="skin1_removedFromStageHandler(event)"
+		alpha.disabled="0.5"
+		>
+
+    <fx:Metadata>
+        /** 
+         * @copy spark.skins.spark.ApplicationSkin#hostComponent
+         */
+        [HostComponent("spark.components.Button")]
+    </fx:Metadata>
+
+	<fx:Script>
+		<![CDATA[   
+			import cn.sevencool.sangocraft.web.symbols.FilterFctory;
+			
+			import flash.utils.setTimeout;
+			
+			import mx.events.FlexEvent;
+			protected function state1_enterStateHandler(event:FlexEvent):void
+			{
+				Mouse.cursor =  MouseCursor.BUTTON;
+			}
+
+			protected function state1_exitStateHandler(event:FlexEvent):void
+			{
+				Mouse.cursor =  MouseCursor.AUTO;
+			}
+
+			protected function skin1_removedFromStageHandler(event:Event):void
+			{
+				Mouse.cursor =  MouseCursor.AUTO;
+			}
+			
+			protected function skin1_creationCompleteHandler(event:FlexEvent):void
+			{
+				labelDisplay.setStyle("fontFamily",'hyxl');
+				labelDisplay.filters = FilterFctory.FormationFilter;
+			}
+			
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="up" />
+		<s:State name="over" enterState="state1_enterStateHandler(event)" exitState="state1_exitStateHandler(event)"/>
+		<s:State name="down" />
+		<s:State name="disabled" />
+	</s:states>
+
+    <!-- background -->
+	
+	<s:BitmapImage includeIn="disabled,up" smooth="true" left="0" top="0" bottom="0"
+				   source="@Embed('../../../../../../../assets/images/barracks/button_lup.png')"/>
+	<s:BitmapImage includeIn="disabled,up" smooth="true" left="45" right="45" fillMode="repeat" top="-1" bottom="0"
+				   source="@Embed('../../../../../../../assets/images/barracks/button_mup.png')"/>
+	<s:BitmapImage includeIn="disabled,up" smooth="true" right="0" top="0" bottom="0"
+				   source="@Embed('../../../../../../../assets/images/barracks/button_rup.png')"/>
+	
+	<s:BitmapImage includeIn="over" smooth="true" left="0" top="0" bottom="0"
+				   source="@Embed('../../../../../../../assets/images/barracks/button_lover.png')"/>
+	<s:BitmapImage includeIn="over" smooth="true" left="45" right="45" fillMode="repeat" top="-1" bottom="0"
+				   source="@Embed('../../../../../../../assets/images/barracks/button_mover.png')"/>
+	<s:BitmapImage includeIn="over" smooth="true" right="0" top="0" bottom="0"
+				   source="@Embed('../../../../../../../assets/images/barracks/button_rover.png')"/>
+	
+	<s:BitmapImage includeIn="down" smooth="true" left="0" top="0" bottom="0"
+				   source="@Embed('../../../../../../../assets/images/barracks/button_ldown.png')"/>
+	<s:BitmapImage includeIn="down" smooth="true" left="45" right="45" fillMode="repeat" top="-1" bottom="0"
+				   source="@Embed('../../../../../../../assets/images/barracks/button_mdown.png')"/>
+	<s:BitmapImage includeIn="down" smooth="true" right="0" top="0" bottom="0"
+				   source="@Embed('../../../../../../../assets/images/barracks/button_rdown.png')"/>
+	
+    <!-- shadow (down state only) -->
+    <s:Rect left="2" top="1" right="2" height="1" includeIn="down">
+        <s:fill>
+            <s:SolidColor color="0x5380D0" alpha="0.25" />
+        </s:fill>
+    </s:Rect>
+    <s:Rect left="1" top="2" right="1" height="1" includeIn="down">
+        <s:fill>
+            <s:SolidColor color="0x5380D0" alpha="0.07" />
+        </s:fill>
+    </s:Rect>
+    <s:Rect left="1" top="2" bottom="1" width="1" includeIn="down">
+        <s:fill>
+            <s:SolidColor color="0x5380D0" alpha="0.07" />
+        </s:fill>
+    </s:Rect>
+    <s:Rect right="1" top="2" bottom="1" width="1" includeIn="down">
+        <s:fill>
+            <s:SolidColor color="0x5380D0" alpha="0.07" />
+        </s:fill>
+    </s:Rect>
+    
+    <!-- label -->
+    <!--- @copy spark.components.supportClasses.ButtonBase#labelDisplay -->
+    <s:Label id="labelDisplay" left="1" right="1" top="1" bottom="1" buttonMode="true"
+			 color="#ffecc3" fontSize="23" horizontalCenter="0" maxDisplayedLines="1"
+			 textAlign="center" verticalAlign="middle"
+			 paddingBottom="2">
+    </s:Label>
+
+</s:Skin>

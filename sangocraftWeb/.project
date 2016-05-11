@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>sangocraftWeb</name>
+	<comment></comment>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>com.adobe.flexbuilder.project.flexbuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>com.adobe.flexbuilder.project.flexnature</nature>
+		<nature>com.adobe.flexbuilder.project.actionscriptnature</nature>
+	</natures>
+	<linkedResources>
+		<link>
+			<name>[source path] IamSanguoCore-src</name>
+			<type>2</type>
+			<locationURI>DOCUMENTS/IamSanguoCore/src</locationURI>
+		</link>
+		<link>
+			<name>[source path] gamelogic-src</name>
+			<type>2</type>
+			<locationURI>DOCUMENTS/gamelogic/src</locationURI>
+		</link>
+		<link>
+			<name>[source path] sangocraftDataProcessingPublic-src</name>
+			<type>2</type>
+			<locationURI>DOCUMENTS/sangocraftDataProcessingPublic/src</locationURI>
+		</link>
+		<link>
+			<name>[source path] wxfRPCCorelib-src</name>
+			<type>2</type>
+			<locationURI>DOCUMENTS/wxfRPCCorelib/src</locationURI>
+		</link>
+	</linkedResources>
+</projectDescription>

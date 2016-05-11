@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 creationComplete="group1_creationCompleteHandler(event)"
+		 mouseOver="{filter.visible = true}" mouseOut="{filter.visible = false}" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="80" height="107" 
+		 xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.data.vo.MonsterInfo;
+			import cn.sevencool.sangocraft.web.ui.battleField.mediator.BattleFieldMediator;
+			import cn.sevencool.sangocraft.web.ui.battleField.view.itemrender.PreFormationIR;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import spark.events.IndexChangeEvent;
+			
+			
+			/**
+			 *  下拉图片
+			 **/
+			[Bindable]
+			private var dropColl:ArrayCollection = null;
+			
+			private var _monster:MonsterInfo = null;
+			
+			private var _isState:int = 0;
+			
+			private var _mediator:BattleFieldMediator
+			/**
+			 * 装载图片的容器
+			 * */
+			private var _generalCellMap:Bitmap = null;
+			
+			private var _dropDownFilter:Bitmap = null;
+			
+			private var _lvMap:Bitmap = null;
+			
+			/**
+			 * 当前item的index
+			 * */
+			public var itemIndex:int = -1;
+			
+			
+			/**
+			 * 图标ID判断
+			 * */
+			private var _pic:int = -1;
+			
+			/**
+			 * 兵种类型
+			 * */
+			private var _type:int = -1;
+			
+			/**
+			 * 资源加载器
+			 * */
+			private var _mater:MaterialManager = MaterialManager.getInstance();
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_lvMap = new Bitmap();
+				_generalCellMap = new Bitmap();
+				_dropDownFilter = new Bitmap();
+				dropColl = new ArrayCollection();
+				dropColl.source = ['leftMarchPic','midMarchPic','rightMarchPic',"campStay"]
+				img_back.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'generalCell',_generalCellMap));
+				filter.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'dropDownFilter',_dropDownFilter));
+				
+			}
+			
+			
+			public function get monster():MonsterInfo
+			{
+				return _monster;
+			}
+			
+			public function set monster(value:MonsterInfo):void
+			{
+				lv.visible = false;
+				img_aramy.visible = false;
+				_monster = value;
+				if(!monster||monster.onlyID == -1)
+				{
+					img_aramy.visible = false;
+					lv.visible = false;
+					img_lv.visible = false;
+					img_h.visible = false; 
+					return ;
+				}else
+				{
+					img_aramy.visible = true;
+					lv.visible = true;
+					img_lv.visible = true;
+					img_h.visible = true; 
+					lv.figureHandler(monster.level.toString(),MaterialKeys.LVLSMALL,15);
+					if(_type != monster.theType)
+					{
+						img_aramy.solderType = monster.theType;
+						_type = monster.theType;
+					}
+					if(_pic != monster.picID)
+					{
+						img_h.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.BIG_HEAD,monster.picID.toString()));
+						_pic = monster.picID;
+					}
+					img_lv.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'lv',_lvMap));
+				}
+			}
+			
+			
+			/**
+			 * 主将或者是援军 默认为itemrender内容
+			 * */
+			public function get isState():int
+			{
+				return _isState;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set isState(value:int):void
+			{
+				_isState = value;
+			}
+			
+			public function get mediator():BattleFieldMediator
+			{
+				return _mediator;
+			}
+			
+			public function set mediator(value:BattleFieldMediator):void
+			{
+				_mediator = value;
+				if(mediator == null)
+				{
+					mediator = (this.parent as PreFormationIR).mediator
+				}
+			}
+			
+			
+			protected function dropList_changeHandler(event:IndexChangeEvent):void
+			{
+				var roadIndex:int = 0;
+				switch(dropList.selectedIndex)
+				{
+					case 0:
+						roadIndex = 3
+						break;
+					case 1:
+						roadIndex = 1
+						break;
+					case 2:
+						roadIndex = 5;
+						break;
+					case 3:
+						roadIndex = 107;
+						break;
+					default:
+						trace(dropList.selectedIndex)
+						break;
+				}	
+				
+				if(isState)
+				{
+					mediator.setAttackRoad(isState-1,roadIndex)			
+				}else
+				{
+					mediator.setAttackRoad(itemIndex+1,roadIndex)	
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<mx:Image id="img_back" width="80" height="107"  />
+	<mx:Image id="img_h" x="9" y="10" />
+	<mx:Image id="img_lv" x="31" y="50"  width="24" height="22"/>
+	<symbols:FigureDisplay id="lv" x="49" y="40" width="18" height="32"
+						   maxMedian="3"/>
+	<symbols:SolderType id="img_aramy" x="9" top="9" width="17" height="17"/>
+	<mx:Image id="filter" x="-2" y="77" width="84" height="30" visible="false"/>
+	<s:DropDownList id="dropList" x="3" y="82" width="73"  labelField="" dataProvider="{dropColl}" 
+					skinClass="cn.sevencool.sangocraft.web.skin.dropDownListSkin.PreBattleDropDownListSkin"
+					change="dropList_changeHandler(event)"/>
+</s:Group>

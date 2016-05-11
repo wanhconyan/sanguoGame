@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+project: sangocraftWeb
+@class: PopMenu.mxml
+@author: wangfuyuan
+@usage: 
+@since: 2013-10-15
+@modified: 2013-10-15
+@modifier: wangfuyuan
+-->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" >
+	
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.battleField.control.BattleFieldManager;
+			import cn.sevencool.sangocraft.data.manager.utils.MediatorUtil;
+			import cn.sevencool.sangocraft.data.model.FriendVO;
+			import cn.sevencool.sangocraft.data.symbols.CommonData;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.symbols.AlertPanel;
+			import cn.sevencool.sangocraft.web.ui.battleField.mediator.BattleFieldMediator;
+			import cn.sevencool.sangocraft.web.ui.battleField.view.PreBattlePanel;
+			import cn.sevencool.sangocraft.web.ui.screen.mediator.ScreenMediator;
+			import cn.sevencool.sangocraft.web.ui.socialRelative.mediator.SocialRelativeMediator;
+			import cn.sevencool.sangocraft.web.ui.socialRelative.view.SocialRelativePanel;
+			
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			
+			/**选中的玩家姓名*/
+			private var _selectName:String;
+			/**选中的玩家id*/
+			private var _selectID:int;
+			
+			public function get selectID():int
+			{
+				return _selectID;
+			}
+
+			public function set selectID(value:int):void
+			{
+				_selectID = value;
+			}
+
+			public function get selectName():String
+			{
+				return _selectName;
+			}
+
+			public function set selectName(value:String):void
+			{
+				_selectName = value;
+			}
+
+			/**
+			 * 根据是否为好友显示
+			 * */
+			public function show($name:String,$id:int):void
+			{
+				if(isSelf($id))return;
+				this._selectName = $name;
+				this._selectID = $id;
+				var social:SocialRelativePanel = UIMananger.getInstance().getUIObj(SocialRelativePanel) as SocialRelativePanel;
+				var friendList:Array = social.mediator.friendList;
+				if(isFriend(_selectID,friendList)){
+					addFriend.visible = false;
+				}else{
+					addFriend.visible = true;
+				}
+				this.visible = true;
+			}
+			protected function FriDatail_clickHandler(event:MouseEvent):void
+			{
+				var social:SocialRelativeMediator = MediatorUtil.getMediatorByInterface(SocialRelativeMediator) as SocialRelativeMediator;
+				social.sendPlayerInfo(selectID,2);
+				
+				this.visible = false;
+				
+			}
+			
+			/**
+			 * 发送私信
+			 * */
+			protected function sendWhisperChatHandler(event:MouseEvent):void
+			{
+//				var chat:ChatPanel = UIMananger.getInstance().getUIObj(ChatPanel) as ChatPanel;
+//				this.visible = false;
+//				chat.speakTo(_selectName,_selectID);
+				this.visible = false;
+				var screenMediator:ScreenMediator = MediatorUtil.getMediatorByInterface(ScreenMediator);
+				screenMediator.screenPanel.chat.speakTo(_selectName,_selectID);
+			}
+			/**
+			 * 申请添加好友
+			 * */
+			protected function applyFriendHandler(event:MouseEvent):void
+			{
+				this.visible = false;
+				Alert.okLabel = "确认";
+				Alert.cancelLabel = "取消";
+				AlertPanel.show('是否添加 ['+_selectName+'](id:'+_selectID+')为您的好友',"",Alert.OK|Alert.CANCEL,closeHandle);
+			}
+			private function closeHandle(e:CloseEvent):void
+			{
+				if(e.detail == Alert.OK)
+				{
+					var preBattlePanel:PreBattlePanel = UIMananger.getInstance().getUIObj(PreBattlePanel) as PreBattlePanel;
+					var mediator :BattleFieldMediator = preBattlePanel.mediatorUI as BattleFieldMediator;
+					mediator.addApplyFriend(_selectID);
+				}
+			}
+			/**
+			 * 检测是否为好友
+			 * */
+			private function isFriend($id:int, $friendList:Array):Boolean
+			{
+				var b:Boolean ;
+				for (var i:int = 0; i < $friendList.length; i++) 
+				{
+					var f:FriendVO = $friendList[i] as FriendVO;
+					if(f.dwOnlyID == $id){
+						b = true;
+						break;
+					}
+				}
+				
+				return b;
+			}
+			
+			/**
+			 * 点的是否是自己
+			 * */
+			private function isSelf($id:int):Boolean
+			{
+				//如果是自己
+				if(CommonData.dwOnlyID == $id){
+					return true;
+				}
+				return false;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:VGroup focusEnabled="false" gap="0" horizontalCenter="0" verticalCenter="0" >
+		<s:Button  focusEnabled="false" id="send" width="66" label="发送私信" mouseDown="sendWhisperChatHandler(event)"
+				  skinClass="cn.sevencool.sangocraft.web.skin.button.SendWhisperBtnSkin"/>
+		<s:Button  id="addFriend" width="66" label="添加好友" click="applyFriendHandler(event)"
+				   skinClass="cn.sevencool.sangocraft.web.skin.button.AddFriendBtnSkin" />
+		<s:Button  width="66" label="将领详情" click="FriDatail_clickHandler(event)"
+				  skinClass="cn.sevencool.sangocraft.web.skin.button.GeneralDetail"/>
+	</s:VGroup>
+</s:Group>

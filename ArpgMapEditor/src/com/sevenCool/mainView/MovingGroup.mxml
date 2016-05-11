@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 creationComplete="group1_creationCompleteHandler(event)"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300" maxWidth="400" maxHeight="600">
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			private var _locateX:Number = 0 ;
+			private var _locateY:Number = 0 ;
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				rowMove.addEventListener(MouseEvent.MOUSE_DOWN,onMouseDown);
+				colMove.addEventListener(MouseEvent.MOUSE_DOWN,onMouseDown);
+			}
+			
+			protected function onMouseDown(event:MouseEvent):void
+			{
+				_locateX = event.stageX ;
+				_locateY = event.stageY ;
+				rowMove.addEventListener(MouseEvent.MOUSE_MOVE,onMove);
+				colMove.addEventListener(MouseEvent.MOUSE_DOWN,onMove);
+			}
+			
+			protected function onMove(event:MouseEvent):void
+			{
+				if(event.target == rowMove )
+				{
+					this.width += (event.stageX -_locateX);
+				}
+				if(event.target == colMove )
+				{
+					this.height += (event.stageY -_locateY);
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:Group width="100%" id="rowMove" height="20" bottom="0">
+		<s:Rect id="shadow1" left="-1" right="-1" top="-1" bottom="-1" radiusX="2">
+			<s:fill>
+				<s:LinearGradient rotation="90">
+					<s:GradientEntry color="0x44f7fc" 
+									 alpha="1" />
+				</s:LinearGradient>
+			</s:fill>
+		</s:Rect>
+	</s:Group>
+	<s:Group height="100%" id="colMove" width="20" right="0">
+		<s:Rect id="shadow2" left="-1" right="-1" top="-1" bottom="-1" radiusX="2">
+			<s:fill>
+				<s:LinearGradient rotation="90">
+					<s:GradientEntry color="0x44f7fc" 
+									 alpha="1" />
+				</s:LinearGradient>
+			</s:fill>
+		</s:Rect>
+	</s:Group>
+</s:Group>

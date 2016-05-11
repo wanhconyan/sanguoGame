@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="432" height="36">
+	<fx:Metadata >
+		[Event(name="PageChange", type="flash.events.Event")]
+		
+		[Event(name="RightClik", type="flash.events.Event")]
+		
+		[Event(name="LeftClik", type="flash.events.Event")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.symbols.SoundManager;
+			
+			import flash.utils.setTimeout;
+			
+			private var _nowPage:int = 1;
+			private var _totalPage:int
+			
+			
+			public function get totalPage():int
+			{
+				return _totalPage;
+			}
+			
+			public function set totalPage(value:int):void
+			{
+				_totalPage = value;
+				if(totalPage == 1)
+				{
+					next.enabled = false;
+					
+				}if(totalPage == 0)
+				{
+					next.enabled = pre.enabled = false;
+				}
+				if(totalPage> nowPage)
+				{
+					next.enabled = true;
+				}
+			}
+			
+			public function get nowPage():int
+			{
+				return _nowPage;
+			}
+			
+			public function set nowPage(value:int):void
+			{
+				if(value <= 1)
+				{
+					_nowPage = 1
+				}else if(value>totalPage)
+				{
+					_nowPage = totalPage;
+				}else
+				{
+					_nowPage = value;
+				}
+				
+				pre.enabled = Boolean(nowPage -1);
+				next.enabled = Boolean(totalPage - nowPage);
+			}
+			
+			protected function pre_clickHandler(event:MouseEvent):void
+			{
+				nowPage --;
+				play()
+				dispatchEvent(new Event("PageChange"));
+				dispatchEvent(new Event("LeftClik"));
+				
+			}
+			
+			protected function next_clickHandler(event:MouseEvent):void
+			{
+				nowPage ++;
+				play()
+				dispatchEvent(new Event("PageChange"));
+				dispatchEvent(new Event("RightClik"));
+			}
+			
+			private function play():void
+			{
+				SoundManager.getInstance().musicPlay("Interface03")
+			
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:Button id="pre" y="-1" left="0" click="pre_clickHandler(event)" enabled="false"
+			  skinClass="cn.sevencool.sangocraft.web.skin.button.LeftBtnSkin"/>
+	<s:Button id="next" y="-1" right="0" click="next_clickHandler(event)"
+			  skinClass="cn.sevencool.sangocraft.web.skin.button.RightBtnSkin"/>
+</s:Group>

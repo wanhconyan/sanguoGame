@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+project: sangocraft_Web
+@class: GeneralDetailsPanel
+@author: zhoujingye
+@usage: 将领详细面板
+@since: 2013-8-24
+@modified: 2013-8-24
+@modifier: zhoujingye 
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   width="700" height="440" xmlns:itemsBox="cn.sevencool.sangocraft.web.symbols.itemsBox.*">  
+	<fx:Script>
+			<![CDATA[
+				import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+				import cn.sevencool.sangocraft.data.manager.barracks.mediator.IUIOperatableBarracksMediator;
+				import cn.sevencool.sangocraft.data.manager.utils.MediatorUtil;
+				import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+				import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+				import cn.sevencool.sangocraft.data.vo.ItemOperationVO;
+				import cn.sevencool.sangocraft.data.vo.MonsterDescription;
+				import cn.sevencool.sangocraft.web.manager.UIMananger;
+				import cn.sevencool.sangocraft.web.symbols.FigureDisplay;
+				import cn.sevencool.sangocraft.web.symbols.FilterFctory;
+				import cn.sevencool.sangocraft.web.ui.barracks.mediator.BarracksMediator;
+				
+				import mx.events.CloseEvent;
+				import mx.events.FlexEvent;
+				
+				import spark.filters.GlowFilter;
+				
+				/**
+				 * 军机处Mediator
+				 * */
+				private var _militaryM:BarracksMediator = null;
+				/**
+				 * 资源管理器
+				 * */
+				private var _materialManager:MaterialManager=null;
+				/**
+				 * 显示管理器
+				 * */
+				private var _uiManager:UIMananger=null;
+				private var armyTypeArr:Array=['pikemanIcon','cavalrymanIcon','archerIcon','instrumentIcon'];
+				private var count:int=1;
+				private var _bgMap1:Bitmap = null;
+				private var _bgMap2:Bitmap = null;
+				private var _bgMap3:Bitmap = null;
+				private var _bgMap4:Bitmap = null;
+				private var _expSMap:Bitmap = null;
+				private var _skillfullBgMap:Bitmap = null;
+				private var _maxMap:Bitmap = null;
+				private var _exp_ProgressMap:Bitmap = null;
+				private var _nameStrMap:Bitmap = null;
+				private var _current_ExpMap:Bitmap = null;
+				private var _lvMap:Bitmap = null;
+				private var _skillNameMap:Bitmap = null;
+				private var _mainSkillMap:Bitmap = null;
+				private var _skillMap1:Bitmap = null;
+				private var _skillMap2:Bitmap = null;
+				private var _mainSkillValueMap:Bitmap = null;
+				private var _skillValueMap:Bitmap = null;
+				private var _skillBgMap1:Bitmap = null;
+				private var _skillBgMap2:Bitmap = null;
+				private var _sodierTypeMap:Bitmap = null;
+				private var _picMap:Bitmap = null;
+				private var _sp2:Bitmap = null;
+				private var _item:ItemOperationVO=null;
+				/**
+				 * 显示类型
+				 * */
+				public var showType:int = -1;
+				public var arr:Array = null;
+
+				/**
+				 * 物品
+				 * */
+				public function get item():ItemOperationVO
+				{
+					return _item;
+				}
+
+				/**
+				 * @private
+				 */
+				public function set item(value:ItemOperationVO):void
+				{
+					_item = value;
+					showGeneral();
+				}
+				
+				public override function get usableCount():int
+				{
+					return 1 ;
+				}
+
+				
+				/**
+				 * 设置mediatorUI
+				 * */
+				override public function set mediatorUI($value:AbstractMediator):void
+				{
+					_militaryM = $value as BarracksMediator;
+				}
+				
+				
+				override public function get needBundleList():Array
+				{
+					var urlArr:Array = [] ;
+					_materialManager=MaterialManager.getInstance();
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'0'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'1'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'2'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'3'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'4'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'5'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'6'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'7'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'8'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'9'));  
+					urlArr.push(_materialManager.getURL(MaterialKeys.COMMANDLVL,'0'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.COMMANDLVL,'1'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.COMMANDLVL,'2'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.COMMANDLVL,'3'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.COMMANDLVL,'4'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.COMMANDLVL,'5'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.COMMANDLVL,'6'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.COMMANDLVL,'7'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.COMMANDLVL,'8'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.COMMANDLVL,'9'));  
+					urlArr.push(_materialManager.getURL(MaterialKeys.GENERALDETAILLVL,'0'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.GENERALDETAILLVL,'1'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.GENERALDETAILLVL,'2'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.GENERALDETAILLVL,'3'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.GENERALDETAILLVL,'4'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.GENERALDETAILLVL,'5'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.GENERALDETAILLVL,'6'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.GENERALDETAILLVL,'7'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.GENERALDETAILLVL,'8'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.GENERALDETAILLVL,'9'));  
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'corps'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'expBottom'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'currentExpValue'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'resourcefulBottom'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'MAX'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'spark'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'nameFrame'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,''));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'generalDetailbg'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'attributeBar'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'inkMarks'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'generalSkill'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'chiefSkill'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'command'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'troops'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'defense'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'attack'));
+					return urlArr;
+				}
+				
+				
+				/**
+				 * 设置mediatorUI
+				 * */
+				public function setMediatorUI($value:BarracksMediator):void
+				{
+					_militaryM = $value as BarracksMediator;
+				}
+				
+				/**
+				 * 面板关闭
+				 * */
+				protected function win_closeHandler(event:CloseEvent):void
+				{
+					if(showType == 4)
+					{
+						_uiManager.hide(this);
+					}
+					if(showType!= 4)
+					{
+						_militaryM.closeGeneralDetails(showType);
+					}
+					
+				}
+				
+				/***
+				 * 面板打开
+				 * */
+				override protected function onShow():void
+				{
+					if(!initialized)
+						return;
+					_militaryM=MediatorUtil.getMediatorByInterface(IUIOperatableBarracksMediator) as BarracksMediator;
+				} 
+				
+				
+				/**
+				 * 面板创建完成
+				 * */
+				protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+				{
+					_sp2 = new Bitmap();
+					_bgMap1 = new Bitmap();
+					_bgMap2 = new Bitmap();
+					_bgMap3 = new Bitmap();
+					_bgMap4 = new Bitmap();
+					_expSMap = new Bitmap();
+					_skillfullBgMap = new Bitmap();
+					_maxMap = new Bitmap();
+					_exp_ProgressMap = new Bitmap();
+					_nameStrMap = new Bitmap();
+					_current_ExpMap = new Bitmap();
+					_lvMap = new Bitmap();
+					_skillNameMap = new Bitmap();
+					_mainSkillMap = new Bitmap();
+					_skillMap1 = new Bitmap();
+					_skillMap2 = new Bitmap();
+					_mainSkillValueMap = new Bitmap();
+					_skillValueMap = new Bitmap();
+					_skillBgMap1 = new Bitmap();
+					_skillBgMap2 = new Bitmap();
+					_sodierTypeMap = new Bitmap();
+					_picMap = new Bitmap();
+					_uiManager=UIMananger.getInstance();
+					onShow();
+					addImg();
+					showGeneral();
+					v1.setStyle("fontFamily",'hyxl');
+					v2.setStyle("fontFamily",'hyxl');
+					v3.setStyle("fontFamily",'hyxl');
+					v4.setStyle("fontFamily",'hyxl');
+					v5.setStyle("fontFamily",'hyxl');
+					lv.filters = FilterFctory.BarrackNumFilter;
+					lvNum.filters = FilterFctory.BarrackNumFilter;
+					soldierNum.filters = FilterFctory.BarrackNumFilter;
+					defenseNum.filters = FilterFctory.BarrackNumFilter;
+					attackNum.filters = FilterFctory.BarrackNumFilter;
+				}
+				
+				
+				/**
+				 * 加载人物图片
+				 * */                                    
+				private function addImg():void      
+				{
+					bg1.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'generalDetailbg',_bgMap1));
+					bg2.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'generalDetailbg',_bgMap2));
+					bg3.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'attributeBar',_bgMap3));
+					bg4.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'inkMarks',_bgMap4));
+					expS.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'expBottom',_expSMap));
+					skillfullBg.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'resourcefulBottom',_skillfullBgMap));
+					max.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'MAX',_maxMap));
+					exp_Progress.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'spark',_exp_ProgressMap));
+					nameStr.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'nameFrame',_nameStrMap));
+					current_Exp.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'currentExpValue',_current_ExpMap));
+					lv.addChild(_materialManager.getIcon(MaterialKeys.LVLBIG,'',_lvMap));
+					skillName.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'generalSkill',_skillNameMap));
+					mainSkill.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'chiefSkill',_mainSkillMap));
+				}
+				
+				
+				/**
+				 * 加载技能
+				 * */
+				private function addSkillName(monsterDescription:MonsterDescription):void
+				{
+					genType.text=_militaryM.generalTypeArr[monsterDescription.generalType-1];
+					var armyType:int=Math.floor(monsterDescription.carrySoliderType/5);
+					var str:String=armyTypeArr[armyType];
+					if(str == 'pikemanIcon')
+					{
+						sodier.text = '枪兵';
+					}
+					if(str == 'cavalrymanIcon')
+					{
+						sodier.text = '骑兵';
+					}
+					if(str == 'archerIcon')
+					{
+						sodier.text = '弓兵';
+					}
+					if(str == 'instrumentIcon')
+					{
+						sodier.text = '器械';
+					}
+					sodierType.addChild(_materialManager.getIcon(MaterialKeys.OTHER,str,_sodierTypeMap));
+					if(monsterDescription.generalSkill!=0)
+					{
+						skill1Bg.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'skillBottom',_skillBgMap1));
+						skill1.addChild(_materialManager.getIcon(MaterialKeys.SKILLNAME,monsterDescription.generalSkill.toString(),_skillMap1));
+					}
+					if(monsterDescription.chiefSkill!=0)
+					{
+						skill2Bg.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'skillBottom',_skillBgMap2));
+						skill2.addChild(_materialManager.getIcon(MaterialKeys.SKILLNAME,monsterDescription.chiefSkill.toString(),_skillMap2));
+					}
+                    mainSkillValue.addChild(_materialManager.getIcon(MaterialKeys.SKILLNAME,monsterDescription.chiefSkill.toString(),_mainSkillValueMap));
+					skillValue.addChild(_materialManager.getIcon(MaterialKeys.SKILLNAME,monsterDescription.generalSkill.toString(),_skillValueMap));
+				}
+				
+				
+				private function loadImg(monsterDescription:MonsterDescription):void
+				{
+					lvNum.figureHandler(monsterDescription.nNowLev.toString(),MaterialKeys.LVLBIG,12);
+					pic.addChild(_materialManager.getIcon(MaterialKeys.BIG_HEAD,monsterDescription.nHeadID.toString(),_picMap));//以后换成人物专属图标
+					var locArr:Array=_militaryM.getRoleLoc(monsterDescription.nBodyID);
+					sp2.x=locArr[1];
+					sp2.x=locArr[2];
+					sp2.addChild(_materialManager.getGeneralsBitmap(monsterDescription.nBodyID,MaterialKeys.GENERALS_BODY,_sp2));
+					max.visible=Boolean(monsterDescription.nNowLev >= monsterDescription.nMaxLev);
+					if(monsterDescription.nNowExp==0||monsterDescription.levUpExp==0)
+					{
+						exp.width=5;
+						exp_Progress.x = 70
+					}
+					if(monsterDescription.nNowExp!=0&&monsterDescription.levUpExp!=0) 
+					{
+						exp.width=monsterDescription.nNowExp/monsterDescription.levUpExp*310;   
+						exp_Progress.x =exp.width+65;
+					}
+					star.starNum=monsterDescription.monStar;
+					commandNum.figureHandler(monsterDescription.commader.toString(),MaterialKeys.LVLBIG,12);
+					soldierNum.text = monsterDescription.nowSolider.toString();
+					defenseNum.text = monsterDescription.nowDefend.toString();
+					attackNum.text = monsterDescription.nowAttack.toString();
+				}
+				
+				
+				/**
+				 * 显示将领详细
+				 * */
+				private  function showGeneral():void
+				{
+					if(!initialized)
+						return;
+					var monsterDescription:MonsterDescription=new MonsterDescription();
+					monsterDescription=_militaryM.showItemsInfo(item,arr);
+					skillInfo1.text=monsterDescription.skillDes.toString();
+					skillInfo2.text=monsterDescription.chiefSkillDes.toString();
+					monName.text=monsterDescription.monName.toString();
+					loadImg(monsterDescription);
+					addSkillName(monsterDescription);
+				}
+				
+			]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:TitleWindow id="win" width="700" height="440" close="win_closeHandler(event)" title="詳 細">
+	<s:SpriteVisualElement id="sp2" left="-130" top="-45" width="36" height="41"/>
+	<mx:Image  x="52" y="15" height="73" width="33" id="nameStr"/>
+	<s:Group x="275" y="16" width="428" height="226">
+		<itemsBox:LatticeItem x="-2" y="28" width="64" height="64" id="bottom"/>
+		<mx:Image   x="5" y="34" width="64" height="64" id="pic"/>
+		<mx:Image  x="83" y="84" height="19" width="349"  id="expS"/>
+		<s:BitmapImage x="85" y="85"  height="13" width="310"  id="exp"  source="@Embed('../../../../../../../../assets/images/playerInfo/EXPBar.png')"/>
+		<mx:Image  x="82" y="30" height="32" width="58" id="lv"/>
+		<mx:Image id="current_Exp" x="81" y="58" width="91" height="19" verticalAlign="middle"/>
+		<symbols:FigureDisplay id="lvNum" x="123" y="22" width="26" height="15"
+							   maxMedian="3"/>
+        <mx:Image  x="159" y="36" height="19" width="32"  id="max" visible="false"/>
+		<mx:Image  x="220" y="32" height="19" width="89"  id="skill1Bg"/>
+		<mx:Image  x="317" y="32" height="19" width="82"  id="skill2Bg"/>
+		<mx:Image  x="317" y="33" height="19" width="82"  id="skill2"/>
+		<mx:Image  x="220" y="34" height="19" width="89"  id="skill1"/>		
+		<mx:Image  x="220" y="71" height="19" width="28"  id="exp_Progress"/>
+		<mx:Image  x="-2" y="-2" height="19" width="89"  id="skillfullBg"/>
+		<s:Label x="-9" y="-2" width="77" height="22" text="足智多谋" textAlign="center" color="#FFFFFF" id="genType"
+				 verticalAlign="middle" filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"/>
+		<symbols:GeneralStar  x="82" y="1" id="star" />
+		<s:Group x="11" y="133" width="417" height="86">
+			<mx:Image  x="-10" y="1" height="41" width="427"  id="bg3"/>
+			<mx:Image  x="-10" y="35" height="41" width="427"  id="bg4"/>
+			<symbols:FigureDisplay id="commandNum" x="3" y="30" width="30" height="25"
+								   maxMedian="5"/>
+			<s:Label  x="82" y="47" id="soldierNum" fontFamily="hyxl" fontSize="20" color="#eee6dc"
+					  filters="{[new spark.filters.GlowFilter(0x201712,100,2,2,5,1,false,false)]}"/>
+			<s:Label x="166" y="47" id="defenseNum" fontFamily="hyxl" fontSize="20" color="#eee6dc"
+					 filters="{[new spark.filters.GlowFilter(0x201712,100,2,2,5,1,false,false)]}"/>
+			<s:Label x="256" y="47" id="attackNum" fontFamily="hyxl" fontSize="20" color="#eee6dc"
+					 filters="{[new spark.filters.GlowFilter(0x201712,100,2,2,5,1,false,false)]}"/>
+			<mx:Image  x="362" y="48" height="26" width="73"  id="sodierType"/>
+			<s:Label x="321" y="45" id="sodier" fontFamily="hyxl" text="-" fontSize="20" color="#eee6dc"
+					 filters="{[new spark.filters.GlowFilter(0x201712,100,2,2,5,1,false,false)]}"/>
+			<s:Label id="v1" x="2" y="3" width="73" height="26" text="统率" verticalAlign="middle"
+					 fontFamily="hyxl" fontSize="20" color="#341812"/>
+			<s:Label id="v2" x="76" y="3" width="73" height="26" text="兵力" verticalAlign="middle"
+					 fontFamily="hyxl" fontSize="20" color="#341812"/>
+			<s:Label id="v3" x="157" y="3" width="73" height="26" text="防御" verticalAlign="middle"
+					 fontFamily="hyxl" fontSize="20" color="#341812"/>
+			<s:Label id="v4" x="244" y="3" width="73" height="26" text="攻击" verticalAlign="middle" 
+					 fontFamily="hyxl" fontSize="20" color="#341812"/>
+			<s:Label id="v5" x="321" y="3" width="73" height="26" text="兵种" verticalAlign="middle" 
+					 fontFamily="hyxl" fontSize="20" color="#341812"/>
+		</s:Group>
+	</s:Group>
+	<s:Group x="275" y="220" width="427" height="128">
+		<mx:Image  x="0" y="5" height="30" width="427"  id="bg1"/>
+		<mx:Image id="skillName" x="37" y="22" width="73" height="21"/>
+		
+		<s:SpriteVisualElement x="167" y="21" height="18" width="73"  id="skillValue"/>
+		<s:SpriteVisualElement x="0" y="76" height="29"  width="427"  id="bg2"/>
+		<mx:Image id="mainSkill" x="37" y="93" width="73" height="21"/>
+		
+		<s:SpriteVisualElement x="166" y="91" height="24" width="73"  id="mainSkillValue"/>
+		<s:Label x="16" y="43" width="372" height="46" text="标签" textAlign="center" id="skillInfo1" color="#FFFFFF"
+				 verticalAlign="middle"  filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"/>
+		<s:Label x="16" y="111" width="372" height="46" text="标签" textAlign="center" id="skillInfo2" color="#FFFFFF"
+				 verticalAlign="middle"  filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"/>
+	</s:Group>
+		<s:Label x="55" y="23" width="21" height="54" color="#FFe9a4" id="monName"
+				 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}" 
+				 textAlign="center"/>
+	</s:TitleWindow>
+</symbols:BasePanel>

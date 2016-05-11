@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+project: sangocraft_Web
+@class: SkillEffectPanel
+@author: wangtaofeng
+@usage: 技能特效面板
+@since: 2013-10-10
+@modified: 2013-10-10
+@modifier: wangtaofeng
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   height="328" width="967"
+				   creationComplete="basepanel1_creationCompleteHandler(event)">
+	<symbols:layout>
+		<s:BasicLayout/>
+	</symbols:layout>
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.data.model.RLeaderVO;
+			import cn.sevencool.sangocraft.data.symbols.ItemsManager;
+			import cn.sevencool.sangocraft.data.symbols.SoundManager;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialLoader;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.data.symbols.material.factory.ImageFactory;
+			import cn.sevencool.sangocraft.data.vo.ItemDescription;
+			import cn.sevencool.sangocraft.data.vo.SkillInfo;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.ui.skillEffect.mediator.SkillEffectMediator;
+			
+			import com.greensock.TweenLite;
+			import com.sevencool.rtslogic.Battlefield;
+			import com.sevencool.rtslogic.ai.teamai.battle.event.SkillEvent;
+			
+			import flash.utils.setTimeout;
+			
+			import mx.events.FlexEvent;
+			
+			import spark.filters.GlowFilter;
+			
+			/**
+			 * 技能特效 mediator
+			 * */
+			private var _mediator:SkillEffectMediator = null;
+			
+			/**
+			 * 技能事件
+			 * */
+			private var _skillEvent:SkillEvent = null;
+			
+			/**
+			 * 声音管理器
+			 * */
+			private var _soundM:SoundManager = null;
+			
+			/**
+			 * 物品管理器
+			 * */
+			private var _itemManager:ItemsManager = ItemsManager.getInstance();
+			
+			/**
+			 * 物品描述
+			 * */
+			private var _itemDesc:ItemDescription = null;
+			private var _item:ItemDescription = null;
+			
+			
+			/**
+			 * 根据将领类型
+			 * */
+			private var _MonsterType:int = -1;
+			private var _type:int = -1;
+			
+			private var _spr:Sprite = null;
+			
+			private var _backBmp:Bitmap = null;
+			
+			private var _blueName:Bitmap = null;
+			
+			private var _redName:Bitmap = null;
+			
+			private var _bodyBmp:Bitmap = null;
+			
+			private var bitmapDic:Dictionary = new Dictionary();
+			
+			private var clearTimeoutValue:uint = 0;
+			
+			private var redUrl:String = ''
+			
+			private var blueUrl:String ='';	
+			
+			private var backUrl:String = '';
+			
+			private var sprUrl:String = '';
+			
+			private var bodyUrl:String = '';
+			
+			/**
+			 * skillEvent 的set get
+			 * */
+			public function get skillEvent():SkillEvent
+			{
+				return _skillEvent;
+			}
+			
+			public function set skillEvent(value:SkillEvent):void
+			{
+				_skillEvent = value;
+				
+			}
+			
+			
+			/**
+			 * mediatorUI的 set get
+			 * */
+			override public function get mediatorUI():AbstractMediator
+			{
+				return _mediator;
+			}
+			
+			override public function set mediatorUI($value:AbstractMediator):void
+			{
+				_mediator = $value as SkillEffectMediator;
+			}
+			
+			override public function get needTween():Boolean
+			{
+				return false;
+			}
+			
+			/**
+			 * 面板点击
+			 * */
+			protected function totalGroup_clickHandler(event:MouseEvent):void
+			{
+				closePanel();
+			}
+			
+			
+			protected override function onClose():void
+			{
+				img_Body.x = 208;
+			}
+			
+			/**
+			 * 面板创建完成
+			 * */
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_soundM = SoundManager.getInstance();
+				
+				_redName = new Bitmap();
+				
+				_blueName = new Bitmap();
+				
+				_backBmp = new Bitmap();
+				
+				_bodyBmp = new Bitmap();
+				
+				_spr = new Sprite();
+				
+				blueUrl = MaterialManager.getInstance().getURL(MaterialKeys.SKILLEFFECTSMALLPNG,'blueNameBottom');
+				redUrl =MaterialManager.getInstance().getURL(MaterialKeys.SKILLEFFECTSMALLPNG,'redNameBottom');
+				ImageFactory.getBitmap( blueUrl,_blueName);
+				ImageFactory.getBitmap(redUrl,_redName);
+				
+				_redName.addEventListener(Event.COMPLETE,onRedComplete);
+				_blueName.addEventListener(Event.COMPLETE,onBlueComplete);
+				_backBmp.addEventListener(Event.COMPLETE,onBackComplete);
+				_spr.addEventListener(Event.COMPLETE,onSprComplete);
+				_bodyBmp.addEventListener(Event.COMPLETE,onBodyComplete);	
+				
+				onShow();
+			}
+			
+			protected override function onShow():void
+			{
+				if(!initialized)
+				{
+					return ;
+				}
+				if(skillEvent)
+				{
+					refreshPanel();
+				}			
+			}
+			
+			
+			private function refreshPanel():void
+			{
+				clearPanel();
+				_itemDesc = _itemManager.ItemInfo[_skillEvent.chiefID];
+				_item = _itemManager.ItemInfo[_skillEvent.leaderID];
+				_MonsterType = _itemDesc.nMonsterType;
+				_type = _item.nMonsterType;
+				bodyUrl = MaterialManager.getInstance().getURL(MaterialKeys.GENERALS_BODY,_item.nBodyId);
+				backUrl = MaterialManager.getInstance().getURL(MaterialKeys.SKILLEFFECT,_item.nMonsterType);
+				if(bitmapDic[_item.nMonsterType])
+				{
+					_backBmp = bitmapDic[_item.nMonsterType];
+					
+				}else
+				{
+					ImageFactory.getBitmap(backUrl,_backBmp);
+				}
+				while(img_BackGround.numChildren)
+				{
+					img_BackGround.removeChildAt(0);
+				}
+				
+				if(bitmapDic[bodyUrl])
+				{
+					_bodyBmp = bitmapDic[bodyUrl];
+					img_Body.addChild(_bodyBmp);;
+				}else
+				{
+					ImageFactory.getBitmap(bodyUrl,_bodyBmp);
+				}
+				if(skillEvent.campID == 2)
+				{
+					TweenLite.to(img_Body,0.5,{x:470});
+					_backBmp.scaleX = -1;
+					img_BackGround.x =_backBmp.width  ; 
+				}else
+				{
+					TweenLite.to(img_Body,0.5,{x:-54});
+					_backBmp.scaleX = 1;
+					img_BackGround.x =0; 
+				}
+				img_BackGround.addChild(_backBmp);
+				
+				//角色名字
+				lab_RoleName.text = _item.szName;
+				// 角色名背景 判断队伍ID
+				
+				if(skillEvent.campID == 1)
+				{
+					img_SkillName.addChild(_blueName);
+				}
+				else if(skillEvent.campID == 2)
+				{
+					img_SkillName.addChild(_redName);
+				}
+				//军团名字   根据
+				lab_ArmyGroupName.text = _itemDesc.szName +"军";
+				// 根据技能ID  添加技能名字
+				var skillInfo:SkillInfo = _itemManager.skillDic[skillEvent.skillID];
+				if(skillInfo)
+				{
+					img_SkillName.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.SKILLNAME,skillEvent.skillID.toString()));
+					// 根据技能ID  添加  特效音乐
+					_soundM.musicPlay(skillEvent.skillID.toString(),1);
+					//技能描述
+					lab_SkillDesc.text = skillInfo.szDescribe;
+				}
+				
+				//加载swf
+				switch(_item.nMonsterType)
+				{
+					case 1:
+						sprUrl = MaterialManager.getInstance().getURL(MaterialKeys.SKILL_SWF,'skillPinkLine') 
+						break;
+					case 2:
+						sprUrl = MaterialManager.getInstance().getURL(MaterialKeys.SKILL_SWF,'skillLightBlueLine')
+						break;
+					case 3:
+						sprUrl = MaterialManager.getInstance().getURL(MaterialKeys.SKILL_SWF,'skillYellowLine')
+						break;
+					case 4:
+						sprUrl = MaterialManager.getInstance().getURL(MaterialKeys.SKILL_SWF,'skillLightPurpleLine')
+						break; 
+					case 5:
+						sprUrl = MaterialManager.getInstance().getURL(MaterialKeys.SKILL_SWF,'skillGoldenLine')
+						break; 
+					default:
+						throw new Error('_item.nMonsterType',_item.nMonsterType);
+				}
+				ImageFactory.getImage(sprUrl,_spr);
+				clearTimeoutValue = setTimeout(groupShow,500); 
+				
+			}
+			
+			private function onBlueComplete(e:Event):void
+			{
+				if(!bitmapDic[blueUrl])
+				{
+					bitmapDic[blueUrl] = _blueName;;
+				}
+			}
+			
+			private function onRedComplete(e:Event):void
+			{
+				
+				if(!bitmapDic[redUrl])
+				{
+					bitmapDic[redUrl] = _redName;
+				}
+			}
+			
+			private function onBackComplete(e:Event):void
+			{
+				if(!bitmapDic[backUrl])
+				{
+					bitmapDic[backUrl] = _backBmp ;				
+				}
+				if(skillEvent.campID ==1)
+				{
+					_backBmp.scaleX = 1;
+					img_BackGround.x =0; /*  */
+				}else
+				{
+					_backBmp.scaleX = -1;
+					img_BackGround.x =_backBmp.width  ; 
+				}
+				img_BackGround.addChild(_backBmp);
+			}
+			
+			private function onSprComplete(e:Event):void
+			{
+				while(sp_Swf.numChildren)
+				{
+					sp_Swf.removeChildAt(0);
+				}
+				sp_Swf.addChild(_spr);
+			}
+			
+			private function onBodyComplete(e:Event):void
+			{
+				if(!bitmapDic[bodyUrl])
+				{
+					bitmapDic[bodyUrl] = _bodyBmp;
+				}
+				while(img_Body.numChildren)
+				{
+					img_Body.removeChildAt(0);
+				}
+				img_Body.addChild(_bodyBmp);				
+			}
+			
+			private function groupShow():void
+			{
+				groupName.visible = myGroup.visible = true;
+				setTimeout(closePanel,4000);
+			}
+			
+			private function closeGroup():void
+			{
+				setTimeout(closePanel,4000);
+			}
+			
+			private function clearPanel():void
+			{
+				while(img_RoleNameBack.numChildren)
+				{
+					img_RoleNameBack.removeChildAt(0);
+				}
+				
+				// 角色原画   将领全身像  技能将领
+				while(img_Body.numChildren != 0)
+				{
+					img_Body.removeChildAt(0);
+				}
+				
+				while(img_SkillName.numChildren != 0)
+				{
+					img_SkillName.removeChildAt(0);
+				}
+				
+				//主背景
+				while(img_BackGround.numChildren != 0)
+				{
+					img_BackGround.removeChildAt(0);
+				}
+				
+				while(sp_Swf.numChildren)
+				{
+					sp_Swf.removeChildAt(0);
+				}
+			}
+			
+			/**
+			 * 关闭面板处理
+			 * */
+			private function closePanel():void
+			{
+				groupName.visible =	myGroup.visible = false;
+				if(this.stage)
+				{
+					UIMananger.getInstance().hide(this);
+				} 
+				Battlefield.getActivityBattlefield().play();
+				
+				while(_spr.numChildren)
+				{
+					_spr.removeChildAt(0);
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	
+	<symbols:states >
+		<s:State name="enemy"/>
+		<s:State name="army"/>
+	</symbols:states>
+	<fx:Declarations>
+		
+	</fx:Declarations>
+	
+	<s:Group id="myGroup"   visible="false" x="0" y="0" width="100%" height="100%">
+		<mx:Image id="img_BackGround" x="0" y="0" height="328"
+				  width="967"/>
+		<s:SpriteVisualElement id="sp_Swf" />
+		<mx:Image id="img_SkillName"
+				  x.army="538" y.army="254"
+				  x.enemy="236" y.enemy="258"/>
+		<s:Label id="lab_SkillDesc" color="#ffffff"
+				 filters="{[new spark.filters.GlowFilter(0x0c0c0c,100,2,2,5,1,false,false)]}"
+				 fontSize="12" textAlign="center" verticalAlign="middle"
+				 x.army="450" y.army="298"
+				 x.enemy="246" y.enemy="298"/>
+	</s:Group>
+	<s:Group x="0" y="0" width="100%" height="100%" id="totalGroup" click="totalGroup_clickHandler(event)">
+		<mx:Image id="img_Body" y="-93" width="551" height="470" 
+				  x="208"/>
+		<s:Group id="groupName" visible="false">
+			<mx:Image id="img_RoleNameBack" 
+					  x.army="20" y.army="268"
+					  x.enemy="590" y.enemy="267"/>
+			<s:Label id="lab_RoleName" height="36" color="#ffffff"
+					 filters="{[new spark.filters.GlowFilter(0x0c0c0c,100,2,2,5,1,false,false)]}"
+					 fontSize="16" fontWeight="bold" textAlign="center"
+					 x.army="158" y.army="280"
+					 x.enemy="708" y.enemy="275"/>
+			<s:Label id="lab_ArmyGroupName" color="#ffffff"
+					 filters="{[new spark.filters.GlowFilter(0x0c0c0c,100,2,2,5,1,false,false)]}"
+					 fontSize="12" textAlign="center"
+					 x.army="146" y.army="256"
+					 x.enemy="695" y.enemy="256"/>
+		</s:Group>
+	</s:Group>
+</symbols:BasePanel>

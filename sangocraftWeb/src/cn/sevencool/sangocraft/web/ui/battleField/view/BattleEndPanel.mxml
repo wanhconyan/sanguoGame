@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+project: sangocraft_Web
+@class: BattleEndPanel
+@author: wangcongyan
+@usage: 战场结束面板
+@since: 2013-8-27
+@modified: 2013-8-27
+@modifier: wangcongyan
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*" 
+				   width="404" height="532"  height.normal="430"
+				   xmlns:itemsBox="cn.sevencool.sangocraft.web.symbols.itemsBox.*">
+	
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.data.manager.screen.mediator.IUIOperateBaseInfoMadiator;
+			import cn.sevencool.sangocraft.data.manager.utils.MediatorUtil;
+			import cn.sevencool.sangocraft.data.model.GetGeneralItemVO;
+			import cn.sevencool.sangocraft.data.model.SRBattleEndInfoVO;
+			import cn.sevencool.sangocraft.data.symbols.ItemsManager;
+			import cn.sevencool.sangocraft.data.symbols.SoundManager;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.data.symbols.material.factory.ImageFactory;
+			import cn.sevencool.sangocraft.data.vo.FightScene;
+			import cn.sevencool.sangocraft.data.vo.ItemOperationVO;
+			import cn.sevencool.sangocraft.data.vo.MonsterExpVO;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.skin.BottomContainerSkin;
+			import cn.sevencool.sangocraft.web.symbols.AlertPanel;
+			import cn.sevencool.sangocraft.web.ui.battleField.mediator.BattleFieldMediator;
+			import cn.sevencool.sangocraft.web.ui.mainPanel.mediator.BasicInforMediator;
+			import cn.sevencool.sangocraft.web.ui.screen.mediator.ScreenMediator;
+			import cn.sevencool.sangocraft.web.ui.screen.view.ScreenPanel;
+			
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			
+			import spark.filters.GlowFilter;
+			
+			[Bindable]
+			private var _list:Array = new Array();
+			
+			private var _battleEndInfoVO:SRBattleEndInfoVO;
+			
+			private var lvl:int = -1;
+			
+			private var _short:Bitmap = null;
+			
+			private var _long:Bitmap = null;
+			
+			private var _battleName:Bitmap = null;
+			
+			/**
+			 * 装载图片的容器
+			 * */
+			private var _tipTitleMap:Bitmap = null;
+			private var _endWarBarMap1:Bitmap = null;
+			private var _endWarBarMap2:Bitmap = null;
+			
+			private var battleField:BattleFieldMediator = null;
+			/**
+			 * 显示
+			 * */
+			private function refreshBattleEndInfoVO():void
+			{
+				_list = [];
+				if(battleEndInfoVO)
+				{
+					txt_gold.text = battleEndInfoVO.nGetGold.toString();
+					txt_exp.text = battleEndInfoVO.nGetExp.toString();
+					
+					var basicInfo:BasicInforMediator = MediatorUtil.getMediatorByInterface(IUIOperateBaseInfoMadiator) as BasicInforMediator;
+					
+					//					var exp:MonsterExpVO =  ItemsManager.getInstance().expDic[]
+					//					var exp:exp
+					
+					txt_reinforcementsPoint.text = basicInfo.roleNowExp().toString();
+					txt_reinforcementsPoint0.text = battleEndInfoVO.nGetPoints.toString();
+					//lbl_up.text = Boolean(battleEndInfoVO.btIsUpgrade == 1) ? '恭喜你升级了！！！':('快要升级了！！！继续努力'+battleEndInfoVO.nNeedExp.toString());
+					txt_commander.text = battleEndInfoVO.nCommander.toString();
+					txt_action.text = battleEndInfoVO.nAction.toString();
+					txt_friendNum.text = battleEndInfoVO.nFriendNum.toString();
+					
+					for each(var gen:GetGeneralItemVO in battleEndInfoVO.itemList)
+					{
+						var item:ItemOperationVO = ItemsManager.getInstance().getItemById(gen.i64ItemID);
+						_list.push(item);
+						if(_list.length>7)
+						{
+							break;
+						}
+					}
+					bar2.visible = Boolean(_list.length) ;
+					barName2.visible = Boolean(_list.length)
+					reward_list.visible = Boolean(_list.length);;
+					if(_list.length<4 && _list.length>0)
+					{
+						reward_list.row = 1
+					}else if(_list.length>4)
+					{
+						reward_list.row =2;
+					}
+					reward_list.data = _list;
+				}
+			}
+			
+			
+			/**
+			 * 获取mediator
+			 * */
+			private var _mediator:BattleFieldMediator = null ;
+			override public function set mediatorUI($value:AbstractMediator):void 
+			{
+				_mediator = $value  as BattleFieldMediator ;
+			}
+			
+			/**
+			 * 点击确定按钮
+			 * */
+			protected function btn_ok_clickHandler(event:MouseEvent):void
+			{
+				var screenM:ScreenMediator = MediatorUtil.getMediatorByInterface(ScreenMediator) as ScreenMediator ;
+				screenM.showCity();
+				UIMananger.getInstance().hide(this);
+			}
+			
+			
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_long = new Bitmap();
+				_short = new Bitmap();
+				_battleName = new Bitmap();
+				_tipTitleMap = new Bitmap();
+				_endWarBarMap1 = new Bitmap();
+				_endWarBarMap2 = new Bitmap();
+				title.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'tipTitle',_tipTitleMap));
+				bar1.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'endWarBar',_endWarBarMap1));
+				bar2.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'endWarBar',_endWarBarMap2));
+				onShow();
+			}
+			
+			protected override function onShow():void
+			{
+				if(!initialized)
+				{
+					return 
+				}
+				if(titleName.numChildren)
+				{
+					titleName.removeChildAt(0);
+				}
+				battleField = MediatorUtil.getMediatorByInterface(BattleFieldMediator) as BattleFieldMediator;
+				
+				var fight:FightScene = battleField.fightScene;
+				war.text = fight.szFightName;
+				titleName.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.FIGHTCHAPTER,fight.nChapterID.toString(),_battleName));
+			}
+			
+			
+			protected override function stateChanged(oldState:String, newState:String, recursive:Boolean):void
+			{
+				if(currentState=='normal'){
+					botom.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,"bottomShort",_short));
+				}else {
+					botom.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,"bottomeLong",_long));
+				}
+			}
+			
+			
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				SoundManager.getInstance().musicPlay("Interface15");
+				var screenM:ScreenMediator = MediatorUtil.getMediatorByInterface(ScreenMediator) as ScreenMediator ;
+				screenM.showCity();
+				UIMananger.getInstance().hide(this);
+				if(!battleEndInfoVO)
+				{
+					return;
+				}
+				if(battleEndInfoVO.dwReinforcmentOnlyID)
+				{
+					Alert.okLabel = "确认";
+					Alert.cancelLabel = "取消";
+					AlertPanel.show("是否添加你的义军为您的好友","",Alert.OK|Alert.CANCEL,closeHandle);
+				}
+			}
+			
+			private function closeHandle(e:CloseEvent):void
+			{
+				if(e.detail == Alert.OK)
+				{
+					_mediator.addApplyFriend(battleEndInfoVO.dwReinforcmentOnlyID);
+				}
+			}
+			
+			public function get battleEndInfoVO():SRBattleEndInfoVO
+			{
+				return _battleEndInfoVO;
+			}
+			
+			public function set battleEndInfoVO(value:SRBattleEndInfoVO):void
+			{
+				_battleEndInfoVO = value;
+				var screenPanel:ScreenPanel = UIMananger.getInstance().getUIObj(ScreenPanel) as ScreenPanel;
+				//				screenPanel.home.isEnd = true
+				refreshBattleEndInfoVO();
+			}
+			
+		]]>
+	</fx:Script>
+	<symbols:states>
+		<s:State name="normal"/>
+		<s:State name="upLvl"/>
+	</symbols:states>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<mx:Image id="botom" x="0" y="36" width="404" height="496"
+			  height.normal="405"/>
+	<mx:Image id="title" y="4" width="78" height="73"
+			  horizontalCenter="0"/>
+	<mx:Image id="titleName" x="112" y="77" width="185" height="45"
+			  x.upLvl="112" y.upLvl="77"/>
+	<mx:Image id="bar1" x="10" y="153" width="384" height="34"
+			  x.upLvl="10" y.upLvl="146"/>
+	<s:Label id="barName1" x="150" y="160" width="147" height="34" color="#ffe7bc"
+			 filters="{[new spark.filters.GlowFilter(0x101010,100,2,2,5,1,false,false)]}"
+			 fontSize="22" text="战场收获" fontFamily="hyxl"
+			 x.normal="161" y.normal="160"
+			 x.upLvl="10" y.upLvl="155" width.upLvl="384" textAlign.upLvl="center" text.upLvl="战场收获"/>
+	<s:Label id="suscess" visible="false" x="27" y="273" width="305" height="50" color="#ffe7bc"
+			 filters="{[new spark.filters.GlowFilter(0x101010,100,2,2,5,1,false,false)]}"
+			 fontSize="36"
+			 visible.upLvl="true" x.upLvl="27" y.upLvl="262" width.upLvl="348" fontFamily="hyxl"
+			 textAlign.upLvl="center" text.upLvl="恭喜你升级了"/>
+	<mx:Image id="bar2" x.upLvl="1" y.upLvl="402" width="384" height="30"
+			  x.normal="10" y.normal="300"/>
+	<s:Label id="barName2" width="140" height="30" color="#ffe7bc"
+			 filters="{[new spark.filters.GlowFilter(0x101010,100,2,2,5,1,false,false)]}"
+			 fontSize="22" text="战利品" fontFamily="hyxl"
+			 x.normal="159" y.normal="308"
+			 x.upLvl="0" y.upLvl="410" width.upLvl="404" textAlign.upLvl="center"
+			 verticalAlign.upLvl="top"/>
+	<s:Group y="212" width="265"
+			 y.normal="212" height.normal="80" horizontalCenter.normal="14"
+			 x.upLvl="78" y.upLvl="193" height.upLvl="64">
+		<s:Label x="0" y="3" color="#FFFFFF" fontSize="14" text="金钱"
+				 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"/>
+		<s:Label id="txt_gold" x="76" y="3" width="160" fontSize="14" text="-" color="#FFFFFF"
+				 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+				 textAlign="center"/>
+		<s:Label x="-2" y="24" fontSize="14" text="获得经验" color="#FFFFFF"
+				 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"/>
+		<s:Label id="txt_exp" x="76" y="24" width="160" fontSize="14" text="-" textAlign="center" color="#FFFFFF"
+				 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"/>
+		<s:Label x="-2" y="45" color="#FFFFFF"
+				 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+				 fontSize="14" text="升级还需" id="lbl_less"
+				 x.normal="-2" y.normal="44"/>
+		<s:Label id="txt_reinforcementsPoint" x="76" y="43" width="160" text="-" fontSize="14" color="#FFFFFF"
+				 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+				 textAlign="center"/>
+		<s:Label x="-2" y="63" color="#FFFFFF" id="getRein"
+				 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+				 fontSize="14" text="获得援军点"
+				 visible.normal="true" x.normal="-2" y.normal="64"
+				 visible.upLvl="false"/>
+		<s:Label id="txt_reinforcementsPoint0" visible.normal="true"  visible.upLvl="false" x="76" y="63" width="160"
+				 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+				 color="#FFFFFF" fontSize="14" text="-" textAlign="center"/>
+	</s:Group>
+	<s:Group visible="false" x="78" y="309" width="265" height="98"
+			 x.normal="84" y.normal="309"
+			 visible.upLvl="true" x.upLvl="78" y.upLvl="304">
+		<s:Label x="0" y="3" fontSize="14" text="统帅力" color="#FFFFFF"
+				 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"/>
+		<s:Label id="txt_commander" x="73" y="3" width="163" height="17" color="#FFFFFF"
+				 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+				 fontSize="14" text="-" textAlign="center"/>
+		<s:Label x="0" y="28" fontSize="14" text="行动力上限" color="#FFFFFF"
+				 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"/>
+		<s:Label id="txt_action" x="73" y="28" width="163" fontSize="14" text="-" color="#FFFFFF"
+				 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+				 textAlign="center"/>
+		<s:Label x="0" y="53" fontSize="14" text="好友上限" color="#FFFFFF"
+				 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"/>
+		<s:Label id="txt_friendNum" x="73" y="53" width="163" fontSize="14" text="-" color="#FFFFFF"
+				 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+				 textAlign="center"/>
+		<s:Label x="0" y="78" fontSize="14" text="行动力恢复" color="#FFFFFF"
+				 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"/>
+		<s:Label id="txt_actRecover" x="73" y="78" width="163" fontSize="14" text="-" color="#FFFFFF"
+				 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+				 textAlign="center"/>
+	</s:Group>
+	<s:HGroup  y.upLvl="450" width="356" gap="17"
+			   x="41" y.normal="348">
+		<itemsBox:LatticeList id="reward_list" width="463" height="65" col="4" row="1"
+							  margin="{[4 ,6 , 6 ,6]}"
+							  renderer="cn.sevencool.sangocraft.web.symbols.itemsBox.LatticeItem"
+							  width.normal="355"/>
+	</s:HGroup>
+	<s:Button x="353" y="61" width="22" height="21"
+			  skinClass="cn.sevencool.sangocraft.web.skin.titleWindow.CloseBtnSkin" click="button1_clickHandler(event)"/>
+	<s:Label id="war" y="119" width="149" height="34" color="0xffe7bc"
+			 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+			 fontSize="14"
+			 horizontalCenter.normal="0" textAlign.normal="center" verticalAlign.normal="middle"
+			 x.upLvl="148" y.upLvl="130"/>
+	
+</symbols:BasePanel>

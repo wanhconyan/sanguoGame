@@ -1,0 +1,248 @@
+package com.starling.battle.view.unit.view
+{
+	import com.core.Global;
+	import com.core.util.stringUtil.StringUtil;
+	import com.sanguo.manager.LoopManager;
+	import com.starling.battle.ai.UnitCreator;
+	import com.starling.battle.view.unit.ActionType;
+	import com.starling.battle.view.unit.IUintDisplay;
+	
+	import flash.geom.Point;
+	
+	import starling.core.Starling;
+	import starling.display.MovieClip;
+	import starling.textures.Texture;
+	import starling.textures.TextureAtlas;
+
+	public class UnitView extends BaseView implements IUnit
+	{
+		/**
+		 *unit id 
+		 */		
+		private var _unitID:String = "";
+		
+		public static const TEXTURE_CONST:String = "{0}_{1}_{2}";
+		
+		private static var directions:Vector.<int> = null;
+		
+		private var showMc:MovieClip = null;
+		
+		private var _intervial:int ;
+		
+		private var textures:Vector.<Texture> ;
+		
+		private var _campID:int ;
+		
+		private var _teamID:int ;
+		
+		private var _location:Point;
+		
+		private var _isBuilding:Boolean ;
+		
+		private var _inBattle:Boolean ;
+		
+		private var _type:int ;
+		
+		public function UnitView($unitID:String)
+		{
+			_unitID = $unitID ;
+			var _url :String ="b9"
+			directions = new Vector.<int>();
+			directions.push(1,2,3,4,5,6,7,0);
+			var url:String = Global.getUnitUrl(_url);
+			textureAtlas = UnitCreator.instance.getAtlasByKey(url);
+		}
+		
+		override public function set textureAtlas(value:TextureAtlas):void
+		{
+			super.textureAtlas = value ;
+			textures = textureAtlas.getTextures(textureName);
+			showMc = new MovieClip(textures);
+			this.addChild(showMc);
+		}
+		
+		
+		override public function play():void
+		{
+			if(showMc)
+			{
+				Starling.juggler.add(showMc);
+				showMc.play();
+				randomMovation();
+			}
+		}
+		
+		
+		override public function stop():void
+		{
+			if(showMc)
+			{
+				showMc.stop();
+				Starling.juggler.remove(showMc);
+				removeRandomMovation();
+			}
+		
+		}
+		
+		private function removeRandomMovation():void
+		{
+			if(LoopManager.hasTimeout(_intervial))
+			{
+				LoopManager.clearTimeout(_intervial);
+			}
+		}		
+		
+		public function randomMovation():void
+		{
+			if(LoopManager.hasTimeout(_intervial))
+			{
+				LoopManager.clearTimeout(_intervial);
+			}
+			_intervial = LoopManager.setTimeout(setRandomMovieClip,3000);
+		}
+		
+		public function setRandomMovieClip():void
+		{
+			showMc.currentFrame = getRandomAction();
+		}
+		
+		
+		override public function set action(value:int):void
+		{
+			if(value == action)
+			{
+				return ;
+			}
+			super.action = value ;
+			textures = textureAtlas.getTextures(textureName);
+			showMc.reChangeTexture(textures);
+			randomMovation();
+		}
+		
+		override public function set direction(value:int):void
+		{
+			if(value == direction)
+			{
+				return ;
+			}
+		
+			if(_direction == ActionType.DIR_LEFT || _direction == ActionType.DIR_LEFT_UP || _direction == ActionType.DIR_DOWN_LEFT )
+			{
+//				this.scaleX = -1 ;
+			}
+			super.direction = value ;
+			textures = textureAtlas.getTextures(textureName);
+			showMc.reChangeTexture(textures);
+			randomMovation();
+		}
+		
+		override public function get direction():int
+		{
+			var value:int = _direction ;
+			if(_direction == ActionType.DIR_LEFT)
+			{
+				value = ActionType.DIR_RIGHT ;
+			}
+			if(_direction == ActionType.DIR_DOWN_LEFT)
+			{
+				value = ActionType.DIR_DOWN_RIGHT ;
+			}
+			if(_direction == ActionType.DIR_LEFT_UP)
+			{
+				value = ActionType.DIR_RIGHT_UP ;
+			}
+			return value ;
+		}
+		
+		
+		/**
+		 * 获取一个随即动作帧频 
+		 * @return 
+		 */		
+		protected  function getRandomAction():int
+		{
+			var frameIndex:int = 0 ;
+			return frameIndex ;
+		}
+		
+		override public function get textureName():String
+		{
+			textureName = StringUtil.substitute(TEXTURE_CONST,_unitID,direction,action)
+			return _textureName;
+		}
+		
+		
+		public function set campID(value:int):void
+		{
+			 _campID = value ;
+		}
+		
+		public function get campID():int
+		{
+		
+			return _campID ;
+		}
+		
+		public function set teamID(value:int):void
+		{
+			_teamID = value ;
+		}
+		
+		public function get teamID():int
+		{
+			return _teamID ;
+		}
+		
+		public function set location(value:Point):void
+		{
+			_location = value;
+		}
+		public function get location():Point
+		{
+			return _location;
+		}
+		
+		public function get isBuilding():Boolean{
+		
+			return _isBuilding ;
+		}
+		
+		public function get inBattle():Boolean
+		{
+			return _inBattle;
+		}
+		public function set inBattle(value:Boolean):void
+		{
+			_inBattle = value ;
+		}
+		
+		public function get view():IUintDisplay
+		{
+		
+			return this;
+		}
+		
+		public function get isLiving():Boolean 
+		{
+		
+			return false;	
+		}
+		
+		public function get type():int 
+		{
+			return  _type;
+		}
+		public function set type(value:int):void
+		{
+			_type = value ;
+		}
+		
+		public  function reFormationTime(value:Number):void
+		{
+			
+		}
+		
+		
+		
+	}
+}

@@ -1,0 +1,20 @@
+package com.starling.battle.view.unit
+{
+	
+	public interface IUintDisplay
+	{
+		function reset():void;
+		
+		function set actions(value:Vector.<int>):void ;
+		function get actions():Vector.<int>;
+		
+		function get action():int ;
+		function set action(value:int):void;
+		
+		function set course(value:Number):void;
+		function get course():Number ;
+		
+		function set pointAt(value:Number):void ;		
+		
+	}
+}

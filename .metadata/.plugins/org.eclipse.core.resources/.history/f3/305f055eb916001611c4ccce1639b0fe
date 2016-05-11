@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+			creationComplete="group1_creationCompleteHandler(event)"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import spark.events.IndexChangeEvent;
+			
+			
+			public var directions:ArrayCollection = null;
+			protected function direction_com_changeHandler(event:IndexChangeEvent):void
+			{
+					
+				
+				
+			}
+			
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				directions = new ArrayCollection();
+				directions.addItem()
+				
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:VGroup>
+		<s:HGroup>
+			<s:Label text="方向:"/>
+			<s:ComboBox id="direction_com" change="direction_com_changeHandler(event)"/>
+		</s:HGroup>
+		<s:HGroup>
+			<s:Label text="动作:"/>
+			<s:ComboBox id="direction_com" change="direction_com_changeHandler(event)"/>
+		</s:HGroup>
+
+	</s:VGroup>
+</s:Group>

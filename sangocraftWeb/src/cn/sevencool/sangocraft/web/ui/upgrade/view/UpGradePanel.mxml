@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+project: sangocraft_Web
+@class: UpLevelPanel
+@author: zhoujingye
+@usage: 转生面板
+@since: 2013-8-26
+@modified: 2013-8-26
+@modifier: zhoujingye 
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   width="625" height="395" xmlns:itemsBox="cn.sevencool.sangocraft.web.symbols.itemsBox.*">  
+	<fx:Script>
+			<![CDATA[
+				import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+				import cn.sevencool.sangocraft.data.manager.barracks.mediator.IUIOperatableBarracksMediator;
+				import cn.sevencool.sangocraft.data.manager.strengthening.mediator.IUIOperatableStrengtheningMediator;
+				import cn.sevencool.sangocraft.data.manager.utils.MediatorUtil;
+				import cn.sevencool.sangocraft.data.model.RUpLevel;
+				import cn.sevencool.sangocraft.data.symbols.ItemManager;
+				import cn.sevencool.sangocraft.data.symbols.SystemModelLocator;
+				import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+				import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+				import cn.sevencool.sangocraft.data.vo.ItemDescription;
+				import cn.sevencool.sangocraft.data.vo.ItemOperationVO;
+				import cn.sevencool.sangocraft.data.vo.TransMigration;
+				import cn.sevencool.sangocraft.web.manager.UIMananger;
+				import cn.sevencool.sangocraft.web.symbols.FigureDisplay;
+				import cn.sevencool.sangocraft.web.symbols.itemsBox.LatticeUltraGroups;
+				import cn.sevencool.sangocraft.web.ui.barracks.mediator.BarracksMediator;
+				import cn.sevencool.sangocraft.web.ui.barracks.view.BarracksPanel;
+				import cn.sevencool.sangocraft.web.ui.strengthen.mediator.StrengthenMediator;
+				import cn.sevencool.sangocraft.web.ui.upgrade.mediator.UpGradeMediator;
+				
+				import mx.events.CloseEvent;
+				import mx.events.FlexEvent;
+				
+				import spark.filters.GlowFilter;
+				/**
+				 * 升星Mediator
+				 * */
+				private var _upGradeM:UpGradeMediator = null;
+				/**
+				 * 升星显示VO
+				 * */
+				[Bindable]
+				private var _transMigration:TransMigration=null;
+				/**
+				 * 物品VO
+				 * */
+				private var _item:ItemOperationVO=null;
+				/**
+				 * 兵种图标数组
+				 * */
+				private static const ICONARR:Array=['pikemanIcon','cavalrymanIcon','archerIcon','instrumentIcon'];
+				/**
+				 * 兵种类型数组
+				 * */
+				private static const ARMYTYPEARR:Array=['枪兵','骑兵','弓兵','器械','城防'];
+				/**
+				 * 兵营Mediator
+				 * */
+				private var _barrM:BarracksMediator = null;
+				/**
+				 * 强化Mediator
+				 * */
+				private var _strength:StrengthenMediator = null;
+				/**
+				 * 装载图片的容器
+				 * */
+				private var _upGrageBar:Bitmap = null;
+				private var _generalCell:Bitmap = null;
+				private var _nameBottom1:Bitmap = null;
+				private var _nameBottom2:Bitmap = null;
+				private var _baseGeneral:Bitmap = null;
+				private var _targetGeneral:Bitmap = null;
+				private var _upGrade:Bitmap = null;
+				private var _general:Bitmap = null;
+				private var _frame1:Bitmap = null;
+				private var _frame2:Bitmap = null;
+				private var _up1:Bitmap = null;
+				private var _up2:Bitmap = null;
+				private var _up3:Bitmap = null;
+				private var _up4:Bitmap = null;
+				private var _costWord:Bitmap = null;
+				private var _baseGenLvl:Bitmap = null;
+				private var _targetGenLvl:Bitmap = null;
+				private var _baseGenType:Bitmap = null;
+				private var _targetGenType:Bitmap = null;
+				private var _sp:Bitmap = null;
+				private var _spTarget:Bitmap = null;
+				/**
+				 * 物品管理器
+				 * */
+				private var _itemManger:ItemManager=null;
+				/**
+				 * 资源管理器
+				 * */
+				private var _materialManager:MaterialManager=null;
+				/**
+				 * 显示管理器
+				 * */
+				private var _uiManager:UIMananger=null;
+				/**
+				 * 包管理器
+				 * */
+				private var _systemModelLocator:SystemModelLocator=null;
+
+				/**
+				 * @private
+				 */
+				public function set item(value:ItemOperationVO):void
+				{
+					_item = value;
+					_transMigration=new TransMigration();
+					_transMigration=_upGradeM.getUpgradeInfo(_item);
+				}
+				
+				
+				public override function get usableCount():int
+				{
+					return 1 ;
+				}
+				
+				
+				/**
+				 * 设置mediatorUI
+				 * */
+				override public function set mediatorUI($value:AbstractMediator):void
+				{
+					_upGradeM = $value as UpGradeMediator;
+				}
+				
+				
+				override public function get needBundleList():Array
+				{
+					var urlArr:Array = [] ;
+					_materialManager=MaterialManager.getInstance();
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'1'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'2'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'3'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'4'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'5'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'6'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'7'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'8'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'9')); 
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'')); 
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALLRED,'0'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALLRED,'1'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALLRED,'2'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALLRED,'3'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALLRED,'4'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALLRED,'5'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALLRED,'6'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALLRED,'7'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALLRED,'8'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALLRED,'9'));  
+					urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALLRED,''));  
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'upGrageBar'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'generalCell'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'nameBottom'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'baseGeneral'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'targetGeneral'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'upGrade'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'UpGradeMaterial'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'frame'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'UP'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'costWord'));
+					return urlArr;
+				}
+				
+				
+				/***
+				 * 面板打开
+				 * */
+				override protected function onShow():void
+				{
+					if(!initialized)
+						return;
+					_strength=MediatorUtil.getMediatorByInterface(IUIOperatableStrengtheningMediator) as StrengthenMediator;
+					showUpgradeInfo(_transMigration);
+					showCostMoney(_transMigration);
+				} 
+				
+				
+				/**
+				 * 资源改变
+				 * */
+				protected override function resourcesChanged():void
+				{
+					dataArray=new Vector.<Class>;
+					dataArray.push(RUpLevel);
+				}
+				
+				
+				/**
+				 * 数据改变
+				 * */
+				protected override function onDataChange(type:String=""):void
+				{
+					switch(type)
+					{
+						case 'RUpLevel':
+							uplvlInfoHandler();
+							break;
+						default:
+							throw new Error("onDataChange" + type);
+					}
+				}
+				
+				
+				/**
+				 * 面板创建完成
+				 * */
+				protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+				{
+					_upGrageBar = new Bitmap();
+					_generalCell = new Bitmap();
+					_nameBottom1 = new Bitmap();
+					_nameBottom2 = new Bitmap();
+					_baseGeneral = new Bitmap();
+					_targetGeneral = new Bitmap();
+					_upGrade = new Bitmap();
+					_general = new Bitmap();
+					_frame1 = new Bitmap();
+					_frame2 = new Bitmap();
+					_up1 = new Bitmap();
+					_up2 = new Bitmap();
+					_up3 = new Bitmap();
+					_up4 = new Bitmap();
+					_costWord = new Bitmap();
+					_baseGenLvl = new Bitmap();
+					_targetGenLvl = new Bitmap();
+					_baseGenType = new Bitmap();
+					_targetGenType = new Bitmap();
+					_sp = new Bitmap();
+					_spTarget = new Bitmap();
+					_itemManger=ItemManager.getInstance();
+					_uiManager=UIMananger.getInstance();
+					_systemModelLocator=SystemModelLocator.getInstance();
+					onShow();
+					addImg();
+					_strength=MediatorUtil.getMediatorByInterface(IUIOperatableStrengtheningMediator) as StrengthenMediator;
+					_barrM=MediatorUtil.getMediatorByInterface(IUIOperatableBarracksMediator) as BarracksMediator;
+				}
+				
+				
+				/**
+				 * 点击升星按钮
+				 * */
+				protected function upLvl_clickHandler(event:MouseEvent):void
+				{
+					_upGradeM.upLvl(_item.item.i64ItemID);
+					
+				}
+				
+				/**
+				 * 关闭面板
+				 * */
+				protected function titlewindow1_closeHandler(event:CloseEvent):void
+				{
+					_barrM.clearItemsStateInterface();
+					_uiManager.showOrHide(BarracksPanel);
+				}
+				
+				
+				/**
+				 * 升星处理
+				 * */
+				private function uplvlInfoHandler():void
+				{
+					var upLevel:RUpLevel = _systemModelLocator.getPropertyByVo(RUpLevel) as RUpLevel;
+					if(upLevel.nErrorCode_tip!=0)
+					{
+						return;
+					}
+					var item:ItemOperationVO=new ItemOperationVO();
+					item.item=upLevel.DestItem;
+					_transMigration=_upGradeM.getUpgradeInfo(item);
+					showUpgradeInfo(_transMigration);
+					showCostMoney(_transMigration);
+				}
+				
+				
+				/**
+				 * 显示升星图片
+				 * */
+				private function showUpIcon($transMigration:TransMigration):void
+				{
+					up1.visible=Boolean($transMigration.baseCommand<$transMigration.targetCommand);
+					up2.visible=Boolean($transMigration.baseSoldierNo<$transMigration.targetSoldierNo);
+					up3.visible=Boolean($transMigration.baseAttack<$transMigration.targetAttack);
+					up4.visible=Boolean($transMigration.baseDefense<$transMigration.targetDefense);
+				}
+				
+				
+				/**
+				 * 显示花费银两
+				 * */
+				private function showCostMoney($transMigration:TransMigration):void
+				{
+					if(_strength.getPlayerSilver()<$transMigration.cost)
+					{
+						costValue.figureHandler($transMigration.cost.toString(),MaterialKeys.GRANDCOUNCILRED,10);
+					}
+					if(_strength.getPlayerSilver()>=$transMigration.cost)
+					{
+						costValue.figureHandler($transMigration.cost.toString(),MaterialKeys.OFFICEDIGITAL,10);
+					}
+				}
+				
+				
+				/**
+				 * 升星显示
+				 * */
+				private function showUpgradeInfo($transMigration:TransMigration):void
+				{
+					command.text=$transMigration.baseCommand.toString();
+					soldierNum.text=$transMigration.baseSoldierNo.toString();
+					attack.text=$transMigration.baseAttack.toString();
+					defense.text=$transMigration.baseDefense.toString();
+					generalName.text=$transMigration.baseName;
+					targetlCommand.text=$transMigration.targetCommand.toString();
+					targetSoldierNum.text=$transMigration.targetSoldierNo.toString();
+					targetAttack.text=$transMigration.targetAttack.toString();
+					targetDefense.text=$transMigration.targetDefense.toString();
+					targetGeneralName.text=$transMigration.targetName;
+					if($transMigration.headState)
+					{
+						baseGenLvlNum.figureHandler($transMigration.baseLV.toString(),MaterialKeys.LVLSMALLRED,8);
+						baseGenLvl.addChild(_materialManager.getIcon(MaterialKeys.LVLSMALLRED,'',_baseGenLvl));
+					}
+					if(!$transMigration.headState)
+					{
+						baseGenLvlNum.figureHandler($transMigration.baseLV.toString(),MaterialKeys.LVLSMALL,8);  
+						baseGenLvl.addChild(_materialManager.getIcon(MaterialKeys.LVLSMALL,'',_baseGenLvl));
+					}
+					targetGenLvlNum.figureHandler($transMigration.targetLV.toString(),MaterialKeys.LVLSMALL,8);
+					targetGenLvl.addChild(_materialManager.getIcon(MaterialKeys.LVLSMALL,'',_targetGenLvl));
+					var armyType:int = Math.floor($transMigration.baseSoldierKind/5);
+					var str:String=ICONARR[armyType];
+					baseGenType.addChild(_materialManager.getIcon(MaterialKeys.OTHER,str,_baseGenType));
+					var armyType1:int = Math.floor($transMigration.targetSoldierKind/5);
+					var str1:String=ICONARR[armyType1];
+					targetGenType.addChild(_materialManager.getIcon(MaterialKeys.OTHER,str1,_targetGenType));
+					soldierType.text=ARMYTYPEARR[armyType];
+					targetSoldierType.text=ARMYTYPEARR[armyType1];
+					var itemDescription:ItemDescription = _itemManger.ItemInfo[_transMigration.basePicID] as ItemDescription;
+					sp.addChild(_materialManager.getIcon(MaterialKeys.BIG_HEAD ,itemDescription.nHeadId.toString(),_sp));
+					if(_transMigration.targetPicID != -1)
+					{
+						var itemDescription1:ItemDescription = _itemManger.ItemInfo[_transMigration.targetPicID] as ItemDescription;
+						sp_target.addChild(_materialManager.getIcon(MaterialKeys.BIG_HEAD ,itemDescription1.nHeadId.toString(),_spTarget));	
+					}
+					material_box.data = $transMigration.materialArr;
+					setMonsterName($transMigration.materialArr);
+					showUpIcon($transMigration);
+					upLvl.enabled=$transMigration.isCanBeUp;
+				}
+				
+				
+				/**
+				 * 设置升星材料
+				 * */
+				private function setMonsterName(arr:Array):void
+				{
+					monster1.text='';
+					monster2.text='';
+					monster3.text='';
+					monster4.text='';
+					monster5.text='';
+					var len:int=arr.length;
+					for(var i:int=1;i<=len;i++)
+					{
+						var operateVO:ItemOperationVO=arr[i-1];
+						var itemDes:ItemDescription=_itemManger.ItemInfo[operateVO.item.dwBaseID];
+						this['monster'+i].text=itemDes.szName;
+					}
+				}
+				
+				
+				/**
+				 * 加载人物图片
+				 * */
+				private function addImg():void  
+				{
+					UpLvlMaterialbotom.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'upGrageBar',_upGrageBar));
+					baseGeneralHead.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'generalCell',_generalCell));
+					nameBottom1.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'nameBottom',_nameBottom1));
+					nameBottom2.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'nameBottom',_nameBottom2));
+					baseGeneral.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'baseGeneral',_baseGeneral));
+					targetGeneral.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'targetGeneral',_targetGeneral));
+					arrow.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'upGrade',_upGrade));
+					targetGeneralHead.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'generalCell',_general));
+					bg.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'frame',_frame1));
+					bg0.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'frame',_frame2));
+					up1.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'UP',_up1));
+					up2.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'UP',_up2));
+					up3.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'UP',_up3));
+					up4.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'UP',_up4));
+					costWord.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'costWord',_costWord));
+				}
+			]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:TitleWindow id="win" y="0" width="625" height="395" title="转 生" close="titlewindow1_closeHandler(event)" horizontalCenter="0"
+							skinClass="cn.sevencool.sangocraft.web.skin.titleWindow.SGTitleWindowSkin">
+		<mx:Image  x="462" y="45" height="118" width="118" id="bg"/>
+		<mx:Image  x="40" y="45" height="118" width="118" id="bg0"/>
+		<s:Group x="36" y="56" width="111" height="107">
+			<s:Label x="9" y="-1" width="36" height="17" text="统帅" textAlign="center" color="#eee6dc"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"
+					 verticalAlign="middle" fontSize="12"/>
+			<s:Label x="63" y="-1" width="51" height="17" text="99" textAlign="left" id="command" color="#eee6dc"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"
+					 verticalAlign="middle" fontSize="12"/>
+			<s:Label x="9" y="19" width="35" height="17" text="兵量" textAlign="center" color="#eee6dc"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"
+					 verticalAlign="middle" fontSize="12"/>
+			<s:Label x="62" y="19" width="51" height="17" text="999999" textAlign="left" id="soldierNum" color="#eee6dc"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"
+					 verticalAlign="middle" fontSize="12"/>
+			<s:Label x="9" y="37" width="35" height="17" text="攻击" textAlign="center" color="#eee6dc"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"
+					 verticalAlign="middle" fontSize="12"/>
+			<s:Label x="62" y="37" width="51" height="17" text="100000" textAlign="left" id="attack" color="#eee6dc"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"
+					 verticalAlign="middle" fontSize="12"/>
+			<s:Label x="9" y="55" width="35" height="17" text="防御" textAlign="center" color="#eee6dc"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"
+					 verticalAlign="middle" fontSize="12"/>
+			<s:Label x="62" y="55" width="51" height="17" text="999999" textAlign="left" id="defense" color="#eee6dc"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"
+					 verticalAlign="middle" fontSize="12"/>
+			<s:Label x="9" y="73" width="35" height="17" text="兵种" textAlign="center" color="#eee6dc"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"
+					 verticalAlign="middle" fontSize="12"/>
+			<s:Label x="62" y="73" width="51" height="17" text="轻骑兵" textAlign="left" id="soldierType" color="#eee6dc"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"
+					 verticalAlign="middle" fontSize="12"/>
+		</s:Group>
+		<s:Group x="447" y="48" width="111" height="107">
+			<s:Label x="17" y="5" width="41" height="17" text="统帅" textAlign="center" color="#eee6dc"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"
+					 verticalAlign="middle" fontSize="12"/>
+			<s:Label x="65" y="6" width="52" height="17" text="99" textAlign="left" id="targetlCommand" color="#eee6dc"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"
+					 verticalAlign="middle" fontSize="12"/>
+			<s:Label x="20" y="25" width="35" height="17" text="兵量" textAlign="center" color="#eee6dc"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"
+					 verticalAlign="middle" fontSize="12"/>
+			<s:Label x="65" y="25" width="51" height="17" text="999999" textAlign="left" id="targetSoldierNum" color="#eee6dc"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"
+					 verticalAlign="middle" fontSize="12"/>
+			<s:Label x="20" y="44" width="35" height="17" text="攻击" textAlign="center" color="#eee6dc"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"
+					 verticalAlign="middle" fontSize="12"/>
+			<s:Label x="65" y="44" width="51" height="17" text="100000" textAlign="left" id="targetAttack" color="#eee6dc"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"
+					 verticalAlign="middle" fontSize="12"/>
+			<s:Label x="20" y="62" width="35" height="17" text="防御" textAlign="center" color="#eee6dc"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"
+					 verticalAlign="middle" fontSize="12"/>
+			<s:Label x="65" y="62" width="51" height="17" text="999999" textAlign="left" id="targetDefense" color="#eee6dc"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"
+					 verticalAlign="middle" fontSize="12"/>
+			<s:Label x="20" y="80" width="35" height="17" text="兵种" textAlign="center" color="#eee6dc"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"
+					 verticalAlign="middle" fontSize="12"/>
+			<s:Label x="65" y="80" width="51" height="17" text="轻骑兵" textAlign="left" id="targetSoldierType" color="#eee6dc"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"
+					 verticalAlign="middle" fontSize="12"/>
+			<mx:Image  x="97" y="6" height="31" width="25" id="up1"/>
+			<mx:Image  x="97" y="25" height="31" width="25" id="up2"/>
+			<mx:Image  x="97" y="43" height="31" width="25" id="up3"/>
+			<mx:Image  x="97" y="61" height="31" width="25" id="up4"/>
+		</s:Group>
+		<s:Button id="upLvl" y="294" click="upLvl_clickHandler(event)" horizontalCenter="2" label="转生" width="100" height="36"/>
+		<itemsBox:LatticeList id="material_box" y="190" width="555" height="65" col="5" horizontalCenter="7"
+							  margin="{[6 ,6 , 35 ,6]}" isClickBack="false"
+							  renderer="cn.sevencool.sangocraft.web.symbols.itemsBox.LatticeItem"
+							  row="1"/>
+		<s:Label x="37" y="269" width="99" height="25" text="" textAlign="center" color="#eee6dc" id="monster1" fontSize="14"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"/>
+		<s:Label x="148" y="269" width="103" height="25" text="" textAlign="center" color="#eee6dc" id="monster2" fontSize="14"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"/>
+		<s:Label x="262" y="269" width="100" height="25" text="" textAlign="center" color="#eee6dc" id="monster3" fontSize="14"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"/>
+		<s:Label x="373" y="269" width="103" height="25" text="" textAlign="center" color="#eee6dc" id="monster4" fontSize="14"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"/>
+		<s:Label x="489" y="269" width="100" height="25" text="" textAlign="center" color="#eee6dc" id="monster5" fontSize="14"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"/>
+		<mx:Image  x="71" y="302" height="26" width="57" id="costWord"/>
+		<symbols:FigureDisplay  x="149" y="292" height="26" width="93" id="costValue" maxMedian="10"/>
+		<mx:Image  x="162" y="45" height="64" width="64" id="baseGeneralHead" enabled="false"/>
+		<s:SpriteVisualElement id="sp" x="173" y="57" height="43" width="50"/>
+		<mx:Image  x="380" y="45" height="64" width="64" id="targetGeneralHead"/>
+		<s:SpriteVisualElement id="sp_target" x="389" y="56" height="52" width="59"/>
+		<mx:Image  x="167" y="125" height="16" width="64" id="nameBottom1"/>
+		<mx:Image  x="386" y="125" height="16" width="64" id="nameBottom2"/>
+		<mx:Image  x="91" y="6" height="27" width="117" id="baseGeneral"/>
+		<mx:Image  x="426" y="8" height="26" width="128" id="targetGeneral"/>
+		<mx:Image  x="260" y="35" height="68" width="77" id="arrow"/>
+		<mx:Image  x="12" y="137" height="38" width="556" id="UpLvlMaterialbotom"/>
+		<s:Label id="UpLvlMaterial" y="156" width="114" height="26" horizontalCenter="4" text="转生材料"  fontFamily="hyxl" color="#f9ffa8"
+				 textAlign="center" verticalAlign="middle"  fontSize="22" filters="{[new spark.filters.GlowFilter(0xFFFFBE,0.75,7,7,2,1,false,false)]}"/>
+		
+		<mx:Image  x="173" y="54" height="20" width="22" id="baseGenType"/>
+		<mx:Image  x="189" y="100" height="12" width="15" id="baseGenLvl"/>
+		<symbols:FigureDisplay id="baseGenLvlNum" x="210" y="90" height="20" width="18" maxMedian="3"/>
+		<mx:Image  x="408" y="99" height="20" width="20" id="targetGenLvl"/>
+		<symbols:FigureDisplay id="targetGenLvlNum" x="429" y="90" height="20" width="20" maxMedian="3"/>
+		<mx:Image  x="389" y="57" height="20" width="22" id="targetGenType"/>
+		<s:Label x="172" y="127" width="56" height="17"  textAlign="center" id="generalName" color="#A2B3B8" 
+				 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+				 verticalAlign="middle"/>
+		<s:Label x="391" y="127" width="51" height="17"  textAlign="center" id="targetGeneralName" color="#A2B3B8" 
+				 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+			 verticalAlign="middle"/>
+	</s:TitleWindow>
+</symbols:BasePanel>

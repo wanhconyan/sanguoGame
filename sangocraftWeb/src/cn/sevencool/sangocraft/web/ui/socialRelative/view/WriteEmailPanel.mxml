@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*" width="530" height="360">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.data.model.RGetWriteMailVO;
+			import cn.sevencool.sangocraft.data.symbols.SystemModelLocator;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.symbols.AlertPanel;
+			import cn.sevencool.sangocraft.web.symbols.FilterFctory;
+			import cn.sevencool.sangocraft.web.ui.socialRelative.mediator.SocialRelativeMediator;
+			
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			
+			import spark.filters.GlowFilter;
+			
+			/**
+			 * 类型，0:给系统写信,1:给单个玩家写信，2:势力群发，3:商会群发
+			 * */
+			private var sendType:int = 0;
+			
+			private var _commSelect:Boolean = false;
+			
+			[Bindable]
+			private var _socialM:SocialRelativeMediator = null;
+			
+			private var _sendName:String = ''
+			
+			private var _isReply:Boolean = false;		
+			
+			private var _theme:String = '';
+			
+			/**
+			 * 装载图片的容器
+			 * */
+			private var _contentBarMap:Bitmap = null;
+			private var _inputBarMap1:Bitmap = null;
+			private var _inputBarMap2:Bitmap = null;
+			private var _sendThemeMap:Bitmap = null;
+			private var _recieverMap:Bitmap= null;
+			
+			
+			private var _sysM:SystemModelLocator =  SystemModelLocator.getInstance();
+			
+			
+			override public function set mediatorUI($value:AbstractMediator):void
+			{
+				_socialM = $value as SocialRelativeMediator;
+				
+			}
+			
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_contentBarMap = new Bitmap();
+				_inputBarMap1 = new Bitmap();
+				_inputBarMap2 = new Bitmap();
+				_sendThemeMap = new Bitmap();
+				_recieverMap = new Bitmap();
+				
+				img_content.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,"email_content_bar",_contentBarMap));
+				img_theme.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,"email_input_bar",_inputBarMap1));
+				reciever.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,"email_input_bar",_inputBarMap2));
+				img_title.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,"sendTheme",_sendThemeMap));
+				img_reciever.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,"reciever",_recieverMap));
+				onShow();
+			}
+			
+			
+			override public function get needBundleList():Array
+			{
+				var urlArr:Array = [] ;
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'email_content_bar'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'email_input_bar'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'sendTheme'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'reciever'));
+				return urlArr;
+			}
+			
+			
+			/**
+			 * onshow
+			 * */
+			protected override function onShow():void
+			{
+				if(!initialized)
+				{
+					return ;
+				}
+			}
+			
+			
+			/**
+			 * 监听发送返回
+			 * */
+			override protected function onDataChange(type:String=""):void
+			{
+				switch(type)
+				{
+					case "RGetWriteMailVO":
+						
+						refreshPanel();
+						break;
+					default:
+						throw new Error("type"+type)
+				}
+			}
+			
+			/**
+			 * 添加监听对象
+			 * */
+			override protected function resourcesChanged():void
+			{
+				dataArray = new Vector.<Class>();
+				dataArray.push(RGetWriteMailVO);				
+				
+			}
+			
+			protected function titlewindow1_closeHandler(event:CloseEvent):void
+			{
+				UIMananger.getInstance().hide(this);
+			}
+			
+			
+			protected function sendMail_clickHandler(event:MouseEvent):void
+			{
+				if(sendType==1&&txt_content.text == '')
+				{
+					AlertPanel.show("不能发送空邮件","",Alert.OK,closeHandle)
+					
+				}
+				
+				_socialM.AskWriteMail(txt_reciever.text,txt_theme.text,txt_content.text,sendType)
+				
+			}
+			
+			
+			private function closeHandle(e:CloseEvent):void
+			{
+				if(e.detail ==Alert.OK)
+				{
+					
+					
+					
+				}
+			}
+			
+			public function get sendName():String
+			{
+				return _sendName;
+			}
+			
+			public function set sendName(value:String):void
+			{
+				_sendName = value;
+				
+				if(sendName!='')
+				{
+					txt_reciever.text = sendName;
+					
+				}
+			}
+			
+			
+			private function refreshPanel():void
+			{
+				var rGetWriteMailVO:RGetWriteMailVO =_sysM.getPropertyByVo(RGetWriteMailVO) as RGetWriteMailVO;
+				switch(rGetWriteMailVO.nErrorCode_tip)
+				{
+					case 0:
+						
+						AlertPanel.show("发送成功","",Alert.OK,closePanelHandle);
+						
+						break;
+					
+					default:
+						trace("rGetWriteMailVO.nErrorCode_tip"+rGetWriteMailVO.nErrorCode_tip);
+						//						throw new Error("rGetWriteMailVO.nErrorCode_tip"+rGetWriteMailVO.nErrorCode_tip);
+				}
+			}
+			
+			private function closePanelHandle(e:CloseEvent):void
+			{
+				if(e.detail==Alert.OK)
+				{
+					_socialM.setEmailState("emailList");
+					this.txt_reciever.text = '';
+					txt_theme.text = '';
+					txt_content.text = '';
+				}
+			}
+
+			public function get isReply():Boolean
+			{
+				return _isReply;
+			}
+
+			public function set isReply(value:Boolean):void
+			{
+				_isReply = value;
+				if(isReply)
+				{
+					txt_theme.text = "回复："+	theme ;
+					isReply = false;
+					_socialM.emailTheme = '';
+				}
+			}
+
+			public function get theme():String
+			{
+				return _theme;
+			}
+
+			public function set theme(value:String):void
+			{
+				_theme = value;
+			}
+			
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<mx:Image id="img_reciever" x="17" y="7" width="62" height="20"/>
+	<mx:Image id="img_title" x="17" y="47" width="62" height="20"/>
+	<mx:Image id="img_content"  x="15" y="84" width="503" height="265"/>
+	<mx:Image id="reciever"  x="98" y="42" width="286" height="29"/>
+	<mx:Image id="img_theme"  x="98" y="4" width="286" height="29"/>
+	<s:TextInput id="txt_reciever" x="98" y="4" width="286" height="29"  />
+	<s:TextInput id="txt_theme" x="98" y="42" width="286" height="29" fontSize="14" color="0xdde3cf" />
+	<s:TextArea id="txt_content" x="15" y="84" width="503" height="265"/>
+	<s:Button x="403" y="40" label="送信" id="sendMail" click="sendMail_clickHandler(event)" width="99" height="36"/>
+</symbols:BasePanel>

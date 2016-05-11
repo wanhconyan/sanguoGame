@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	project: sangocraft_Web
+	@class: CreatingRole
+	@author: zhouyan
+	@usage: 创建角色面板
+	@since: 2013-8-23
+	@modified: 2013-8-23
+	@modifier: zhouyan 
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   currentState="platform"
+				   width.local="504" height.local="294"
+				   width.platform="1000" height.platform="600">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.data.manager.login.mediator.IUIOperatableLoginMediator;
+			import cn.sevencool.sangocraft.data.manager.utils.MediatorUtil;
+			import cn.sevencool.sangocraft.data.symbols.JSUtil;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.ui.login.mediator.LoginMediator;
+			import cn.sevencool.sangocraft.web.ui.screen.mediator.ScreenMediator;
+			
+			import mx.events.FlexEvent;
+			
+			private var _mediator:ScreenMediator = null ;
+			
+			/**
+			 * 登录Mediator
+			 * */
+			private var _loginM:LoginMediator=null;
+			/**
+			 * 人物初始ID
+			 * */
+			private var faceId:int=1;
+			public var enter_btn:SimpleButton;
+			public var  userName_tx:TextField;
+			public var  getName_btn:SimpleButton;
+			
+			public var c1_mc:MovieClip;
+			public var c2_mc:MovieClip;
+			public var c3_mc:MovieClip;
+			public var c4_mc:MovieClip;
+			
+			public var s1_mc:MovieClip;
+			public var s2_mc:MovieClip;
+			
+			public var checkname_mc:MovieClip
+			
+			private var mcLoader:Loader; 
+			
+			private var baseSp:Sprite;
+			
+			public var defaultSelectCountry:int;
+			override public function set mediatorUI($value:AbstractMediator):void
+			{
+				_mediator = $value as ScreenMediator ;
+			}
+			
+			private var url:String = '';
+			private function loadMc():void
+			{
+				mcLoader = new Loader();
+				var ary:Array = this.root.loaderInfo.loaderURL.split("Main");
+				url = ary[0];
+				url = url + "assets/mcCreateRole.swf";
+				mcLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,mcLoaderCompleteHandler);
+				mcLoader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,mcLoaderIOERRORHandler);
+				mcLoader.load(new URLRequest(url));
+				
+			}
+			
+			protected function mcLoaderIOERRORHandler(event:IOErrorEvent):void
+			{
+				throw new Error('CreatingRole.mcLoaderIOERRORHandler(event)' + url);
+			}
+			
+			protected function mcLoaderCompleteHandler(event:Event):void
+			{
+				baseSp = (mcLoader.content as DisplayObjectContainer).getChildAt(0) as Sprite;
+				sp.addChild(baseSp);
+				init();
+				this.dispatchEvent(new Event(Event.INIT));
+			}
+			
+			
+			private function init():void
+			{
+				enter_btn = baseSp["start"];
+				userName_tx = baseSp["userName_tx"];
+				userName_tx.textColor = 0Xddc7bf;
+				c2_mc = baseSp["c2_mc"];
+				c3_mc = baseSp["c3_mc"];
+				c4_mc = baseSp["c4_mc"];
+				getName_btn = baseSp["getName"];
+				c2_mc.gotoAndStop(1);
+				c2_mc.cid=2;
+				c3_mc.gotoAndStop(3);
+				c3_mc.cid=1;
+				c4_mc.gotoAndStop(1);
+				c4_mc.cid=3;
+				playerName=_loginM.getARandomName();
+				makeMouseEnable(c2_mc);
+				makeMouseEnable(c3_mc);
+				makeMouseEnable(c4_mc);
+				
+				c2_mc.addEventListener(MouseEvent.CLICK,onCountryClicked);
+				c3_mc.addEventListener(MouseEvent.CLICK,onCountryClicked);
+				c4_mc.addEventListener(MouseEvent.CLICK,onCountryClicked);
+				enter_btn.addEventListener(MouseEvent.CLICK,enterHander);
+				getName_btn.addEventListener(MouseEvent.CLICK,getName);
+				userName_tx.addEventListener(MouseEvent.MOUSE_DOWN,keyEvent);
+			}
+			
+			
+			protected function keyEvent(event:MouseEvent):void
+			{
+				userName_tx.text='';
+			}
+			
+			
+			/**
+			 * 点击色子获得随机名字
+			 * */
+			protected function getName(event:MouseEvent):void
+			{
+				playerName=_loginM.getARandomName();
+			}
+			
+			
+			public function showCheckName():void
+			{
+				checkname_mc.visible=true;
+			}
+			
+			/**
+			 * 点击按钮‘创建角色’
+			 * */
+			protected function enterHander(event:MouseEvent):void
+			{
+				var str:String=userName_tx.text.toString();
+				str=str.split("\r").join("");
+				_loginM.askForCreatARole(str,faceId);
+			}
+			
+			protected function onCountryClicked(event:MouseEvent):void
+			{
+				var mc:MovieClip = event.currentTarget as MovieClip;
+				selectCountry(mc);
+			}
+			
+			private var _selectedCountry:int=-1;
+			public function get selectedCountry():int
+			{
+				return _selectedCountry;
+			}
+			private function selectCountry(mc:MovieClip):void
+			{
+				var cous:Array = [c2_mc,c3_mc,c4_mc];
+				for (var i:int = 0; i < cous.length; i++) 
+				{
+					var cu:MovieClip = cous[i];
+					if(cu!=mc)
+					{
+						cu.gotoAndStop(1);
+					}else
+					{
+						faceId = cu.cid;
+						if(cu==c3_mc){
+							cu.gotoAndStop(2);
+						}else {
+							cu.gotoAndStop(3);
+						}
+					}
+				}
+			}
+			
+			private var _selectedSex:int = 0;
+			public function get selectedSex():int
+			{
+				return _selectedSex;
+			}
+			
+			private function makeMouseEnable($mc:MovieClip):void
+			{
+				$mc.mouseChildren = $mc.mouseEnabled =$mc.useHandCursor= true;
+			}		
+			
+			
+			public function set playerName(value:String):void
+			{
+				userName_tx.text = value;
+			}
+			
+			
+			public function get playerName():String
+			{
+				return userName_tx.text;
+			}
+			
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_loginM=MediatorUtil.getMediatorByInterface(IUIOperatableLoginMediator) as LoginMediator;
+				if(JSUtil.isplatform)
+				{
+					currentState = 'platform'; 
+					loadMc();
+				}else{
+					currentState = 'local'; 
+			        txt.text = _loginM.getARandomName() ;
+				}
+			}
+			
+			
+			/**
+			 * 内网点击创建角色
+			 * */
+			protected function btn_creat_clickHandler(event:MouseEvent):void
+			{
+				var selectRole:int = parseInt(roleGroup.selectedValue.toString());
+				_loginM.askForCreatARole(txt.text,selectRole);
+			}
+			
+			protected function suiji_clickHandler(event:MouseEvent):void
+			{
+				txt.text = _loginM.getARandomName();
+			}
+		
+			override public function get needTween():Boolean
+			{
+				return false;
+			}
+		]]>
+	</fx:Script>
+	<symbols:states>
+		<s:State name="platform"/>
+		<s:State name="local"/>
+	</symbols:states>
+	<fx:Declarations>
+		<s:RadioButtonGroup id="roleGroup"/>
+	</fx:Declarations>
+	<s:SpriteVisualElement id="sp" width="107" height="122" includeIn="platform"/>
+	<s:TitleWindow includeIn="local" width="100%" height="100%">
+		<s:HGroup top="40" gap="50" horizontalCenter="0">
+			<s:RadioButton label="孙权" groupName="roleGroup" value="2"/>
+			<s:RadioButton label="曹操" groupName="roleGroup" value="3" selected="true"/>
+			<s:RadioButton label="刘备" groupName="roleGroup" value="1"/>
+		</s:HGroup>
+		<s:HGroup horizontalCenter="-11" verticalCenter="-3">
+			<s:Label height="24" text="角色名：" verticalAlign="middle"/>
+			<s:TextInput id="txt"/>
+		</s:HGroup>
+		<s:Button id="btn_creat" bottom="50" label="创建角色 " click="btn_creat_clickHandler(event)"
+				  horizontalCenter="0"/>
+		<s:Button id="suiji" x="353" y="113" width="40" label="随" click="suiji_clickHandler(event)"/>
+			
+	</s:TitleWindow>
+</symbols:BasePanel>

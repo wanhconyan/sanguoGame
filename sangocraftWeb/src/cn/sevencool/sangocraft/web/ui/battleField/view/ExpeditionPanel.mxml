@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+project: sangocraft_Web
+@class: ExpeditionPanel
+@author: wangcongyan
+@usage:章节列表面板
+@since: 2013-8-27
+@modified: 2013-8-27
+@modifier: wangcongyan
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   width="820" height="475">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.data.model.RFightingChapterList;
+			import cn.sevencool.sangocraft.data.symbols.SoundManager;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.data.symbols.material.factory.ImageFactory;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.ui.battleField.mediator.BattleFieldMediator;
+			import cn.sevencool.sangocraft.web.ui.battleField.view.itemrender.ExpeditionIR;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			
+			import spark.effects.easing.Elastic;
+			import spark.events.IndexChangeEvent;
+			
+			private var _list:ArrayCollection = null;
+			
+			/**
+			 * 当前章节数组
+			 * */
+			public var chapterColl:ArrayCollection  =new ArrayCollection();
+			
+			/**
+			 * 上一章节或下一章节
+			 * */
+			public var preOrNextColl:ArrayCollection = new ArrayCollection();
+			
+			/**
+			 * 前后章节数组
+			 * */
+			public var chapterCollPreOrNext:ArrayCollection  =new ArrayCollection();
+			
+			
+			public var totalPage:int = -1;
+			
+			private var _bottomMap:Bitmap = null;
+			/**
+			 * 战场选项卡
+			 * */
+			private static var  MENUSTR:Array = ['普通战场','条件战场','活动战场'];
+			
+			/**
+			 * 遮罩
+			 * */
+			private var masks:Sprite = null;
+			
+			protected override function resourcesChanged():void
+			{
+				dataArray=new Vector.<Class>;
+				dataArray.push(RFightingChapterList);
+			}
+			
+			protected override function onDataChange(type:String=""):void
+			{
+				switch(type)
+				{
+					case 'RFightingChapterList':
+						recFightingChapterList();
+						break;
+					default:
+						throw new Error("onDataChange" + type);
+				}
+			}
+			
+			
+			/**
+			 * 刷新战场列表信息
+			 * */
+			private function recFightingChapterList():void
+			{
+				
+				
+			}
+			
+			private var _mediator:BattleFieldMediator = null ;
+			override public function set mediatorUI($value:AbstractMediator):void 
+			{
+				_mediator = $value  as BattleFieldMediator ;
+			}
+			override public function get mediatorUI():AbstractMediator
+			{
+				return _mediator;
+			}
+			
+			
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_bottomMap = new Bitmap();
+				panelID = 311;
+				bottom.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'forWarbottom',_bottomMap));
+				masks = new Sprite();
+				masks.graphics.beginFill(0xff0000);
+				masks.graphics.drawRect(0,0,738,348);
+				masks.graphics.endFill();
+				parentGroup.mask = masks;
+				viewMenu.dataProvider = new ArrayCollection(MENUSTR);
+				onShow();
+				
+			}
+			
+			override public function get needBundleList():Array
+			{
+				var urlArr:Array = [] ;
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'forWarbottom'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'completeAlready'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'notOpen'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'cannotUse'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'warBar'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'discriptionBar'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'battleBar'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'battleOver'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.COMPLETENUM,'complete'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.COMPLETENUM,'percent'));
+				for(var i:int = 101; i<115 ; i++)
+				{
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.FIGHTCHAPTERBACK,i.toString()));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.FIGHTCHAPTER,i.toString()));
+				}
+				return urlArr ;
+			}
+			
+			protected override function onShow():void
+			{
+				if(!initialized)
+				{
+					return ;
+				}
+				_mediator.fightingChapterListInfo(1);
+				fade.play();
+			}
+			/**
+			 *  翻页数组数据跟新
+			 * */
+			private var nowPage:int =0;
+			protected function page_grop_PageChangeHandler(event:Event):void
+			{
+				
+				switch(event.target)
+				{
+					case  page_grop:
+						
+						_mediator.refreshPage(page_grop.nowPage);
+						
+						break;
+					default:
+						throw new Error("event.target"+event.target)
+				}
+			}
+			
+			protected function titlewindow1_closeHandler(event:CloseEvent):void
+			{
+				UIMananger.getInstance().hide(this);
+				
+			}
+			
+			protected function viewMenu_changeHandler(event:IndexChangeEvent):void
+			{
+				var type:int = -1;
+				switch(viewMenu.selectedIndex)
+				{
+					case 0:
+					{
+						type = 1;
+						
+						break;
+					}
+					case 1:
+					{
+						type = 2;
+						break;
+					}
+					case 2:
+					{
+						type = 3;
+						break;
+					}
+					default:
+					{
+						throw new Error('btnClickHandler' + event.target);
+					}
+				}
+				_mediator.fightingChapterListInfo(type);
+				
+			}
+			
+			protected function page_grop_LeftClikHandler(event:Event):void
+			{
+				moveL.xFrom = 0
+				moveL1.xFrom = -730
+				moveL.xTo = 729;
+				moveL1.xTo = 2;
+				moveL.play();
+				moveL1.play();
+			}
+			
+			/**
+			 * dataGroup 
+			 * dataGroup1
+			 * */
+			protected function page_grop_RightClikHandler(event:Event):void
+			{
+				moveR.xFrom = 0
+				moveR1.xFrom = 729
+				moveR.xTo =  -730;
+				moveR1.xTo = 2;
+				moveR.play();
+				moveR1.play();
+			}
+			
+			protected function viewMenu_clickHandler(event:MouseEvent):void
+			{
+				SoundManager.getInstance().musicPlay("Interface04");
+			}
+			
+		]]>
+	</fx:Script>
+		<fx:Declarations>
+			<s:Fade id="fade" target="{dataGroup}" alphaFrom="0" alphaTo="1" duration="1000"/>
+			
+			<s:Move id="moveL" target="{dataGroup}" duration="500"/>
+			<s:Move id="moveR" target="{dataGroup}"  duration="500"/>
+			<s:Move id="moveL1" target="{dataGroup1}" duration="500"/>
+			<s:Move id="moveR1" target="{dataGroup1}"  duration="500"/>
+			
+			
+			<mx:WipeRight id="wipeOut" duration="2000" target="{dataGroup}" />
+			<mx:WipeRight id="wipeIn" duration="2000"  target="{dataGroup1}"/>
+			<mx:Iris id="irisOut" duration="1000"  showTarget="true"/>
+		</fx:Declarations>	
+			
+	<s:TitleWindow width="100%" height="466" close="titlewindow1_closeHandler(event)" id="panelTitle" title="征 戰">
+		<mx:Image x="22" y="27" width="755" height="365" id="bottom"/>
+		<s:TabBar id="viewMenu" x="535" y="4" width="240" change="viewMenu_changeHandler(event)"  mouseDown="viewMenu_clickHandler(event)"/> 
+		<symbols:Grouppagination id="page_grop" left="0" right="0" LeftClik="page_grop_LeftClikHandler(event)"
+								 PageChange="page_grop_PageChangeHandler(event)" RightClik="page_grop_RightClikHandler(event)"
+								 verticalCenter="0"/>
+		<s:Group id="parentGroup" x="42" y="29" >
+		<s:DataGroup id="dataGroup" width="729" height="304"  x="-730"
+					 itemRenderer="cn.sevencool.sangocraft.web.ui.battleField.view.itemrender.ExpeditionIR">
+			<s:layout>
+				<s:TileLayout requestedColumnCount="4" requestedRowCount="2" horizontalGap="25" verticalGap="-5"/>
+			</s:layout>
+		</s:DataGroup>	
+		
+		<s:DataGroup id="dataGroup1" x="1" width="729" height="304"
+					 itemRenderer="cn.sevencool.sangocraft.web.ui.battleField.view.itemrender.ExpeditionIR">
+			<s:layout>
+				<s:TileLayout requestedColumnCount="4" requestedRowCount="2" horizontalGap="25" verticalGap="-5"/>
+			</s:layout>
+		</s:DataGroup>
+		</s:Group>
+	</s:TitleWindow>
+</symbols:BasePanel>

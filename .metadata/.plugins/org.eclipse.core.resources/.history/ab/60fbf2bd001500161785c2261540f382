@@ -1,0 +1,73 @@
+package com.module.battle
+{
+	import com.core.view.BaseMediator;
+	import com.sanguo.manager.App;
+	import com.starling.battle.ai.BattleField;
+	import com.starling.battle.view.GameRoot;
+	
+	import flash.events.Event;
+	import flash.geom.Rectangle;
+	
+	import starling.core.Starling;
+
+	public class BattleMediator extends BaseMediator
+	{
+		
+		private var _starling:Starling ;
+		
+		private var _viewPortRect:Rectangle ;
+		public function BattleMediator()
+		{
+			
+		}
+		
+		public function startUp():void
+		{
+			
+		}
+		
+		protected function addLinstener():void
+		{
+			App.ins.stage.addEventListener(Event.RESIZE,onResize);
+		}
+		
+		protected function onResize(event:Event):void
+		{
+			if(!_starling.isStarted)
+			{
+				_starling.viewPort.width = App.ins.stage.stageWidth ;
+				_starling.viewPort.height = App.ins.stage.stageHeight ;
+			}
+			
+		}		
+		
+		protected function removeLinstener():void
+		{
+		
+		
+		}
+		
+		
+		public function start():void
+		{
+			_viewPortRect = new Rectangle(0, 0, App.ins.stage.stageWidth, App.ins.stage.stageHeight);
+			Starling.handleLostContext = true; 
+			_starling = new Starling(Battle,App.ins.stage,_viewPortRect);
+			_starling.antiAliasing =1;
+			_starling.showStats=true;
+			_starling.showStatsAt("right");
+			_starling.simulateMultitouch = true;
+			_starling.enableErrorChecking = false; //将错误检测关闭
+			_starling.start();
+		}
+		
+		
+		public function end():void
+		{
+			_starling.stop();
+			BattleField.instance.battleContainer.visible = false;
+			BattleField.instance.dispose();
+			_starling.dispose();
+		}
+	}
+}

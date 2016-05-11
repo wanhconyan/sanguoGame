@@ -1,0 +1,49 @@
+package com.core.component
+{
+	import flash.display.Sprite;
+	
+	public class MulitPolygon extends Sprite
+	{
+		
+		private var polygonLenU:int = 0 ;
+		
+		private var polygonLenV:int = 0 ;
+		
+		private var sideLength:int = 0 ;
+		/**
+		 * 多边形数组 
+		 */		
+		private var _polygon:Vector.<Vector.<PolyState>> = null;
+		
+		public function MulitPolygon(polygonLenU:int = 100 ,polygonLenV:int = 100, sideLenght:int=20)
+		{
+			super();
+			this.sideLength = sideLenght ;
+			this.polygonLenU = polygonLenU ;
+			this.polygonLenV = polygonLenV;
+			createPloygon();
+		}
+	   /**
+	    * 创建整形地面  
+	    */		
+	   private function createPloygon():void
+	   {
+		   _polygon = new Vector.<Vector.<PolyState>>();
+		   var poly:PolyState = null;
+		   for(var i:int = 0 ; i < polygonLen  ; i ++)
+		   {
+				_polygon[i] = new Vector.<PolyState>();
+				for(var j:int = 0 ; j < sideLength ; j ++)
+				{
+					poly = new PolyState(sideLength);
+					_polygon[i][j] = poly ;
+					poly.xNode = i ;
+					poly.yNode = j ;
+					this.addChild(poly);
+					poly.x = i * (poly.sideLength * Math.cos(Math.PI/6) * Math.cos(Math.PI/6)) ;
+					poly.y = j * poly.sideLength * Math.cos(Math.PI/6)* Math.cos(Math.PI/18)+ i%2 * poly.sideLength * Math.sin(Math.PI/3)/2;
+				}
+		   }
+	   }
+	}
+}

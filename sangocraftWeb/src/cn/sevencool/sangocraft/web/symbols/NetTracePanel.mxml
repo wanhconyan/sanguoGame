@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			  xmlns:s="library://ns.adobe.com/flex/spark" 
+			 creationComplete="basepanel1_creationCompleteHandler(event)" 
+			  xmlns:mx="library://ns.adobe.com/flex/mx"
+			  xmlns:manager="cn.sevencool.shipjourney.manager.*" 
+			  width="620" height="434" 
+			  xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*">
+	<symbols:layout>
+		<s:BasicLayout/>
+	</symbols:layout>
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.model.RserverVersion;
+			import cn.sevencool.sangocraft.data.symbols.CommonData;
+			import cn.sevencool.sangocraft.data.symbols.GameFormat;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			import mx.events.IndexChangedEvent;
+			import mx.events.ItemClickEvent;
+			import mx.events.ListEvent;
+			
+			import cn.sevencool.sangocraft.data.symbols.SystemModelLocator;
+			import org.oswxf.rpc.interfaces.ISend;
+			import org.oswxf.rpc.interfaces.IVO;
+			
+			private static var _saveData:Boolean = true;
+			/**
+			 * 是否显示全部数据
+			 * */
+			private static var _selectAll:Boolean = true;
+			/**
+			 * 是否搜索
+			 * */
+			private static var _selectSearch:Boolean = false;
+			/**
+			 * 搜索字符
+			 * */
+			private static var _selectString:String = '';
+			
+			
+			private static var instance:NetTracePanel;
+			//记录登陆数据
+			private static var onCopyLogin:Boolean = true;
+			
+			[Bindable]
+			private static var netConnectedAry:Array = new Array();
+			
+			[Bindable]
+			private static var netReceiveConnectedAry:Array = new Array();
+			private static var arr:Array = new Array();
+			public static function addSendConnected(s:ISend):void
+			{
+				if(!_saveData)
+				{
+					return;
+				}
+				var date:Date = new Date();
+				var obj:Object = new Object();
+				obj["time"] = date.toString();
+				obj["command"] = s.command.toString(16);
+				obj["data"] = s;
+				
+				netConnectedAry.push(obj);
+				selectHandler();
+			}
+			
+			public static function addReceiveConnected($cmd:int,$bytes:ByteArray,$data:IVO=null,$severType:String=''):void
+			{
+				if(onCopyLogin)
+				{
+					setTimeout(stopCopyLogin,20000);
+					onCopyLogin = false;
+				}
+				
+				if(!_saveData)
+				{
+					return;
+				}
+				var date:Date = new Date();
+				var obj:Object = new Object();
+				obj["time"] = $severType+date.toString();
+				obj["command"] = $cmd.toString(16);
+				obj["data"] = $data;
+				obj["bytes"] = $bytes;
+				
+				netReceiveConnectedAry.push(obj);
+				selectHandler();
+			}
+			
+			
+			private static function selectHandler():void
+			{
+				if(!_selectSearch && _selectAll && instance && instance.receiveDG)
+				{
+					var selectedPosition:Number = instance.receiveDG.verticalScrollPosition;
+					instance.receiveDG.dataProvider = netReceiveConnectedAry;
+					instance.receiveDG.verticalScrollPosition = selectedPosition;
+				}
+				
+				if(_selectSearch && !_selectAll && instance && instance.receiveDG)
+				{
+					arr=[];
+					for(var i:int= 0 ; i < netReceiveConnectedAry.length ; i++)
+					{
+						var objStr:Object = netReceiveConnectedAry[i];
+						if(objStr["command"] == _selectString)
+						{
+							arr.push(objStr);
+						}
+					}
+					var selectedPosition1:Number = instance.receiveDG.verticalScrollPosition;
+					instance.receiveDG.dataProvider = arr;
+					instance.receiveDG.verticalScrollPosition = selectedPosition1;
+				}
+			}
+			
+			override protected function resourcesChanged():void
+			{
+				
+			}
+			
+			override public function get type():int
+			{
+				return UIMananger.TYPE_ALERT;
+			}
+
+			protected function titlewindow1_closeHandler(event:CloseEvent):void
+			{
+				UIMananger.getInstance().hide(this);
+				_selectString = txt_err.text='';
+				_selectSearch = chk_seach.selected = false;
+				_selectAll = chk_all.selected  = true;
+			}
+
+
+			protected function tabnavigator1_changeHandler(event:IndexChangedEvent):void
+			{
+				
+			}
+
+
+			protected function sendDG_itemClickHandler(event:ListEvent):void
+			{
+				if(sendDG.selectedItem)
+				{
+					sendTxt.text = GameFormat.objToString(sendDG.selectedItem["data"]);
+				}
+			}
+			  
+			override protected function onShow():void
+			{
+				instance = this;
+				if(sendDG)
+				{
+					sendDG.dataProvider = netConnectedAry;
+				}
+				
+				if(receiveDG)
+				{
+					receiveDG.dataProvider = netReceiveConnectedAry;
+				}
+			}
+
+			protected function receiveDG_clickHandler(event:MouseEvent):void
+			{
+				refreshReceiveTxt();
+			}
+
+
+			protected function typeRadioButGroup_itemClickHandler(event:ItemClickEvent):void
+			{
+				refreshReceiveTxt();
+			}
+			
+			private function refreshReceiveTxt():void
+			{
+				if(!receiveDG.selectedItem)
+				{
+					return;
+				}
+				switch(typeRadioButGroup.selection)
+				{
+					case byteArrayRadio:
+						var byte:ByteArray = receiveDG.selectedItem["bytes"];
+						var str:String = "length:" + byte.length.toString() + "||";
+						
+						for(var i:int=0;i<byte.length;i++)
+						{
+							str += byte[i].toString() + "|";
+						}
+						receiveTxt.text = str;
+						break;
+					case dataRadio:
+						if(receiveDG.selectedItem["data"])
+						{
+							receiveTxt.text = GameFormat.objToString(receiveDG.selectedItem["data"]);
+						}
+						break;
+				}
+			}
+			
+			public static function setLagTime(time:Number):void
+			{
+				if(instance && instance.lagTimeTxt)
+				{
+					instance.lagTimeTxt.text = "lag timer:" + time.toString();
+				}
+			}
+
+			protected function startSaveCB_changeHandler(event:Event):void
+			{
+				_saveData = startSaveCB.selected;
+			}
+			
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				localVersion.text = CommonData.version;
+				var rsv:RserverVersion = SystemModelLocator.getInstance().getPropertyByVo(RserverVersion) as RserverVersion;
+				if(rsv)
+				{
+					serviceVersion.text = rsv.szVer;
+				}
+			}
+			
+			private static function stopCopyLogin():void
+			{
+				_saveData = false;
+			}
+
+			protected function txt_err_keyUpHandler(event:KeyboardEvent):void
+			{
+				_selectString = txt_err.text;
+				selectHandler();
+			}
+
+			protected function selectButGroup_itemClickHandler(event:ItemClickEvent):void
+			{
+				switch(selectButGroup.selection)
+				{
+					case chk_seach:
+						_selectSearch = chk_seach.selected;
+						_selectAll = chk_all.selected  = !_selectSearch;
+						break;
+					case chk_all:
+						_selectAll = chk_all.selected ;
+						_selectSearch = chk_seach.selected =!_selectAll ;
+						break;
+					default:
+						throw new Error('selectButGroup_itemClickHandler'+ selectButGroup.selection);
+				}
+				selectHandler();
+						
+			}
+
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<s:RadioButtonGroup id="typeRadioButGroup" itemClick="typeRadioButGroup_itemClickHandler(event)"/>
+		<s:RadioButtonGroup id="selectButGroup" itemClick="selectButGroup_itemClickHandler(event)"/>
+	</fx:Declarations>
+	<s:TitleWindow close="titlewindow1_closeHandler(event)"  color="#000000"  width="100%" height="100%" left="0" top="0">
+		<mx:TabNavigator change="tabnavigator1_changeHandler(event)"  x="16" y="7" width="587" height="351">
+			<s:NavigatorContent label="接收" width="100%" height="100%">
+				<mx:DataGrid id="receiveDG" styleName="BlackDataGrid"  headerSeparatorSkin="mx.skins.ProgrammaticSkin"
+							 click="receiveDG_clickHandler(event)" dataProvider="{netReceiveConnectedAry}"
+							 left="0" top="0" bottom="0" width="40%" contentBackgroundColor="#FDFBFB" contentBackgroundAlpha="1.0" color="#000000">
+					<mx:columns>
+						<mx:DataGridColumn headerText="时间" dataField="time"/>
+						<mx:DataGridColumn headerText="命令名" dataField="command"/>
+					</mx:columns>
+				</mx:DataGrid>
+				<s:HGroup width="60%" height="30" right="0" top="0" verticalAlign="middle">
+					<s:RadioButton label="ByteArray" id="byteArrayRadio" groupName="typeRadioButGroup"/>
+					<s:RadioButton label="Data" id="dataRadio" groupName="typeRadioButGroup"/>
+				</s:HGroup>
+				<s:TextArea id="receiveTxt" bottom="0" right="0" top="30" width="60%" contentBackgroundColor="#FEFEFE" contentBackgroundAlpha="0.0"/>
+			</s:NavigatorContent>
+			<s:NavigatorContent label="发送" width="100%" height="100%">
+				<mx:DataGrid id="sendDG" itemClick="sendDG_itemClickHandler(event)" styleName="BlackDataGrid" 
+							 headerSeparatorSkin="mx.skins.ProgrammaticSkin"  dataProvider="{netConnectedAry}"
+							 x="0" width="40%" top="0" bottom="0" color="#000000">
+					<mx:columns>
+						<mx:DataGridColumn headerText="时间" dataField="time"/>
+						<mx:DataGridColumn headerText="命令名" dataField="command"/>
+					</mx:columns>
+				</mx:DataGrid>
+				<s:TextArea id="sendTxt" top="0" bottom="0" right="0" width="60%" color="#000000"/>
+			</s:NavigatorContent>
+		</mx:TabNavigator>
+		<s:Label id="lagTimeTxt" x="116" y="4" width="104"/>
+		<s:CheckBox id="startSaveCB" label="保存数据" change="startSaveCB_changeHandler(event)" x="229" y="4" selected="false"/>
+		<s:Label x="315" y="9" width="54" text="本地："/>
+		<s:Label id="localVersion" x="356" y="9" width="66"  text="0.00"/>
+		<s:Label x="451" y="11" width="66" text="服务器："/>
+		<s:Label id="serviceVersion" x="529" y="12" width="72"  text="0.00"/>
+		<s:TextInput x="67" y="364" width="147" id="txt_err" keyUp="txt_err_keyUpHandler(event)"/>
+		<s:Label x="16" y="364" text="命令名：" height="20" verticalAlign="middle" textAlign="center"/>
+		<s:RadioButton groupName="selectButGroup" id="chk_seach" x="219" y="363" label="搜索" selected="false" width="56" />
+		<s:RadioButton groupName="selectButGroup" x="278" y="364" label="全部" id="chk_all"  selected="true"/>
+	</s:TitleWindow>
+</symbols:BasePanel>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item value="245" key="DIALOG_WIDTH"/>
+		<item value="227" key="DIALOG_Y_ORIGIN"/>
+		<item value="304" key="DIALOG_X_ORIGIN"/>
+		<item value="379" key="DIALOG_HEIGHT"/>
+		<item value="1|.Helvetica Neue DeskInterface|11.0|0|COCOA|1|.HelveticaNeueDeskInterface-Regular" key="DIALOG_FONT_NAME"/>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item value="true" key="wrap"/>
+		<item value="false" key="casesensitive"/>
+		<item value="false" key="isRegEx"/>
+		<item value="false" key="incremental"/>
+		<item value="false" key="wholeword"/>
+		<item value="INDEX" key="selection"/>
+		<list key="findhistory">
+			<item value="index "/>
+			<item value="index"/>
+			<item value="_viewPortRect"/>
+			<item value="onComplete1"/>
+			<item value="DIR"/>
+			<item value="file"/>
+			<item value="onLoaderComplete"/>
+			<item value="randomMovation"/>
+		</list>
+		<list key="replacehistory">
+			<item value="action"/>
+		</list>
+	</section>
+</section>

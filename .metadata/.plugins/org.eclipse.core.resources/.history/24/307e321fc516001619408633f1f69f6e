@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   addedToStage="windowedapplication1_addedToStageHandler(event)"
+					   creationComplete="windowedapplication1_creationCompleteHandler(event)"
+					   xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:unitControl="com.view.unitControl.*">
+	<fx:Script>
+		<![CDATA[
+			import com.core.component.MulitPolygon;
+			import com.core.event.BattleEvent;
+			import com.core.util.Dispatcher;
+			import com.core.util.LoopManager;
+			import com.view.unitControl.App;
+			import com.view.unitControl.battle.BattleModule;
+			
+			import mx.events.FlexEvent;
+			
+			private var _textFiled:TextField;
+			private var _endTextField:TextField;
+			protected function windowedapplication1_creationCompleteHandler(event:FlexEvent):void
+			{
+				
+				
+				var multi:MulitPolygon = new MulitPolygon(30,20,20);
+				container.addChild(multi);
+			}
+			
+			
+			
+			protected function onClick(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				Dispatcher.dispatch(BattleEvent.BATTLE_START);
+				_textFiled.visible = false;
+				_endTextField.mouseEnabled = true;
+				_endTextField.visible = true;
+			}
+			
+			protected function onEndClick(event:MouseEvent):void
+			{
+				Dispatcher.dispatch(BattleEvent.BATTLE_END);
+				_endTextField.mouseEnabled = false;
+				_endTextField.visible = false;
+				_textFiled.visible = true;
+			}
+
+			
+			protected function windowedapplication1_addedToStageHandler(event:Event):void
+			{
+				// TODO Auto-generated method stub
+				App.ins.init(stage);
+				LoopManager.init(stage);
+				new BattleModule().start();
+				
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<mx:FileSystemTree id="fileSystem"/>
+	<s:HGroup>
+	<s:SpriteVisualElement id="container" width="600" height="400"/>
+	<unitControl:UnitControlPanel id="unitControl" />
+	</s:HGroup>
+</s:WindowedApplication>

@@ -1,0 +1,15 @@
+package com.core.component
+{
+	import flash.display.Sprite;
+	
+	public class Polygon extends Sprite
+	{
+		public function Polygon()
+		{
+			super();
+		}
+		
+		
+		
+	}
+}

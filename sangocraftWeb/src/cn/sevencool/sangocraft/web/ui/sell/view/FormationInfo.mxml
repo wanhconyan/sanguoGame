@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+project: sangocraft_Web
+@class: FormationInfo
+@author: zhoujingye
+@usage: 将领详细面板
+@since: 2013-8-24
+@modified: 2013-8-24
+@modifier: zhoujingye 
+-->
+	<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   creationComplete="basepanel1_creationCompleteHandler(event)"
+					   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+					   width="205" height="433" xmlns:itemsBox="cn.sevencool.sangocraft.web.symbols.itemsBox.*"
+					   xmlns:titleWindow="cn.sevencool.sangocraft.web.skin.titleWindow.*">  
+		<fx:Script>
+				<![CDATA[
+					import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+					import cn.sevencool.sangocraft.data.manager.utils.MediatorUtil;
+					import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+					import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+					import cn.sevencool.sangocraft.data.vo.ItemOperationVO;
+					import cn.sevencool.sangocraft.data.vo.MonsterDescription;
+					import cn.sevencool.sangocraft.web.events.SmallPanelEvent;
+					import cn.sevencool.sangocraft.web.manager.UIMananger;
+					import cn.sevencool.sangocraft.web.symbols.itemsBox.LatticeUltra;
+					import cn.sevencool.sangocraft.web.ui.barracks.mediator.BarracksMediator;
+					import cn.sevencool.sangocraft.web.ui.barracks.view.GeneralDetailsPanel;
+					import cn.sevencool.sangocraft.web.ui.formation.mediator.FormationMediator;
+					import cn.sevencool.sangocraft.web.ui.formation.view.FormationPanel;
+					
+					import mx.events.CloseEvent;
+					import mx.events.FlexEvent;
+					
+					import spark.filters.GlowFilter;
+					
+					/**
+					 * 军机处Mediator
+					 * */
+					private var _militaryM:BarracksMediator = null;
+					private var armyTypeArr:Array=['marinesNew','theCavalryNew','thoughNew','instrumentNew'];
+					private var armyTypeIconArr:Array=['pikeman','cavalryman','Archer','instrumentPic'];
+					private var _itemVO:ItemOperationVO=null;
+					private var _teamId:int=-1;
+					private var _teamLoc:int=-1;
+					/**
+					 * 编队 meditor
+					 * */
+					private var _forM:FormationMediator = null;
+					
+					/**
+					 * 编队面板
+					 * */
+					private var _formationPanel:FormationPanel = null ;
+					/**
+					 * 将领详细面板
+					 * */
+					private var _generalDetailPanel:GeneralDetailsPanel = null ;
+					/**
+					 * 资源管理器
+					 * */
+					private var _materialManager:MaterialManager=null;
+					/**
+					 * 显示管理器
+					 * */
+					private var _uiManager:UIMananger=null;
+					/**
+					 * 装载图片的容器
+					 * */
+					private var _lvMap:Bitmap = null;
+					private var _commandMap:Bitmap = null;
+					private var _soldierMap:Bitmap = null;
+					private var _attackMap:Bitmap = null;
+					private var _defenseMap:Bitmap = null;
+					private var _upLineMap:Bitmap = null;
+					private var _downLineMap:Bitmap = null;
+					private var _bottomMap:Bitmap = null;
+					private var _soldierTypeMap:Bitmap = null;
+					private var _typeValueMap:Bitmap = null;
+					private var _skillM:Bitmap = null;
+					private var _skillW:Bitmap = null;
+
+					/**
+					 * 显示类型
+					 * */
+					public var showType:int = -1;
+					public var arr:Array = null;
+
+					public function get itemVO():ItemOperationVO
+					{
+						return _itemVO;
+					}
+
+					public function set itemVO(value:ItemOperationVO):void
+					{
+						_itemVO = value;
+						if(!_itemVO.isSelect)
+						{
+							var even:SmallPanelEvent = new SmallPanelEvent(SmallPanelEvent.CLOSEPANEL) ;
+							this.dispatchEvent(even);
+							return;
+						}
+						if(_itemVO.isSelect)
+						{
+							showGeneral();
+							_itemVO.isSelect=false;
+							return;
+						}
+					}
+
+					public function get teamLoc():int
+					{
+						return _teamLoc;
+					}
+
+					public function set teamLoc(value:int):void
+					{
+						_teamLoc = value;
+					}
+
+					public function get teamId():int
+					{
+						return _teamId;
+					}
+
+					public function set teamId(value:int):void
+					{
+						_teamId = value;
+					}
+
+					
+					/**
+					 * 设置mediatorUI
+					 * */
+					public function setMediatorUI($value:BarracksMediator):void
+					{
+						_militaryM = $value as BarracksMediator;
+					}
+					
+					
+					public override function get usableCount():int
+					{
+						return 1 ;
+					}
+					
+					
+					/**
+					 * 设置mediatorUI
+					 * */
+					override public function set mediatorUI($value:AbstractMediator):void
+					{
+						_militaryM = $value as BarracksMediator;
+					}
+					
+					
+					override public function get needBundleList():Array
+					{
+						var urlArr:Array = [] ;
+						urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'0'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'1'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'2'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'3'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'4'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'5'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'6'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'7'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'8'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'9'));  
+						urlArr.push(_materialManager.getURL(MaterialKeys.GENERALDETAILLVL,'0'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.GENERALDETAILLVL,'1'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.GENERALDETAILLVL,'2'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.GENERALDETAILLVL,'3'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.GENERALDETAILLVL,'4'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.GENERALDETAILLVL,'5'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.GENERALDETAILLVL,'6'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.GENERALDETAILLVL,'7'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.GENERALDETAILLVL,'8'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.GENERALDETAILLVL,'9'));  
+						urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'commandNew'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'soldierNumNew'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'attackNew'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'defenseNew'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'lineNew'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'smallPanelBottom'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,''));
+						return urlArr;
+					}
+					
+					
+					private function loadImg(monsterDescription:MonsterDescription):void
+					{
+						lvNum.figureHandler(monsterDescription.nNowLev.toString(),MaterialKeys.LVLBIG,15);
+						star.starNum=monsterDescription.monStar;
+						commandNum.figureHandler(monsterDescription.commader.toString(),MaterialKeys.GENERALDETAILLVL,10);
+						soldierNum.figureHandler(monsterDescription.nowSolider.toString(),MaterialKeys.GENERALDETAILLVL,10);
+						defenseNum.figureHandler(monsterDescription.nowDefend.toString(),MaterialKeys.GENERALDETAILLVL,10);
+						attackNum.figureHandler(monsterDescription.nowAttack.toString(),MaterialKeys.GENERALDETAILLVL,10);
+						var armyType:int=Math.floor(monsterDescription.carrySoliderType/5);
+						var str:String=armyTypeArr[armyType];
+						var iconStr:String=armyTypeIconArr[armyType];
+						soldierType.addChild(_materialManager.getIcon(MaterialKeys.OTHER,str,_soldierTypeMap));
+						typeValue.addChild(_materialManager.getIcon(MaterialKeys.OTHER,iconStr,_typeValueMap));
+						skillM.addChild(_materialManager.getIcon(MaterialKeys.SKILLNAME,monsterDescription.chiefSkill.toString(),_skillM));
+						skillW.addChild(_materialManager.getIcon(MaterialKeys.SKILLNAME,monsterDescription.generalSkill.toString(),_skillW));
+					}
+					
+					
+					/**
+					 * 显示将领详细
+					 * */
+					private  function showGeneral():void
+					{
+						if(!initialized)
+							return;
+						var monsterDescription:MonsterDescription=new MonsterDescription();
+						monsterDescription=_militaryM.showItemsInfo(_itemVO,arr);
+						genName.text=monsterDescription.monName.toString();
+						loadImg(monsterDescription);
+					}
+					
+					
+					/**
+					 * 加载人物图片
+					 * */                                    
+					private function addImg():void      
+					{
+						lv.addChild(_materialManager.getIcon(MaterialKeys.LVLBIG,'',_lvMap));
+						command.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'commandNew',_commandMap));
+						soldier.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'soldierNumNew',_soldierMap));
+						attack.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'attackNew',_attackMap));
+						defense.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'defenseNew',_defenseMap));
+						upLine.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'lineNew',_upLineMap));
+						downLine.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'lineNew',_downLineMap));
+						bottom.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'smallPanelBottom',_bottomMap));
+					}
+					
+					
+					/**
+					 * 面板创建完成
+					 * */
+					protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+					{
+						_lvMap = new Bitmap();
+						_commandMap = new Bitmap();
+						_soldierMap = new Bitmap();
+						_attackMap = new Bitmap();
+						_defenseMap = new Bitmap();
+						_upLineMap = new Bitmap();
+						_downLineMap = new Bitmap();
+						_bottomMap = new Bitmap();
+						_soldierTypeMap = new Bitmap();
+						_typeValueMap = new Bitmap();
+						_skillM = new Bitmap();
+						_skillW = new Bitmap();
+						_materialManager=MaterialManager.getInstance();
+						_uiManager=UIMananger.getInstance();
+						onShow();
+						addImg();
+						_forM = MediatorUtil.getMediatorByInterface(FormationMediator);
+						_formationPanel = _uiManager.getUIObj(FormationPanel) as FormationPanel ;
+						_generalDetailPanel = _uiManager.getUIObj(GeneralDetailsPanel) as GeneralDetailsPanel ;
+						_generalDetailPanel.setMediatorUI(_militaryM);
+					}
+					
+					protected function genDetailsBtn_clickHandler(event:MouseEvent):void
+					{
+						_uiManager.showOrHide(GeneralDetailsPanel);
+						_generalDetailPanel.item=_itemVO;
+						_generalDetailPanel.showType = 0;
+					}
+					
+					
+					protected function close_clickHandler(event:MouseEvent):void
+					{
+						var even:SmallPanelEvent = new SmallPanelEvent(SmallPanelEvent.CLOSEPANEL) ;
+						this.dispatchEvent(even);
+					}
+					
+					
+					protected function forWar_clickHandler(event:MouseEvent):void
+					{
+						_forM.setFormationInfo(teamId,_itemVO.item.i64ItemID,_teamLoc);
+						_uiManager.showOrHide(FormationPanel);
+					}
+
+					
+					/***
+					 * 面板打开
+					 * */
+					override protected function onShow():void
+					{
+						if(!initialized)
+							return;
+					} 
+					
+				]]>
+		</fx:Script>
+		<fx:Declarations>
+			<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		</fx:Declarations>
+			<mx:Image  x="0" y="1" height="431" width="203"  id="bottom"/>
+			<s:Button id="close" x="185" y="0" click="close_clickHandler(event)"
+					  skinClass="cn.sevencool.sangocraft.web.skin.titleWindow.CloseBtnSkin"/>
+			<s:Label x="36" y="27" width="131" height="23" text="标签" textAlign="left" id="genName"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"
+					 color="#eee6dc" fontSize="14"
+					 verticalAlign="middle"/>
+			<mx:Image  x="31" y="50" height="19" width="32"  id="lv"/>
+			<symbols:FigureDisplay  id="lvNum" x="64" y="41" height="19" width="56"
+									maxMedian="3"/>
+			<symbols:GeneralStar  x="36" y="80" id="star" />
+			<mx:Image  x="35" y="107" height="11" width="32"  id="upLine"/>
+			<s:Group x="21" y="118" width="155" height="134">
+				<mx:Image  x="14" y="0" height="26" width="73"  id="command"/>
+				<symbols:FigureDisplay   x="79" y="-11" height="26" width="62" id="commandNum"
+										 maxMedian="5"/>
+				<mx:Image  x="14" y="25" height="26" width="73"  id="soldier"/>
+				<symbols:FigureDisplay   x="79" y="14" height="26" width="62" id="soldierNum"
+										 maxMedian="10"/>
+				<mx:Image  x="14" y="50" height="26" width="73"  id="attack"/>
+				<symbols:FigureDisplay   x="79" y="39" height="26" width="62" id="attackNum"
+										 maxMedian="10"/>
+				<mx:Image  x="14" y="75" height="26" width="73"  id="defense"/>
+				<symbols:FigureDisplay   x="79" y="64" height="26" width="62" id="defenseNum"
+										 maxMedian="10"/>
+				<mx:Image  x="14" y="100" height="26" width="73"  id="soldierType"/>
+				<mx:Image  x="80" y="100" height="26" width="73"  id="typeValue"/>
+			</s:Group>
+			<mx:Image  x="35" y="252" height="11" width="32"  id="downLine"/>
+			<s:VGroup x="35" y="325" height="84" gap="7">
+				<s:Button id="forWar" click="forWar_clickHandler(event)" label="出战" width="100" height="36"/>
+				<s:Button id="genDetailsBtn" click="genDetailsBtn_clickHandler(event)" width="100" height="36" label="详情"/>
+				<!--skinClass="cn.sevencool.sangocraft.web.skin.button.ForWarBtnSkin"-->
+			</s:VGroup>
+		<mx:Image  x="31" y="259" height="28" width="89"  id="skillM"/>
+		<mx:Image  x="31" y="287" height="28" width="89"  id="skillW"/>
+</symbols:BasePanel>

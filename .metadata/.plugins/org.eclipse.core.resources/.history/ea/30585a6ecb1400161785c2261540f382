@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
+  <includeClasses>
+    <classEntry path="com.core.loader.UnitLoader"/>
+    <classEntry path="com.core.unit.UnitState"/>
+    <classEntry path="com.core.IDispose"/>
+    <classEntry path="com.core.unit.UnitVO"/>
+    <classEntry path="com.core.unit.UnitSourcePool"/>
+    <classEntry path="com.core.Global"/>
+    <classEntry path="com.core.util.plist.PList"/>
+    <classEntry path="com.core.view.IFrame"/>
+    <classEntry path="com.core.view.BaseComponent"/>
+    <classEntry path="com.core.view.BaseFrame"/>
+    <classEntry path="com.core.loader.LoaderManager"/>
+    <classEntry path="com.core.loader.LoadStatic"/>
+    <classEntry path="com.core.loader.QueneLoad"/>
+    <classEntry path="com.core.loader.LoadThread"/>
+    <classEntry path="com.core.component.CImage"/>
+    <classEntry path="com.core.component.Polygon"/>
+    <classEntry path="com.core.view.BaseModule"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>

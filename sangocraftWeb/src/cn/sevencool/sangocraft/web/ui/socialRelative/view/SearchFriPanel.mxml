@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+project: sangocraft_Web
+@class: SearchFriendPanel
+@author: wangtaofeng
+@usage: 我的好友——查找好友相关信息
+@since: 2013-8-22
+@modified: 2013-8-22
+@modifier: wangtaofeng
+-->
+
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   width="362" height="224"
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   width.preSearch="416" height.preSearch="300">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.data.model.RGetLookAtFriendInfoVO;
+			import cn.sevencool.sangocraft.data.symbols.CommonData;
+			import cn.sevencool.sangocraft.data.symbols.ItemsManager;
+			import cn.sevencool.sangocraft.data.symbols.SystemModelLocator;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.data.vo.ItemDescription;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.ui.socialRelative.mediator.SocialRelativeMediator;
+			
+			import mx.events.FlexEvent;
+			
+			import spark.filters.GlowFilter;	
+			
+			private var _mediator:SocialRelativeMediator = null ;				
+			
+			private var _onlyID:int = 0;
+			
+			private var _item:ItemDescription = null;
+			
+			/**
+			 * 装载图片的容器
+			 * */
+			private var _titleBottomMap:Bitmap = null;
+			private var _generalCellMap:Bitmap = null;
+			private var _frameMap:Bitmap = null;
+			private var _generalNameMap:Bitmap = null;
+			private var _LV_smallMap:Bitmap = null;
+			private var _LV_bigMap:Bitmap = null;
+			private var _headMap:Bitmap = null;
+			private var _ifAddFriendMap:Bitmap = null;
+			private var _IDMap:Bitmap = null;
+			private var _myIDMap:Bitmap = null;
+			private var _searchMap:Bitmap = null;
+			private var _inputSearchMap:Bitmap = null;
+			
+			override public function set mediatorUI($value:AbstractMediator):void
+			{								
+				_mediator = $value as SocialRelativeMediator ;
+			}
+			
+			
+			/**
+			 * 确定添加好友 按钮
+			 * */
+			protected function btn_Yes_clickHandler(event:MouseEvent):void
+			{
+				if(_onlyID!=0)
+				{
+					_mediator.addFriendByOnlyId(_onlyID);	
+					this.currentState ="preSearch" ;
+				}	
+			}
+			
+			
+			/**
+			 * 取消添加好友 按钮
+			 * */
+			protected function lab_No_clickHandler(event:MouseEvent):void
+			{
+				this.currentState ="preSearch" ;
+				txt_friID.text = '';
+				img_search.visible = true;
+			}
+			
+			
+			/**
+			 * 搜索好友 按钮
+			 * */
+			protected function btn_Search_clickHandler(event:MouseEvent):void
+			{	
+				_mediator.lookOutFriend(parseInt(txt_friID.text));		
+			}
+			
+			
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_titleBottomMap = new Bitmap();
+				_generalCellMap = new Bitmap();
+				_frameMap = new Bitmap();
+				_generalNameMap = new Bitmap();
+				_LV_smallMap = new Bitmap();
+				_LV_bigMap = new Bitmap();
+				_headMap = new Bitmap();
+				_IDMap = new Bitmap();
+				_ifAddFriendMap = new Bitmap();
+				_inputSearchMap = new Bitmap();
+				_myIDMap = new Bitmap();
+				_searchMap = new Bitmap();
+				myID.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'myID',_myIDMap));
+				search.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'search',_searchMap));
+				img_search.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'inputSearch1',_inputSearchMap));
+				lab_myID.htmlText = CommonData.dwOnlyID.toString();
+			}
+			
+			
+			override public function get needBundleList():Array
+			{
+				var urlArr:Array = [] ;
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'0'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'1'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'2'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'3'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'4'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'5'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'6'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'7'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'8'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'9'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'0'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'1'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'2'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'3'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'4'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'5'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'6'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'7'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'8'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'9'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'myID'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'search'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'inputSearch1'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'titleBottom'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'generalCell'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'frame1'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'generalName'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'ID'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'ifAddFriend'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,''));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,''));
+				return urlArr;
+			}
+			
+			
+			override protected function onDataChange(type:String=""):void
+			{
+				switch(type)
+				{
+					case 'RGetLookAtFriendInfoVO':
+						refreshPanel();
+						break;
+					default:
+						throw new Error("Type"+type);
+				}
+			}
+			
+			
+			override protected function resourcesChanged():void
+			{
+				dataArray = new Vector.<Class>();
+				dataArray.push(RGetLookAtFriendInfoVO);
+			}
+			
+			
+			public function refreshPanel($rGet:RGetLookAtFriendInfoVO=null):void 
+			{	
+				$rGet = SystemModelLocator.getInstance().getPropertyByVo(RGetLookAtFriendInfoVO) as RGetLookAtFriendInfoVO;
+				this.currentState = "afterSearch";
+				ID.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'ID',_IDMap));
+				ifAddFriend.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'ifAddFriend',_ifAddFriendMap));
+				titleBottom.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'titleBottom',_titleBottomMap));   
+				generalSign.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'generalCell',_generalCellMap));
+				frame.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'frame1',_frameMap));
+				LV_big.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.LVLBIG,'' ,_LV_bigMap));
+				LV_small.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.LVLSMALL,'',_LV_smallMap));
+				nameBottom.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'generalName',_generalNameMap));  
+			   if($rGet == null)
+			   {
+				   return;
+			   }
+				if(!_item || _item.nID != $rGet.dwCommanderID)
+				{
+					_item = ItemsManager.getInstance().ItemInfo[$rGet.dwCommanderID];
+					soldier.solderType = _item.nArmType;   
+					sp.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.BIG_HEAD,_item.nHeadId.toString(),_headMap));
+					lab_masterName.text = _item.szName;
+				}
+				lab_Name.text = $rGet.szName;	
+				figure_small.figureHandler($rGet.btCommanderLevel.toString(),MaterialKeys.LVLSMALL,6);			
+				figure_big.figureHandler($rGet.btLevel.toString(),MaterialKeys.LVLBIG,10);
+				figure_onlyID.figureHandler($rGet.dwOnlyID.toString(),MaterialKeys.LVLSUPERSMALL,9);
+				_onlyID = $rGet.dwOnlyID;
+				
+			}
+			
+			
+			/**
+			 * 请输入朋友的ID加为好友吧  可见性
+			 * */
+			protected function txt_friID_clickHandler(event:MouseEvent):void
+			{	
+				img_search.visible = false;
+				txt_friID.text = "";
+			}
+			
+			protected function img_search_clickHandler(event:MouseEvent):void
+			{
+				img_search.visible =false ;
+			}
+			
+		]]>
+	</fx:Script>
+	<symbols:layout>
+		<s:BasicLayout/>
+	</symbols:layout>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->		
+	</fx:Declarations>
+
+	<symbols:states>
+		<s:State name="preSearch" />
+		<s:State name="afterSearch"/>
+	</symbols:states>	
+	
+     <s:Group id="gp_searchF" includeIn="preSearch" y="38" width="277" height="229"
+			  horizontalCenter="-15">
+		<mx:Image y="29" horizontalCenter="-114" id="myID"/>
+		<mx:Image y="93" horizontalCenter="-115" id="search"/>
+		 <mx:Image x="37" y="108"  click="img_search_clickHandler(event)" id="img_search"/>
+		<s:Button id="btn_Search" y="178" width="97" height="36" label="搜索"
+				  click="btn_Search_clickHandler(event)" horizontalCenter="3"/>	
+		<mx:Text id="lab_myID" x="104" y="48" width="153" height="28" color="#eae4e0"
+				 filters="{[new spark.filters.GlowFilter(0, 100, 2, 2, 5, 1, false, false)]}"
+				 fontSize="16" text="12345678" textAlign="center" />		 		
+		 <s:TextInput id="txt_friID" x="45" y="106" width="222" height="24" fontSize="16" textAlign="center" borderAlpha="0"
+					  click="txt_friID_clickHandler(event)" color="#eae4e0" skinClass="cn.sevencool.sangocraft.web.skin.textInput.TextInputSkin"/>
+	</s:Group>		
+	<s:Group id="gp_addF" includeIn="afterSearch" y="0" width="245" height="100%"
+			 horizontalCenter="2">	
+		<s:Group x="19" y="1" width="90" height="106">
+			<mx:Image id="generalSign" x="1" y="0"/>
+			<mx:Image id="nameBottom" x="7" y="80" width="21" height="18"/>
+			<s:Group id="menuPanel" x="7" y="5"/>
+			<s:SpriteVisualElement id="sp" x="11" y="12" width="48" height="48"/>
+			<mx:Label x="12" y="81" color="#a2b3b8" id="lab_masterName"
+					  filters="{[new spark.filters.GlowFilter(0, 100, 2, 2, 5, 1, false, false)]}"
+					  fontSize="12" text="曹操" textAlign="center"/>
+			<mx:Image x="41" y="59" id="LV_small"/>
+			<symbols:FigureDisplay id="figure_small" x="64" y="52" width="16" height="14" maxMedian="3"/>
+		</s:Group>
+	<s:Group x="97" y="1" width="141" height="107">
+		<mx:Image x="4" y="2" id="frame"/>		
+		<mx:Image id="titleBottom" x="12" y="10"/>
+		<mx:Image x="34" y="44" id="LV_big"/>
+		<symbols:FigureDisplay id="figure_big" x="75" y="34" width="46" height="13" maxMedian="3"/>
+		<mx:Image x="21" y="73" id="ID"/>
+		<symbols:FigureDisplay id="figure_onlyID" x="62" y="63" width="16" height="12" maxMedian="20"/>
+		<s:Label id="lab_Name" x="24" y="15" width="101" height="21" color="#eee6dc" 
+				 filters="{[new spark.filters.GlowFilter(0, 100, 2, 2, 5,1, false, false)]}"
+				 fontSize="14" text="" textAlign="center" verticalAlign="middle"/>
+	</s:Group>
+		<mx:Image id="ifAddFriend" y="140" width="14" height="13" horizontalCenter="-139"/>
+		<s:HGroup y="188" width="235" height="32" gap="42" horizontalCenter="16">
+			<s:Button id="btn_Yes" click="btn_Yes_clickHandler(event)" width="100" height="36" label="确定"/>
+			<s:Button id="btn_No" click="lab_No_clickHandler(event)" width="100" height="36" label="取消"/>
+		</s:HGroup>
+		<symbols:SolderType id="soldier" x="21" y="3" height="17"/>
+	</s:Group>
+</symbols:BasePanel>

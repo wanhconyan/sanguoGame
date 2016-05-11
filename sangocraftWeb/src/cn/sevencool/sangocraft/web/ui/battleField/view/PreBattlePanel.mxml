@@ -1,0 +1,388 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+project: sangocraft_Web
+@class: PreBattlePanel
+@author: wangcongyan
+@usage:战前配置面板
+@since: 2013-8-27
+@modified: 2013-8-27
+@modifier: wangcongyan
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   width="634" height="480" xmlns:view="cn.sevencool.sangocraft.web.ui.battleField.view.*">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.events.BeginnersGuideEvent;
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.data.manager.utils.MediatorUtil;
+			import cn.sevencool.sangocraft.data.model.RSFormationInfo;
+			import cn.sevencool.sangocraft.data.symbols.ItemsManager;
+			import cn.sevencool.sangocraft.data.symbols.SoundManager;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.data.vo.ChapterParam;
+			import cn.sevencool.sangocraft.data.vo.MonsterInfo;
+			import cn.sevencool.sangocraft.data.vo.SkillInfo;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.ui.battleField.mediator.BattleFieldMediator;
+			import cn.sevencool.sangocraft.web.ui.beginnersGuide.mediator.BeginnersGuideMediator;
+			import cn.sevencool.sangocraft.web.ui.reinforce.view.ReinforcePanel;
+			
+			import com.sevencool.iamsanguo.core.vo.map.BaseMapVO;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			
+			import spark.filters.GlowFilter;
+			
+			
+			public var baseMap:BaseMapVO = null;
+
+			private var _fightScene:ChapterParam = null;
+			
+			private var _nowFightName:String = '';
+			private var _formationCollSet:Array = [];
+			
+			private var formationColl:ArrayCollection = null;
+			
+			/**
+			 * 地图id
+			 * */
+			private var _mapID:String = '10101';//以后换成CommData.mapID;
+			
+			/**
+			 * 装载图片的容器
+			 * */
+			private var _smallMap:Bitmap = null;
+			private var _backBarMap:Bitmap = null;
+			private var _small_mask:Bitmap = null;
+			private var _img_left:Bitmap = null;
+			private var _img_mid:Bitmap = null;
+			private var _img_right:Bitmap = null;
+			private var _img_bar:Bitmap = null;
+			private var _img_general:Bitmap = null;
+			private var _img_general1:Bitmap = null;
+			private var _img_word:Bitmap = null;
+			private var _img_word1:Bitmap = null;
+			private var _img_mainSkill:Bitmap = null;
+			private var _img_mainSkill1:Bitmap = null;
+			
+			
+			
+			
+			/**
+			 * 编队信息组
+			 * */
+			private var forColl:ArrayCollection = null;
+			
+			
+			private var _mediator:BattleFieldMediator = null ;
+			
+			private var _refineMonster:MonsterInfo = null;
+			protected function titlewindow1_closeHandler(event:CloseEvent):void
+			{
+				var rein:ReinforcePanel = UIMananger.getInstance().getUIObj(ReinforcePanel) as ReinforcePanel;
+				rein.isSend = false
+				UIMananger.getInstance().showOrHide(ReinforcePanel);
+				
+			}
+			override public function set mediatorUI($value:AbstractMediator):void 
+			{
+				_mediator = $value  as BattleFieldMediator ;
+			}
+			
+			override public function get mediatorUI():AbstractMediator
+			{
+				return  _mediator;
+			}
+			
+			protected function btn_Fighting_clickHandler(event:MouseEvent):void
+			{
+					_mediator.btnClickFighting(_mediator.battleID,1,new Array());
+					refineMonster =  null;
+			}
+
+			
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				panelID = 314;
+				_smallMap = new Bitmap();
+				_backBarMap = new Bitmap();
+				_small_mask = new Bitmap();
+				_img_left = new Bitmap();
+				_img_mid = new Bitmap();
+				_img_right = new Bitmap();
+				_img_bar = new Bitmap();
+				_img_general = new Bitmap();
+				_img_general1 = new Bitmap();
+				_img_word = new Bitmap();
+				_img_word1 = new Bitmap();
+				_img_mainSkill = new Bitmap();
+				_img_mainSkill1 = new Bitmap();
+				formationColl = new ArrayCollection(['编队1','编队2','编队3','编队4','编队5']);
+				small_map.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'map10101',_smallMap));
+				backBar.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'preBattleBar',_backBarMap));
+				small_mask.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'smallMask',_small_mask));
+				img_left.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'leftMarch',_img_left));
+				img_mid.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'midMarch',_img_mid));
+				img_right.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'rightMarch',_img_right));
+				img_bar.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'preBattleLineBar',_img_bar));
+				img_general.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'mainGenPic',_img_general));
+				img_general1.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'reinSolider',_img_general1));
+				img_word.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'wordBar',_img_word));
+				img_word1.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'wordBar',_img_word1));
+				tab_for.dataProvider = formationColl;
+				forColl = new ArrayCollection();
+				onShow();
+			}
+			
+			
+			override public function get needBundleList():Array
+			{
+				var urlArr:Array = [] ;
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'preBattleBar'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'smallMask'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'leftMarch'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'midMarch'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'rightMarch'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'preBattleLineBar'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'mainGenPic'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'wordBar'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'reinSolider'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'map10101'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'generalCell'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'dropDownFilter'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'leftMarchPic'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'midMarchPic'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'rightMarchPic'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'campStay'));
+				return urlArr;
+			}
+			
+			
+			/**
+			 * 编队信息
+			 * */
+			protected function tabbar1_clickHandler(event:MouseEvent):void
+			{
+				_mediator.refreshFormation(tab_for.selectedIndex)
+			}
+			
+			/**
+			 * 面板显示
+			 * */
+			override protected function onShow():void
+			{
+				if(!initialized)
+					return;
+				_mediator.refreshFormation();
+				fillIn();
+				tab_for.selectedIndex = 0 ;
+				npcName.text = nowFightName;
+				mapDes.text = fightScene.szChapterIntroduce;
+				fightName.text = fightScene.szChapterName ;
+				
+				var beginnersGuideMediator:BeginnersGuideMediator = MediatorUtil.getMediatorByInterface(BeginnersGuideMediator);
+				beginnersGuideMediator.BEGINNERSGUIDEEVENTDISPATCHER.dispatchEvent(new BeginnersGuideEvent(BeginnersGuideEvent.NEXTGUIDE));
+
+				
+			}
+			
+			override protected function resourcesChanged():void
+			{
+				dataArray = new Vector.<Class>();
+				dataArray.push(RSFormationInfo);
+				
+			}
+			
+			override protected function onDataChange(type:String=""):void
+			{
+			
+				switch(type)
+				{
+					case "RSFormationInfo":
+					break;
+					default:
+						throw new Error("type"+type)
+				}
+			
+			}
+			
+			protected function attackLine_clickHandler(event:MouseEvent):void
+			{
+				
+			}
+
+			/**
+			 * 编队信息
+			 * */
+			public function get formationCollSet():Array
+			{
+				return _formationCollSet;
+			}
+
+			/**
+			 * @private
+			 */
+			public function set formationCollSet(value:Array):void
+			{
+				lbl_SkillDes.text = '';
+				_formationCollSet = value.concat();
+				var monster:MonsterInfo = formationCollSet[0];
+				for_mainGeneral.monster = monster;
+				for_mainGeneral.mediator = mediatorUI as BattleFieldMediator;
+				
+				if(monster)
+				{
+					var skill:SkillInfo = ItemsManager.getInstance().skillDic[monster.monsterSkillID]
+					if(skill)
+					{
+						lbl_SkillDes.text = skill.szDescribe;
+						img_mainSkill.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.SKILLNAME,monster.monsterSkillID.toString(),_img_mainSkill));
+					}	
+				}
+				var arr:Array = []
+				for(var i:int = 0 ; i < formationCollSet.length ; i++)
+				{
+					if(i != 0)
+					{
+						var mon:MonsterInfo = formationCollSet[i]
+						arr.push(mon)
+					}
+				}
+				forColl.source = arr;
+				data_formation.dataProvider = forColl;
+			}
+
+			
+			/**
+			 * 填充援军
+			 * */
+			private function fillIn():void
+			{
+				lbl_SkillDes1.text = "";
+				if(refineMonster)
+				{
+					for_refnGeneral.monster = refineMonster;
+					for_refnGeneral.mediator = mediatorUI as BattleFieldMediator;
+					var skill:SkillInfo = ItemsManager.getInstance().skillDic[refineMonster.monsterSkillID];
+					if(skill)
+					{
+						lbl_SkillDes1.text = skill.szDescribe;
+						img_mainSkill1.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.SKILLNAME,refineMonster.monsterSkillID.toString(),_img_mainSkill1));
+					}
+				}
+			}
+
+			
+			public function get fightScene():ChapterParam
+			{
+				return _fightScene;
+			}
+
+			public function set fightScene(value:ChapterParam):void
+			{
+				_fightScene = value;
+			}
+			
+
+			/**
+			 * 当前战场名字
+			 * */
+			public function get nowFightName():String
+			{
+				return _nowFightName;
+			}
+
+			/**
+			 * @private
+			 */
+			public function set nowFightName(value:String):void
+			{
+				_nowFightName = value;
+			}
+
+			public function get refineMonster():MonsterInfo
+			{
+				return _refineMonster;
+			}
+
+			public function set refineMonster(value:MonsterInfo):void
+			{
+				_refineMonster = value;
+			}
+
+			
+			protected function tab_for_mouseDownHandler(event:MouseEvent):void
+			{
+				SoundManager.getInstance().musicPlay("Interface04");
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:TitleWindow id="preSet" close="titlewindow1_closeHandler(event)" height="100%" width="100%" title="戰前配置" >
+		
+		<!--<s:RadioButtonGroup id="radioGroup" />-->
+		<mx:Image id="small_map" left="20" top="6" width="196" height="196"/>
+		<mx:Image id="small_mask" left="20" top="6" width="196" height="196"/>
+		<s:Group right="10" top="10" width="401" height="34">
+		<mx:Image id="backBar" left="0" top="-4" width="401" height="34"/>
+		<s:Label id="fightName" width="88" height="34" color="0xfff0be"
+				 filters="{[new spark.filters.GlowFilter(0x3b1e0b, 100, 2, 2, 5, 1, false, false)]}"
+				 fontSize="14" horizontalCenter="0" 
+				 textAlign="center" verticalAlign="middle" verticalCenter="-2"/>
+		</s:Group>
+		<s:Label id="npcName" y="45" right="160" width="98" height="18" color="0xedcb54"
+				 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+				 fontSize="12"  textAlign="center" verticalAlign="middle"/>
+		<s:Label id="mapDes" x="232" y="67" width="395" height="44" 
+				 color="0xffffff"  filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"/>
+		<s:TabBar y="220" width="346"  click="tabbar1_clickHandler(event)" id="tab_for" mouseDown="tab_for_mouseDownHandler(event)"
+				   horizontalCenter="0"
+				  skinClass="cn.sevencool.sangocraft.web.skin.tabBar.PreBattleTabSkin"/>
+		<mx:Image id="img_bar" y="241" width="584" height="8" horizontalCenter="0"/>
+		<s:Group y="249" height="47" horizontalCenter="0">
+		<mx:Image id="img_word" y="-5" width="518" height="47" horizontalCenter="0"/>
+		<mx:Image id="img_general" x="-14" width="57" height="28" verticalCenter="-12"/>
+		<mx:Image id="img_mainSkill" x="66" width="78" height="20" verticalCenter="-9"/>
+		<s:Label id="lbl_SkillDes" x="171" width="275" height="18" color="0xdedbce"
+				 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+				 text="持续降低我军兵力，大幅度提高战斗能力" verticalCenter="-5"/>
+		</s:Group>
+		<s:VGroup x="231" y="117" width="103" height="99">
+			<mx:Image id="img_left" width="84" height="26" />
+		
+			<mx:Image id="img_mid"  width="84" height="26" />
+			<mx:Image id="img_right"  width="84" height="26"/>
+		</s:VGroup>
+		
+		<s:Group y="400" height="47" horizontalCenter="0">
+			<mx:Image id="img_word1" y="-20" width="518" height="47" horizontalCenter="0"/>
+			<mx:Image id="img_general1" right="-19" width="57" height="28" verticalCenter="-25"/>
+			<mx:Image id="img_mainSkill1" right="57" width="78" height="20" verticalCenter="-20"/>
+			<s:Label id="lbl_SkillDes1" right="198" width="275" height="18" color="0xdedbce" depth="0"
+					 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+					 text="持续降低我军兵力，大幅度提高战斗能力" verticalCenter="-16"/>
+		</s:Group>
+		<view:FormationItem id="for_mainGeneral" x="31" y="278" width="80" height="107"  isState="1"/>
+		<view:FormationItem id="for_refnGeneral" y="278" right="30" width="80" height="107"  isState="6" />
+		
+		<s:DataGroup x="142" y="278" width="351" height="112" id="data_formation" depth="2"
+					 itemRenderer="cn.sevencool.sangocraft.web.ui.battleField.view.itemrender.PreFormationIR">
+			<s:layout>
+				<s:TileLayout requestedColumnCount="5"/>
+			</s:layout>
+		</s:DataGroup>
+		<s:Button id="btn_Fighting" y="107" right="21" width="111" height="115" skinClass="cn.sevencool.sangocraft.web.skin.button.MarchBtnSkin"
+				  click="btn_Fighting_clickHandler(event)"/>
+		
+	</s:TitleWindow>
+</symbols:BasePanel>

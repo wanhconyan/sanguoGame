@@ -1,0 +1,9 @@
+package com.starling.battle.ai
+{
+	public class UnitAi
+	{
+		public function UnitAi()
+		{
+		}
+	}
+}

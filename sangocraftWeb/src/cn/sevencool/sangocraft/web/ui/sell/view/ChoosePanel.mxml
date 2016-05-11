@@ -1,0 +1,912 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+project: sangocraft_Web
+@class: ChoosePanel
+@author: zhoujingye
+@usage: 选择面板
+@since: 2013-8-26
+@modified: 2013-8-26
+@modifier: zhoujingye 
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   width="657" xmlns:itemsBox="cn.sevencool.sangocraft.web.symbols.itemsBox.*"
+				   xmlns:dropDownList="cn.sevencool.sangocraft.web.skin.dropDownList.*"
+				   height.sell="458" height.strength_material="465"
+				   xmlns:view="cn.sevencool.sangocraft.web.ui.sell.view.*">  
+	<fx:Script>
+			<![CDATA[
+				import cn.sevencool.sangocraft.data.events.ItemsEvent;
+				import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+				import cn.sevencool.sangocraft.data.manager.barracks.mediator.IUIOperatableBarracksMediator;
+				import cn.sevencool.sangocraft.data.manager.formation.mediator.IUIOperatableFormationMediator;
+				import cn.sevencool.sangocraft.data.manager.sell.mediator.IUIOperatableSellMediator;
+				import cn.sevencool.sangocraft.data.manager.strengthening.mediator.IUIOperatableStrengtheningMediator;
+				import cn.sevencool.sangocraft.data.manager.utils.MediatorUtil;
+				import cn.sevencool.sangocraft.data.model.RSExtensionPackage;
+				import cn.sevencool.sangocraft.data.symbols.ItemManager;
+				import cn.sevencool.sangocraft.data.symbols.SystemModelLocator;
+				import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+				import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+				import cn.sevencool.sangocraft.data.vo.BagVO;
+				import cn.sevencool.sangocraft.data.vo.EnForceVO;
+				import cn.sevencool.sangocraft.data.vo.ItemDescription;
+				import cn.sevencool.sangocraft.data.vo.ItemOperationVO;
+				import cn.sevencool.sangocraft.data.vo.SellInfoVO;
+				import cn.sevencool.sangocraft.web.events.SmallPanelEvent;
+				import cn.sevencool.sangocraft.web.manager.UIMananger;
+				import cn.sevencool.sangocraft.web.symbols.AlertPanel;
+				import cn.sevencool.sangocraft.web.symbols.FigureDisplay;
+				import cn.sevencool.sangocraft.web.symbols.itemsBox.LatticeItem;
+				import cn.sevencool.sangocraft.web.symbols.itemsBox.LatticeUltra;
+				import cn.sevencool.sangocraft.web.symbols.itemsBox.LatticeUltraGroups;
+				import cn.sevencool.sangocraft.web.ui.barracks.mediator.BarracksMediator;
+				import cn.sevencool.sangocraft.web.ui.barracks.view.BarracksPanel;
+				import cn.sevencool.sangocraft.web.ui.formation.mediator.FormationMediator;
+				import cn.sevencool.sangocraft.web.ui.formation.view.FormationPanel;
+				import cn.sevencool.sangocraft.web.ui.sell.mediator.SellMediator;
+				import cn.sevencool.sangocraft.web.ui.strengthen.mediator.StrengthenMediator;
+				import cn.sevencool.sangocraft.web.ui.strengthen.view.StrengthenPanel;
+				
+				import com.greensock.TweenLite;
+				
+				import mx.controls.Alert;
+				import mx.events.CloseEvent;
+				import mx.events.FlexEvent;
+				
+				import spark.filters.GlowFilter;
+				/**
+				 * 兵营Mediator
+				 * */
+				private var _militaryM:BarracksMediator = null;
+				/**
+				 * 编队面板
+				 * */
+				private var _formationPanel:FormationPanel = null ;
+				/**
+				 * 面板类型
+				 * */
+				private var _panelType:int=-1;
+				/**
+				 * 所在编队
+				 * */
+				private var _teamId:int=-1;
+				/**
+				 * 将领所在编队位置
+				 * */
+				private var _teamLoc:int=-1;
+				/**
+				 * 是否有将领
+				 * */
+				private var _isMonster:Boolean = false;
+				/**
+				 * 排序索引
+				 * */
+				private var _dropListIndex:int = 1;
+				/**
+				 * 包裹物品
+				 * */
+				private var _bagData:Array = [];
+				/**
+				 * 物品VO
+				 * */
+				private var _itemVO:ItemOperationVO=null;
+				/**
+				 * 强化面板
+				 * */
+				private var _strengPanel:StrengthenPanel=null;
+				/**
+				 * 强化材料
+				 * */
+				private var _strengthMaterialArr:Array=[];
+				/**
+				 * 强化Mediator
+				 * */
+				private var _strengM:StrengthenMediator=null;
+				/**
+				 * 编队Mediator
+				 * */
+				private var _formationM:FormationMediator=null;
+				/**
+				 * 出售Mediator
+				 * */
+				private var _sellM:SellMediator=null;
+				/**
+				 * 强化VO
+				 * */
+				private var _strengthVO:EnForceVO=null;
+				
+				/**
+				 * 装载图片的容器
+				 * */
+				private var _bgMap:Bitmap = null;
+				private var _BottomMap:Bitmap = null;
+				private var _slashMap:Bitmap = null;
+				private var _getExpMap :Bitmap = null;
+				private var _needMoneyMap:Bitmap = null;
+				private var _getMap:Bitmap = null;
+				
+				/**
+				 * 物品管理器
+				 * */
+				private var _itemManager:ItemManager=null;
+				/**
+				 * 资源管理器
+				 * */
+				private var _materialManager:MaterialManager=null;
+				/**
+				 * 显示管理器
+				 * */
+				private var _uiManager:UIMananger = null;
+				/**
+				 * 包管理器
+				 * */
+				private var _systemModelLocator:SystemModelLocator=null;
+				/**
+				 * 面板标题
+				 * */
+				private  var PANELTITLEARR:Array=[1,2,3,4,5];
+				
+				
+				/**
+				 * 编队替换的物品
+				 * */
+				public function get itemVO():ItemOperationVO
+					
+				{
+					return _itemVO;
+				}
+
+				
+				/**
+				 * @private
+				 */
+				public function set itemVO(value:ItemOperationVO):void
+				{
+					_itemVO = value;
+				}
+
+				
+				/**
+				 * @private
+				 */
+				public function set strengthVO(value:EnForceVO):void
+				{
+					_strengthVO = value;
+					if(_strengthVO)
+					{
+						getExpValue.figureHandler(value.getExperience.toString(),MaterialKeys.STRENGTH,10);
+						needMoneyValue.figureHandler(value.needMoney.toString(),MaterialKeys.STRENGTH,10);
+					}
+				}
+
+				
+				/**
+				 * @private
+				 */
+				public function set teamLoc(value:int):void
+				{
+					_teamLoc = value;
+				}
+
+				
+				/**
+				 * @private
+				 */
+				public function set teamId(value:int):void
+				{
+					_teamId = value;
+				}
+
+				
+				public function set isMonster(value:Boolean):void
+				{
+					_isMonster = value;
+				}
+				
+				
+				/**
+				 * @private
+				 */
+				public function set panelType(value:int):void
+				{
+					_panelType = value;
+					panelTypeHandler();
+				}
+
+				/**
+				 * 可以使用次数
+				 * */
+				public override function get usableCount():int
+				{
+					return 1 ;
+				}
+				
+				
+				/**
+				 * 出售返回
+				 * */
+				public function sellBack():void
+				{
+					if(currentState=='sell')
+					{
+						var sellInfo:SellInfoVO=_sellM.afterSellItems();
+						showSellInfo(sellInfo);
+						details.closePanel();
+					}
+				}
+				
+				
+				override public function get needBundleList():Array
+				{
+					var urlArr:Array = [] ;
+					_materialManager=MaterialManager.getInstance();
+					urlArr.push(_materialManager.getURL(MaterialKeys.BARRACKSLVL,'0'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.BARRACKSLVL,'1'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.BARRACKSLVL,'2'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.BARRACKSLVL,'3'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.BARRACKSLVL,'4'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.BARRACKSLVL,'5'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.BARRACKSLVL,'6'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.BARRACKSLVL,'7'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.BARRACKSLVL,'8'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.BARRACKSLVL,'9'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.BARRACKSLVL,'Slash'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'whiteLight'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'choiceFormationGeneral'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'soldierNumNew'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'barracksBottom'));
+					return urlArr;
+				}
+				
+				
+				/**
+				 * 设置mediatorUI
+				 * */
+				override public function set mediatorUI($value:AbstractMediator):void
+				{
+					_militaryM = $value as BarracksMediator;
+				}
+				
+				
+				/**
+				 * 打开面板
+				 * */
+				override protected function onShow():void
+				{
+					if(!initialized)
+						return;
+					if(!_itemManager.hasEventListener(ItemsEvent.BAGUPDATE))
+					{
+						_itemManager.addEventListener(ItemsEvent.BAGUPDATE , itemsInitializeHandler) ;
+					}
+				} 
+				
+				
+				/**
+				 * 资源改变
+				 * */
+				protected override function resourcesChanged():void
+				{
+					dataArray=new Vector.<Class>;
+					dataArray.push(RSExtensionPackage);
+				}
+				
+				
+				/**
+				 *面板打开时调用  需要override 
+				 * 
+				 */		
+				protected override function onClose():void
+				{
+					setPanelVisible();
+					baglist.removeItemTimer();
+					details.visible=false;
+					formationInfo.visible=false;
+					if(currentState!='strength_material')
+					{
+						_militaryM.clearItemsStateInterface();
+						details.removeElemAndArr();
+					}
+					if(_itemManager.hasEventListener(ItemsEvent.BAGUPDATE))
+					{
+						_itemManager.removeEventListener(ItemsEvent.BAGUPDATE , itemsInitializeHandler) ;
+					}
+				}
+				
+				
+				/**
+				 * 数据改变
+				 * */
+				protected override function onDataChange(type:String=""):void
+				{
+					switch(type)
+					{
+						case 'RSExtensionPackage':
+							refreshBagsNum();
+							break;
+						default:
+							throw new Error("onDataChange" + type);
+					}
+				}
+				
+				
+				/**
+				 * 面板创建完成
+				 * */
+				protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+				{
+					_bgMap = new Bitmap();
+					_BottomMap = new Bitmap();
+					_slashMap = new Bitmap();
+					_getExpMap = new Bitmap();
+					_needMoneyMap = new Bitmap();
+					_getMap = new Bitmap();
+					_itemManager=ItemManager.getInstance();
+					_uiManager=UIMananger.getInstance();
+					_systemModelLocator=SystemModelLocator.getInstance();
+					_militaryM=MediatorUtil.getMediatorByInterface(IUIOperatableBarracksMediator);
+					_sellM=MediatorUtil.getMediatorByInterface(IUIOperatableSellMediator) as SellMediator;
+					_strengM=MediatorUtil.getMediatorByInterface(IUIOperatableStrengtheningMediator) as StrengthenMediator;
+					_formationM=MediatorUtil.getMediatorByInterface(IUIOperatableFormationMediator) as FormationMediator;
+					onShow();
+					panelTypeHandler();
+					bg.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'whiteLight',_bgMap));
+					Bottom.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'barracksBottom',_BottomMap));
+					slash.addChild(_materialManager.getIcon(MaterialKeys.BARRACKSLVL,'Slash',_slashMap));
+					getExp.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'getExp',_getExpMap));
+					needMoney.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'costWord',_needMoneyMap));
+					getM.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'sellGetMon',_getMap));
+					details.addEventListener(SmallPanelEvent.CLOSEPANEL,closeSmallPanel);
+					formationInfo.addEventListener(SmallPanelEvent.CLOSEPANEL,closeSmallPanel);
+					_systemModelLocator.addEventListener(Event.RESIZE , screenResizeHandler);
+				}
+				
+				
+				/**
+				 * 点击确定按钮
+				 * */
+				protected function sure_clickHandler(event:MouseEvent):void
+				{
+					if(currentState=='strength_material')
+					{
+						_strengPanel = _uiManager.getUIObj(StrengthenPanel) as StrengthenPanel ;
+						closePanel();
+						_uiManager.show(StrengthenPanel);
+						_strengPanel.needArr=test();
+						return;
+					} 
+					if(currentState=='sell')
+					{
+						_sellM.sellItem();
+						return;
+					}
+				}
+				
+				
+				/**
+				 * 面板关闭
+				 * */
+				protected function titlewindow1_closeHandler(event:CloseEvent):void
+				{
+					closePanel();
+					switch(currentState)
+					{
+						case 'formation':
+							_uiManager.show(FormationPanel);
+							break;
+						case 'strength_material':
+							_uiManager.show(StrengthenPanel);
+							break;
+						case 'sell':
+							_uiManager.show(BarracksPanel);
+							break;
+						default:
+							throw new Error("currentState" + type);
+					}
+				}
+				
+				
+				/**
+				 * 点击排序
+				 * */
+				protected function dropDownList_listChangeHandler(event:Event):void
+				{
+					_dropListIndex = dropDownList.currentSelect[0];
+					fasten();
+				}
+				
+				
+				/**
+				 * 刷新包裹格子信息
+				 * */
+				private function refreshBagsNum():void
+				{
+					var extensionPackage:RSExtensionPackage = _systemModelLocator.getPropertyByVo(RSExtensionPackage) as RSExtensionPackage;
+					if(extensionPackage.nErrorCode_tip==0)
+					{
+						fasten();
+					}
+				}
+
+				
+				/**
+				 * 获取物品数量
+				 * */
+				private function getitemsNum(arr:Array):int
+				{
+					var count:int=0;
+					var len:int=arr.length;
+					for(var j:int=0;j<len;j++)
+					{
+						var item:ItemOperationVO=arr[j];
+						if(item.selectSell)
+						{
+							count++;
+						}
+					}
+					return count;
+				}
+				
+				
+				/**
+				 * 显示包裹物品
+				 *  1出售 2强化材料 3编队
+				 * */
+				private function showBagItems(stateIndex:int):void
+				{
+					if(stateIndex==1)
+					{
+						_bagData = baglist.data = _sellM.getBagItems();
+					}
+					if(stateIndex==2)
+					{
+						_bagData = baglist.data = _strengM.getChoosePanelBagItems();
+					}
+					if(stateIndex==3)
+					{
+						var arr:Array=_formationM.getItembag(_teamId,_isMonster,_dropListIndex);
+						_bagData = baglist.data = _formationM.getItembag(_teamId,_isMonster,_dropListIndex,_itemVO);
+					}
+					var bag:BagVO=_militaryM.showItems(_dropListIndex) ;
+					setBagOpenCell(bag);
+					if(stateIndex==3)
+					{
+						_bagData = baglist.data = _formationM.setRemoveButton(bag.bagItemArr.concat(),_isMonster);
+					} 
+					if(stateIndex!=3)
+					{
+						_bagData = baglist.data = bag.bagItemArr;
+					}
+					baglist.startRefreshItemTimer();
+				}
+				
+				
+				/**
+				 * 面板类型处理
+				 * */
+				private function panelTypeHandler():void
+				{
+					if(!_militaryM)
+						return;
+					_militaryM.setPanelType(_panelType);
+					if(_panelType<=5)
+					{
+						var titleIndex:int=PANELTITLEARR[_panelType-1];
+						if(titleIndex == 1 )
+						{
+							title.text ='选择需要编队的将领';
+						}
+						if(titleIndex == 3 )
+						{
+							title.text ='选择成为材料的将领';
+						}
+						if(titleIndex == 5 )
+						{
+							title.text ='选择需要出售的将领';
+						}
+					}
+					if(_panelType==1)
+					{
+						currentState='formation';
+						showBagItems(3);
+						return;
+					} 
+					if(_panelType==3)
+					{
+						currentState='strength_material';
+						showBagItems(2);
+						return;
+					}
+					if(_panelType==5)
+					{
+						currentState='sell';
+						showBagItems(1);
+						return;
+					}
+				}
+				
+				
+				/**
+				 * 所有物品初始化
+				 * */
+				private function itemsInitializeHandler(evt:ItemsEvent):void{
+					fasten() ;
+					if(evt.parameters)
+					{
+						_bagData = baglist.data = evt.parameters;
+						baglist.startRefreshItemTimer();
+					}
+					
+				}
+				
+				
+				/**
+				 * 装入数据
+				 * */
+				private function fasten():void{
+					var bag:BagVO=_militaryM.showItems(_dropListIndex) ;
+					setBagOpenCell(bag);
+					if(currentState=='formation')
+					{
+						_bagData = baglist.data = _formationM.setRemoveButton(bag.bagItemArr.concat(),_isMonster);
+					} 
+					if(currentState!='formation')
+					{
+						_bagData = baglist.data = bag.bagItemArr;
+					}
+					baglist.startRefreshItemTimer();
+					_strengthMaterialArr=bag.bagItemArr;
+				}
+				
+				
+				/**
+				 * 关闭右侧面板
+				 * */
+				private function closeSmallPanel(event:SmallPanelEvent):void
+				{
+					if(details.visible)
+					{
+						var detailsX:int = int(details.x - details.width) ;
+						var detailsPanelX:int = int(this.x +(details.width/2)) ;
+						TweenLite.to(details,0.3,{x:detailsX,alpha:0,onComplete:setPanelVisible}); 
+						TweenLite.to(this,0.3,{x:detailsPanelX}); 
+						return;
+					} 
+					if(formationInfo.visible)
+					{
+						var formationInfoX:int = int(formationInfo.x - formationInfo.width) ;
+						var formationInfoPanelX:int = int(this.x +(formationInfo.width/2)) ;
+						TweenLite.to(formationInfo,0.3,{x:formationInfoX,alpha:0,onComplete:setPanelVisible}); 
+						TweenLite.to(this,0.3,{x:formationInfoPanelX}); 
+						return;
+					}
+				}
+				
+				
+				/**
+				 * 隐藏面板
+				 * */
+				private function setPanelVisible():void
+				{
+					if(details.visible)
+					{
+						details.visible=false;
+						details.removeElem();
+						details.x = 416 ;
+						return;
+					} 
+					if(formationInfo.visible)
+					{
+						formationInfo.visible=false;
+						formationInfo.x = 416 ;
+						return;
+					}
+				}
+				
+				
+				/**
+				 * 改变面板相对位置
+				 * */
+				private function screenResizeHandler(e:Event):void
+				{
+					if(details.visible)
+					{
+						this.x = this.x - (details.width/2) ;
+					}
+					if(formationInfo.visible)
+					{
+						this.x = this.x - (formationInfo.width/2) ;
+					}
+				}
+				
+				
+				/**
+				 * 取得被选中的物品
+				 * */
+				private function test():Array
+				{
+					var arr:Array=[];
+					for each(var item:ItemOperationVO in _strengthMaterialArr)
+					{
+						if(item.selectSell)
+						{
+							arr.push(item);
+						}
+					}
+					return arr;
+				}
+				
+				
+				/**
+				 * 关闭面板
+				 * */
+				private function closePanel():void
+				{
+					if(currentState=='sell')
+					{
+						btn_sell.enabled=false;
+						getMV.figureHandler('0',MaterialKeys.STRENGTH,10);
+					}
+					if(getitemsNum(_bagData)==0)
+					{
+                    getExpValue.figureHandler('0',MaterialKeys.STRENGTH,10);						
+                    needMoneyValue.figureHandler('0',MaterialKeys.STRENGTH,10);
+					}
+					_uiManager.hide(this);
+					if(currentState!='strength_material')
+					{
+						_militaryM.clearItemsStateInterface();
+					}
+					setPanelVisible();
+					
+				}
+				
+				
+				/**
+				 * 显示出售信息
+				 * */
+				private function showSellInfo($sell:SellInfoVO):void
+				{
+					_bagData = baglist.data = $sell.monster;
+					baglist.startRefreshItemTimer();
+					_strengthMaterialArr=$sell.monster;
+					var len:int=$sell.monster.length;
+					var open:int=$sell.campNum;
+					var bool:Boolean=Boolean($sell.sliverGold>0);
+					btn_sell.enabled=bool;
+					openCell.figureHandler(len.toString(),MaterialKeys.BARRACKSLVL,10,-1);
+					allCell.figureHandler(open.toString(),MaterialKeys.BARRACKSLVL,12);
+					getMV.figureHandler($sell.sliverGold.toString(),MaterialKeys.STRENGTH,10);
+					getExpValue.figureHandler($sell.providerExp.toString(),MaterialKeys.STRENGTH,10);			
+					needMoneyValue.figureHandler($sell.sliverGold.toString(),MaterialKeys.STRENGTH,10);
+				}
+				
+				
+				/**
+				 * 开启格子，二次确认框
+				 * */
+				private function alertHandle($event:CloseEvent):void
+				{
+					if ($event.detail == Alert.OK ) 
+					{
+						_militaryM.extensionPackages();
+					}
+				}
+				
+				
+				/**
+				 * 从编队面板进入包裹面板后，点击物品
+				 * */
+				private function clickFormation(lattice:LatticeUltra):void
+				{
+					var item:ItemOperationVO = lattice.data as ItemOperationVO ;
+					var itemDess:ItemDescription = _itemManager.ItemInfo[item.item.dwBaseID];
+					var bool:Boolean=Boolean(itemDess);
+					var bool1:Boolean=Boolean(bool&&item.selectFormations != 1&&item.selectFormations != 2&&itemDess.nMonsterType!=6&&itemDess.nMonsterType!=7);
+					if(bool&&bool1)
+					{
+						formationInfo.setMediatorUI(_militaryM);
+						formationInfo.teamId=_teamId;
+						formationInfo.teamLoc=_teamLoc;
+						item.isSelect=true;
+						formationInfo.itemVO=item;
+						panelMove(1);
+					}
+					if(bool&&!bool1)
+					{
+						panelTypeHandler();
+					}
+					if(item.removeBtn)
+					{
+						_formationM.setFormationInfo(_teamId,0,_teamLoc);
+						_formationPanel = _uiManager.getUIObj(FormationPanel) as FormationPanel ;
+						_uiManager.showOrHide(FormationPanel);
+					}
+				}
+				
+				
+				/**
+				 * 面板移动
+				 * */
+				private function panelMove(type:int=0):void
+				{
+					if(!details.visible&&type==0)
+					{
+						details.visible=true;
+						var detailsX:int = int(details.x + details.width) ;
+						var detailsPanelX:int = int(this.x - (details.width/2)) ;
+						TweenLite.to(details,0.3,{x:detailsX,alpha:1});
+						TweenLite.to(this,0.3,{x:detailsPanelX}); 
+					} 
+					
+					if(!formationInfo.visible&&type==1)
+					{
+						formationInfo.visible=true;
+						var formationInfoX:int = int(formationInfo.x + formationInfo.width) ;
+						var formationInfoPanelX:int = int(this.x - (formationInfo.width/2)) ;
+						TweenLite.to(formationInfo,0.3,{x:formationInfoX,alpha:1});
+						TweenLite.to(this,0.3,{x:formationInfoPanelX}); 
+					}
+				}
+				
+				/**
+				 * 出售物品处理
+				 * */
+				private function sellItemsHandler(item:ItemOperationVO):void
+				{
+					_sellM.chooseItemForSell(item);
+					var sellInfo:SellInfoVO=_sellM.showSellItemValue(item,_dropListIndex);
+					showSellInfo(sellInfo);
+					if(!item.isGray)
+					{
+						panelMove();
+						details.item=item;
+					}
+				}
+				
+				/**
+				 * 选择将领处理
+				 * */
+				private function chooseMaterialhandler(itemOPer:ItemOperationVO):void
+				{
+					if(itemOPer.isGray)
+					{
+						return ;
+					}	
+					var strengInfo:SellInfoVO=_strengM.showChoosePanelMaterialInfo(itemOPer,_dropListIndex);
+					_strengthMaterialArr.push(itemOPer);
+					showSellInfo(strengInfo);
+					panelMove();
+					details.item=itemOPer;
+				}
+				
+				/**
+				 * 单击处理
+				 * */
+				private function listClickHandler(lattice:LatticeUltra):void
+				{
+					var item:ItemOperationVO = lattice.data as ItemOperationVO ;
+					if(!item)
+					{
+						
+						Alert.okLabel = "确认";
+						Alert.cancelLabel = "取消";
+						AlertPanel.show('是否花费6元宝扩充5个兵营空间','',Alert.OK|Alert.CANCEL,alertHandle);
+						return;
+					} 
+					if(item)
+					{
+						switch(currentState)
+						{
+							case 'formation':
+								clickFormation(lattice);
+								break;
+							case 'strength_material':
+								chooseMaterialhandler(item);
+								break;
+							case 'sell':
+								sellItemsHandler(item);
+								break;
+							default:
+								throw new Error("currentState" + type);
+						}
+						return;
+						
+					}
+					
+				}
+				
+				
+				/**
+				 * 设置开启背包格子数量
+				 * */
+				private function setBagOpenCell(bag:BagVO):void
+				{
+					var open:int=bag.openBox;
+					var len:int=bag.bagItemArr.length;
+					var bool:Boolean=Boolean(open<len);
+					openCell.figureHandler(len.toString(),MaterialKeys.BARRACKSLVL,10,-1);
+					if(bool)
+					{
+						baglist.row=_militaryM.getBagRow(len);
+					}
+					if(!bool)
+					{
+						baglist.row=_militaryM.getBagRow(open);
+					}
+					baglist.paint();
+					if(baglist.lockCount>=0&&bool)
+					{
+						baglist.lockCount=len;
+					}
+					if(baglist.lockCount>=0&&!bool)
+					{
+						baglist.lockCount=open;
+					}
+					allCell.figureHandler(open.toString(),MaterialKeys.BARRACKSLVL,12);
+				}
+			]]>
+	</fx:Script>
+	<symbols:states>
+		<s:State name="formation"/>
+		<s:State name="strength_material"/>
+		<s:State name="sell"/>
+	</symbols:states>
+	<view:ChooseGeneral id="details" visible="false" x="416" y="17" height="425"/>
+	<view:FormationInfo id="formationInfo" visible="false" x="416" y="17" height="425"/>
+	<s:TitleWindow id="win" x="0" y="0" width="100%" close="titlewindow1_closeHandler(event)" title="兵 營"
+							height.formation="458"  height.sell="458" 
+							height.strength_material="465" >
+		<mx:Image id="Bottom" y="52" width="620" height="314" horizontalCenter="0"/>
+		<mx:Image id="bg" y="14" width="285" height="21" horizontalCenter="-57"/>
+		<s:Label id="title" y="19" width="285" height="21" horizontalCenter="45" fontSize="22" color="#FFFFFF" fontFamily="hyxl"
+				 filters="{[new spark.filters.GlowFilter(0x101010,100,2,2,5,1,false,false)]}"/>
+		
+       <symbols:FigureDisplay id="openCell" width="8" height="20"  
+							  maxMedian="3" x="53" y="16"/>
+      <mx:Image id="slash" height="20" x="65" y="27"/>
+      <symbols:FigureDisplay id="allCell" width="30" height="20" x="79" y="16" maxMedian="3"/>
+
+		<s:VScrollBar id="vscol" height="268" viewport="{baglist}"
+					  x="570" y="70"/>
+		<s:Button id="sure" visible="false" x="643" y="395" click="sure_clickHandler(event)"
+				  skinClass="cn.sevencool.sangocraft.web.skin.button.EnforceBtnSkin"
+				  x.sell="477" y.sell="387"
+				  visible.strength_material="true" x.strength_material="475"
+				  y.strength_material="361"/>
+	</s:TitleWindow>
+	<s:Group id="groupContainer" y="87" width="575" height="275" horizontalCenter="0" x="19">
+		<itemsBox:LatticeList id="baglist" y="7" width="520" height="275" col="6"  horizontalCenter="-21"
+							  latticeClickFunction="listClickHandler" margin="{[6 ,6 , 6 ,6]}"
+							  renderer="cn.sevencool.sangocraft.web.symbols.itemsBox.LatticeItem"
+							  row="10"/>
+			<s:Group id="groupCover" x="0" y="10"/>
+		</s:Group>
+   <mx:Image id="getM" x="8" y="136" width="104" height="19" visible="false"
+			  x.sell="72" y.sell="408"  visible.sell="true"/>
+	<symbols:FigureDisplay id="getMV" x="160" y="125" width="104" height="19" visible="false"
+						   x.sell="224" y.sell="397"  visible.sell="true"
+						   maxMedian="10"/>
+  <mx:Image id="getExp" x="8" y="116" width="104" height="19" visible="false"  visible.strength_material="true"
+			  x.strength_material="65" y.strength_material="400"/>
+	<symbols:FigureDisplay id="getExpValue" x="160" y="105" width="104" height="19" visible="false"
+						   x.sell="181" y.sell="394"  visible.strength_material="true" 
+						   x.strength_material="217" y.strength_material="388"
+						   maxMedian="10"/>
+	<mx:Image id="needMoney" x="8" y="136" width="104" height="19" visible="false"
+			  x.sell="29" y.sell="420"  visible.strength_material="true"
+			  x.strength_material="65" y.strength_material="419"/>
+<symbols:FigureDisplay id="needMoneyValue" x="160" y="125" width="104" height="19" visible="false"
+						   x.sell="181" y.sell="414"  visible.strength_material="true"
+						   x.strength_material="217" y.strength_material="409"
+						   maxMedian="10"/>	
+<s:Button visible="false" x="645" y="390" click="sure_clickHandler(event)" id="btn_sell" enabled="false"
+			  skinClass="cn.sevencool.sangocraft.web.skin.button.VerifyBtnSkin"
+			  filters="{[new spark.filters.GlowFilter(0x10180f,0.45,1,1,5,1,false,false)]}"
+			  visible.sell="true" x.sell="479" y.sell="395" width.sell="120" height.sell="40"/>
+	<symbols:BarracksList x="518" y="64" id="dropDownList" listChange="dropDownList_listChangeHandler(event)"/>
+</symbols:BasePanel>

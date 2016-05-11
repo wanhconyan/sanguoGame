@@ -1,0 +1,12 @@
+package  com.core.vo.fraction
+{
+	public class FractionNode
+	{
+		public var xNode:int = 0 ;
+		
+		public var yNode:int = 0 ;
+		public function FractionNode()
+		{
+		}
+	}
+}

@@ -1,0 +1,42 @@
+<battle frameTime="3000">
+	<battleFrame frameIndex="0">
+		<battleTeam teamID="1" target="0" kill="0" total="30" pathID="0" lenght="0"/>
+		<battleTeam teamID="2" target="0" kill="0" total="30" pathID="0" lenght="400"/>
+	</battleFrame>
+	<battleFrame frameIndex="1">
+		<battleTeam teamID="1" target="0" kill="0" total="30" pathID="0" lenght="50"/>
+		<battleTeam teamID="2" target="1" kill="10" total="30" pathID="0" lenght="350"/>
+	</battleFrame>
+	<battleFrame frameIndex="2">
+		<battleTeam teamID="1" target="0" kill="0" total="30" pathID="0" lenght="100"/>
+		<battleTeam teamID="2" target="1" kill="10" total="30" pathID="0" lenght="350"/>
+	</battleFrame>
+	<battleFrame frameIndex="3">
+		<battleTeam teamID="1" target="0" kill="0" total="30" pathID="0" lenght="150"/>
+		<battleTeam teamID="2" target="1" kill="10" total="30" pathID="0" lenght="350"/>
+	</battleFrame>
+	<battleFrame frameIndex="4">
+		<battleTeam teamID="1" target="0" kill="0" total="30" pathID="0" lenght="200"/>
+		<battleTeam teamID="2" target="0" kill="0" total="30" pathID="0" lenght="200"/>
+	</battleFrame>
+	<battleFrame frameIndex="5">
+		<battleTeam teamID="1" target="2" kill="6" total="30" pathID="0" lenght="200"/>
+		<battleTeam teamID="2" target="1" kill="5" total="30" pathID="0" lenght="200"/>
+	</battleFrame>
+	<battleFrame frameIndex="6">
+		<battleTeam teamID="1" target="2" kill="5" total="30" pathID="0" lenght="200"/>
+		<battleTeam teamID="2" target="1" kill="3" total="30" pathID="0" lenght="200"/>
+	</battleFrame>
+	<battleFrame frameIndex="6">
+		<battleTeam teamID="1" target="2" kill="4" total="30" pathID="0" lenght="200"/>
+		<battleTeam teamID="2" target="1" kill="1" total="30" pathID="0" lenght="200"/>
+	</battleFrame>
+	<battleFrame frameIndex="7">
+		<battleTeam teamID="1" target="2" kill="1" total="30" pathID="0" lenght="250"/>
+		<battleTeam teamID="2" target="1" kill="1" total="30" pathID="0" lenght="150"/>
+	</battleFrame>
+	<battleFrame frameIndex="8">
+		<battleTeam teamID="1" target="0" kill="0" total="30" pathID="0" lenght="300"/>
+		<battleTeam teamID="2" target="0" kill="0" total="30" pathID="0" lenght="100"/>
+	</battleFrame>
+</battle>

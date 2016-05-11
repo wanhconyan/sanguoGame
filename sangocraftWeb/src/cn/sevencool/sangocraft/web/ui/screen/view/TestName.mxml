@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   width="400" height="21">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.symbols.CommonData;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			
+			import mx.events.FlexEvent;
+			
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				lbl_1.text = CommonData.szAccount;
+				lbl_2.text = CommonData.szPlayerName;
+				lbl_3.text = CommonData.dwOnlyID.toString();
+			}
+			
+			override public function get dragEnable():Boolean
+			{
+				return false;
+			}
+			
+			public override function get type():int
+			{
+				return UIMananger.TYPE_PANEL ;
+			}
+			
+			
+			public override function get usableCount():int
+			{
+				return 1 ;
+			}
+		]]>
+	</fx:Script>
+	<symbols:layout>
+		<s:BasicLayout/>
+	</symbols:layout>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:HGroup>
+		<s:HGroup gap="0">
+			<s:Label text="账号：" />
+			<s:Label id="lbl_1"/>
+		</s:HGroup>
+		<s:HGroup gap="0">
+			<s:Label text="角色名："/>
+			<s:Label id="lbl_2"/>
+		</s:HGroup>
+		<s:HGroup gap="0">
+			<s:Label text="角色唯一ID"/>
+			<s:Label id="lbl_3"/>
+		</s:HGroup>
+	</s:HGroup>
+</symbols:BasePanel>

@@ -1,0 +1,7 @@
+package com.core.event
+{
+	public class BattleEvent
+	{
+		public static const BATTLE_START:String = "battleStart";
+	}
+}

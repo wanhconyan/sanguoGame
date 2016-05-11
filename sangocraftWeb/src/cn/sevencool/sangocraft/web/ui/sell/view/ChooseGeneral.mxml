@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+project: sangocraft_Web
+@class: ChooseGeneral
+@author: zhoujingye
+@usage: 选择将领面板
+@since: 2013-10-22
+@modified: 2013-10-22
+@modifier: zhoujingye 
+-->
+	<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   xmlns:mx="library://ns.adobe.com/flex/mx" 
+					   creationComplete="basepanel1_creationCompleteHandler(event)"
+					   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+					   width="205" height="433" xmlns:itemsBox="cn.sevencool.sangocraft.web.symbols.itemsBox.*"
+					   xmlns:titleWindow="cn.sevencool.sangocraft.web.skin.titleWindow.*">  
+		<fx:Script>
+				<![CDATA[
+					import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+					import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+					import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+					import cn.sevencool.sangocraft.data.vo.ItemOperationVO;
+					import cn.sevencool.sangocraft.web.events.SmallPanelEvent;
+					import cn.sevencool.sangocraft.web.ui.barracks.mediator.BarracksMediator;
+					
+					import mx.events.FlexEvent;
+					
+					/**
+					 * 显示类型
+					 * */
+					public var showType:int = -1;
+					
+					/**
+					 * 兵营Mediator
+					 * */
+					private var _militaryM:BarracksMediator = null;
+					/**
+					 * 存放的选中物品
+					 * */
+					private var itemArr:Array = [];
+					/**
+					 * 点击的物品
+					 * */
+					private var _item:ItemOperationVO=null;
+					
+					/**
+					 * 装载图片的容器
+					 * */
+					private var _bottomMap:Bitmap = null;
+					/**
+					 * 资源管理器
+					 * */
+					private var _materialManager:MaterialManager=null;
+					/**
+					 * 物品
+					 * */
+					public function get item():ItemOperationVO
+					{
+						return _item;
+					}
+	
+					/**
+					 * 设置物品
+					 */
+					public function set item(value:ItemOperationVO):void
+					{
+						_item = value;
+						items.removeAllElements();
+						if(itemArr.length==0)
+						{
+							itemArr.push(_item);
+							setInfo();
+							return;
+						} 
+						var flag:Boolean=false;
+						var len:int=itemArr.length;
+						for(var i:int=0;i<len;i++)
+						{
+							var itemVO:ItemOperationVO=itemArr[i];
+							if(itemVO.item.i64ItemID == _item.item.i64ItemID)
+							{
+								itemArr.splice(i,1);
+								flag=true;
+								break;
+							} 
+						}
+						if(!flag) 
+						{
+							itemArr.push(_item);
+						}
+						setInfo();
+					}
+					
+					
+					/**
+					 * 移除物品
+					 * */
+					public function removeElem():void
+					{
+						if(items&&items.numElements>0)
+						{
+							items.removeAllElements();
+						}
+					}
+					
+					/**
+					 * 关闭面板事件
+					 * */
+					public function closePanelDisEvent():void
+					{
+						var even:SmallPanelEvent = new SmallPanelEvent(SmallPanelEvent.CLOSEPANEL) ;
+						this.dispatchEvent(even);
+					}
+					
+					/**
+					 * 关闭面板
+					 * */
+					public function closePanel():void
+					{
+						removeElemAndArr();
+						closePanelDisEvent();
+					}
+					
+					/**
+					 * 移除物品并且清除物品数组
+					 * */
+					public function removeElemAndArr():void
+					{
+						itemArr=[];
+						if(items&&items.numElements>0)
+						{
+							items.removeAllElements();
+						}
+					}
+					
+					
+					
+					public override function get usableCount():int
+					{
+						return 1 ;
+					}
+					
+					
+					/**
+					 * 设置mediatorUI
+					 * */
+					override public function set mediatorUI($value:AbstractMediator):void
+					{
+						_militaryM = $value as BarracksMediator;
+					}
+					
+					
+					override public function get needBundleList():Array
+					{
+						var urlArr:Array = [] ;
+						urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'0'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'1'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'2'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'3'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'4'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'5'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'6'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'7'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'8'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,'9'));  
+						urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'smallPanelBottom'));
+						urlArr.push(_materialManager.getURL(MaterialKeys.LVLBIG,''));
+						return urlArr;
+					}
+					
+					/***
+					 * 面板打开
+					 * */
+					override protected function onShow():void
+					{
+						if(!initialized)
+							return;
+						removeElem();
+					} 
+					
+					/**
+					 * 面板创建完成
+					 * */
+					protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+					{
+						_bottomMap = new Bitmap();
+						_materialManager=MaterialManager.getInstance();
+						bottom.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'smallPanelBottom',_bottomMap));
+						onShow();
+					}
+					
+					/**
+					 * 关闭面板
+					 * */
+					protected function close_clickHandler(event:MouseEvent):void
+					{
+						closePanelDisEvent();
+					}
+					
+					
+					/**
+					 * 将被选中的物品添加到面板
+					 * */
+					private function setInfo():void
+					{
+						var len:int=itemArr.length;
+						for(var i:int=0;i<len;i++)
+						{
+							var itemVO:ItemOperationVO=itemArr[i];
+							var itemIn:ItemInfo=new ItemInfo();
+							itemIn.item=itemVO;
+							itemIn.y=(itemArr.length-1-i)*75;
+							itemIn.x=10;
+							items.addElement(itemIn);
+						}
+						if(itemArr.length>5)
+						{
+							vscoll.visible=true;
+						} 
+						if(itemArr.length<=5)
+						{
+							vscoll.visible=false;
+							if(itemArr.length==0)
+							{
+								closePanelDisEvent();
+							}
+						}
+					}
+					
+					
+				]]>
+		</fx:Script>
+		<fx:Declarations>
+			<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		</fx:Declarations>
+		<mx:Image  x="0" y="1" height="431" width="203"  id="bottom"/>
+		<s:Button id="close" x="185" y="0" click="close_clickHandler(event)"
+					  skinClass="cn.sevencool.sangocraft.web.skin.titleWindow.CloseBtnSkin"/>
+		<s:VScrollBar x="184" y="22" height="394" viewport="{items}" id="vscoll" visible="false"/>
+		<s:Group id="items" x="2" y="9" width="177" height="414">
+		</s:Group>
+</symbols:BasePanel>

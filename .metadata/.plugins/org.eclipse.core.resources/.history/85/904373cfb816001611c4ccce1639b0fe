@@ -1,0 +1,12 @@
+package com.view.unitControl
+{
+	import spark.components.Group;
+	
+	public class UnitControlPanel extends Group
+	{
+		public function UnitControlPanel()
+		{
+			super();
+		}
+	}
+}

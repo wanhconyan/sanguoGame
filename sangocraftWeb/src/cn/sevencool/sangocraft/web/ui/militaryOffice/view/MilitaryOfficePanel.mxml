@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	project: sangocraft_Web
+	@class: MilitaryOfficePanel
+	@author: zhouyan
+	@usage: 招贤府面板
+	@since: 2013-8-16
+	@modified: 2013-8-16
+	@modifier: zhouyan 
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   width="799" height="441">
+	
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.data.model.RSGetReinPointVO;
+			import cn.sevencool.sangocraft.data.symbols.ItemsManager;
+			import cn.sevencool.sangocraft.data.symbols.SystemModelLocator;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.data.symbols.material.factory.ImageFactory;
+			import cn.sevencool.sangocraft.data.symbols.material.xmlUtil.XMLCompressUtil;
+			import cn.sevencool.sangocraft.data.vo.ItemLocation;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.symbols.AlertPanel;
+			import cn.sevencool.sangocraft.web.ui.militaryOffice.mediator.MilitaryOfficMediator;
+			
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			
+//			/**
+//			 * 读取other中图片的key
+//			 * */
+			/**
+			 * 加载器
+			 * */
+			private var _mater:MaterialManager = MaterialManager.getInstance();
+			
+			/**
+			 * 援军点数
+			 * */
+			private var _reinForcePoint:int = -1;
+			
+			/**
+			 * 元宝数
+			 * */
+			private var _goodIgnot:int = -1;
+			
+			
+			private var _reinDotMap1:Bitmap = null;
+			private var _reinDotMap2:Bitmap = null;
+			private var _goodGeneralPhotoMap:Bitmap = null;
+			private var _godGeneralPhotoMap:Bitmap = null;
+			private var _general_BarMap1:Bitmap= null;
+			private var _general_BarMap2:Bitmap = null;
+			private var _blackBottomMap1:Bitmap = null;
+			private var _blackBottomMap2:Bitmap = null;
+			private var _blackBottomMap3:Bitmap = null;
+			private var _blackBottomMap4:Bitmap = null;
+			private var _godGeneralMap:Bitmap = null;
+			private var _goodGeneralMap:Bitmap = null;
+			private var _ingotMap1:Bitmap = null;
+			private var _ingotMap2:Bitmap = null;
+			
+			/**
+			 * 按钮被点击
+			 * */
+			protected function btn_clickHandler(event:MouseEvent):void
+			{
+				var clickType:int = -1;
+				var forcePoint:int =  0;
+				var gold:int = 0;
+				
+				var openCount:int = ItemsManager.getInstance().packageCount ;
+				var length:int  = ItemsManager.getInstance().getItems(ItemLocation.BAG).length;
+				
+				if(openCount < length)
+				{
+					_militaryM.opEnlargePanel();
+					return ;
+				}
+				
+				switch(event.target)
+				{
+					case btn_god:
+					{
+						clickType = 1;
+						gold  = 30;
+						break;
+					}
+					case btn_goodWill:
+					{
+						clickType = 2;
+						forcePoint = 200;
+						break;
+					}
+					case btn_tenGod:
+					{
+						clickType = 3;
+						gold = 270;
+						break;
+					}
+					case btn_tenGoodWill:
+					{
+						forcePoint = 2000;
+						clickType = 4;
+						break;
+					}
+					default:
+					{
+						throw new Error('btn_clickHandler' + event.target);
+					}
+				}
+				
+				if(forcePoint)
+				{
+					if(forcePoint<=_reinForcePoint)
+					{
+						_militaryM.findGeneralsBtnClick(clickType);
+					}else
+					{
+						Alert.okLabel = "确认";
+						Alert.cancelLabel = "取消";
+						AlertPanel.show("当前拥有援军点数:"+_reinForcePoint+"\n"+"剩余援军点数不足",'',Alert.CANCEL);				
+					}		
+				
+				}else if(gold)
+				{
+					
+					if(gold<=_goodIgnot)
+					{
+						_militaryM.findGeneralsBtnClick(clickType);
+					}else
+					{
+						Alert.yesLabel = "充值";
+						Alert.cancelLabel = "取消";
+						AlertPanel.show("当前拥有元宝:"+_goodIgnot.toString()+"\n"+"剩余元宝不足,请先充值",'',Alert.YES|Alert.CANCEL);				
+					}		
+				
+				}
+						
+//				var str:* = MaterialManager.getInstance().getContentByKey(MaterialKeys.ACTIVITY_DAY);
+//				var _activityXML:XML = XMLCompressUtil.uncompress(str);
+//				
+//				
+//				var dip:Bitmap = new Bitmap();
+//				var describe:String = MaterialManager.getInstance().getURL(MaterialKeys.ILLUST_RATION , 'playRoomBack') ;
+//				ImageFactory.getBitmap(describe,dip);
+//				back.addChild(dip);
+			}
+			
+			private var _militaryM:MilitaryOfficMediator = null;
+			override public function set mediatorUI($value:AbstractMediator):void
+			{
+				_militaryM = $value as MilitaryOfficMediator;
+			}
+			
+			override protected function onDataChange(type:String=""):void
+			{
+			
+				switch(type)
+				{
+					case "RSGetReinPointVO":
+					{
+						
+						refreshReinForcePoint();
+						break;
+					}
+						
+					default:
+					{
+						trace("type"+type)
+						break;
+					}
+				}
+			
+			}
+			
+			
+			/**
+			 * 刷新援军点数
+			 * */
+			private function refreshReinForcePoint():void{
+				var rs:RSGetReinPointVO = SystemModelLocator.getInstance().getPropertyByVo(RSGetReinPointVO) as RSGetReinPointVO;
+							
+				_reinForcePoint = rs.dwReinforcement;
+			}
+			
+			override protected function resourcesChanged():void
+			{
+				dataArray = new Vector.<Class>();
+				dataArray.push(RSGetReinPointVO);
+			}
+			
+			protected function tw_Military_closeHandler(event:CloseEvent):void
+			{
+				UIMananger.getInstance().hide(this);
+				
+			}
+			
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_reinDotMap1 = new Bitmap();
+				_reinDotMap2 = new Bitmap();
+				_goodGeneralPhotoMap = new Bitmap();
+				_godGeneralPhotoMap = new Bitmap();
+				_general_BarMap1 = new Bitmap();
+				_general_BarMap2 = new Bitmap();
+				_blackBottomMap1 = new Bitmap();
+				_blackBottomMap2 = new Bitmap();
+				_blackBottomMap3 = new Bitmap();
+				_blackBottomMap4 = new Bitmap();
+				_godGeneralMap = new Bitmap();
+				_goodGeneralMap = new Bitmap();
+				_ingotMap1 = new Bitmap();
+				_ingotMap2 = new Bitmap();
+				reinDot1.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'friendArmyDot',_reinDotMap1));
+				reinDot2.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'friendArmyDot',_reinDotMap2));
+				img_goodGeneralPhoto.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'goodGeneralPhoto',_goodGeneralPhotoMap));
+				img_godGeneralPhoto.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'godGeneralPhoto',_godGeneralPhotoMap));
+				img_general_Bar.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'general_Bar',_general_BarMap1));
+				img_general_Bar1.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'general_Bar',_general_BarMap2));
+				blackBottom4.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'blackBottom',_blackBottomMap1));
+				blackBottom3.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'blackBottom',_blackBottomMap2));
+				blackBottom2.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'blackBottom',_blackBottomMap3));
+                blackBottom1.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'blackBottom',_blackBottomMap4));
+                img_god_title.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'godGeneral',_godGeneralMap));
+				img_good_title.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'good_general',_goodGeneralMap));
+				ingot1.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'ingot',_ingotMap1));
+				ingot2.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'ingot',_ingotMap2));
+				regin.figureHandler('200',MaterialKeys.OFFICEDIGITAL,12);
+				tenRegin.figureHandler('2000',MaterialKeys.OFFICEDIGITAL,12);
+				tenIngot.figureHandler('30',MaterialKeys.OFFICEDIGITAL,12);
+				ingot.figureHandler('270',MaterialKeys.OFFICEDIGITAL,12);
+				onShow();
+			}
+			
+			
+			override public function get needBundleList():Array
+			{
+				var urlArr:Array = [] ;
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OFFICEDIGITAL,'0'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OFFICEDIGITAL,'1'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OFFICEDIGITAL,'2'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OFFICEDIGITAL,'3'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OFFICEDIGITAL,'4'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OFFICEDIGITAL,'5'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OFFICEDIGITAL,'6'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OFFICEDIGITAL,'7'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OFFICEDIGITAL,'8'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OFFICEDIGITAL,'9'));   
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.MAINFIGURE,'0'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.MAINFIGURE,'1'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.MAINFIGURE,'2'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.MAINFIGURE,'3'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.MAINFIGURE,'4'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.MAINFIGURE,'5'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.MAINFIGURE,'6'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.MAINFIGURE,'7'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.MAINFIGURE,'8'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.MAINFIGURE,'9'));   
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'general_Bar'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'godGeneralPhoto'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'goodGeneralPhoto'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'reginPoint'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'ingot'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'godGeneral'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'good_general'));
+				return urlArr;
+			}
+			
+			protected override function onShow():void
+			{
+				if(!initialized)
+					return ;
+				var arr:Array = _militaryM.getGoldNumAndRein();
+				
+				if(arr.length ==2)
+				{
+					_reinForcePoint = arr[0];
+					_goodIgnot = arr[1];
+					var reinNum:int = int(_reinForcePoint/200);
+					var goldNum:int = int(_goodIgnot/30);
+					if(reinNum<=9&&reinNum!=0)
+					{
+						figure_regin.visible = true;
+						figure_regin.figureHandler(reinNum.toString(),MaterialKeys.MAINFIGURE,15);
+					}else if(reinNum!=-1 && reinNum !=0)
+					{
+						figure_regin.visible = true
+						figure_regin.figureHandler("N",MaterialKeys.MAINFIGURE,15);
+					}else if(reinNum == 0)
+					{
+						figure_regin.visible = false
+					}
+					
+					if(goldNum<=9&&goldNum!=0)
+					{
+						figure_gold.figureHandler(goldNum.toString(),MaterialKeys.MAINFIGURE,15);
+						figure_gold.visible = true;
+					}else if(goldNum != -1 && goldNum != 0)
+					{
+						figure_gold.figureHandler("N",MaterialKeys.MAINFIGURE,15);
+						figure_gold.visible = true;
+					}else if(goldNum == 0)
+					{
+						figure_gold.visible = false;
+					}
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<symbols:layout>
+		<s:BasicLayout/>
+	</symbols:layout>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:TitleWindow width="100%" height="100%" id="tw_Military" close="tw_Military_closeHandler(event)" title="招贤府">
+		<s:Group left="40" bottom="33" width="327" height="356">
+			<!--<mx:Image  id="back" x="0" y="0" width="100%" height="100%"/>-->
+			<mx:Image id="img_general_Bar" y="0" width="327" height="356" horizontalCenter="0"/>
+			<mx:Image id="img_goodGeneralPhoto" bottom="33" width="320" height="289"
+					  horizontalCenter="0"/>
+	        <mx:Image id="img_good_title" top="-27" width="96" height="54" horizontalCenter="0"/>
+			<s:Button id="btn_goodWill" x="38" bottom="65" width="85" click="btn_clickHandler(event)"
+					  skinClass="cn.sevencool.sangocraft.web.skin.button.AskGoodBtnSkin"/>
+			<s:Button id="btn_tenGoodWill" x="178" bottom="65" width="85"
+					  click="btn_clickHandler(event)" skinClass="cn.sevencool.sangocraft.web.skin.button.TenPumpBtnSkin"/>
+			<mx:Image x="166" y="297" width="71" height="19" id="blackBottom1"/>
+			<mx:Image x="24" y="297" width="71" height="19" id="blackBottom2"/>
+			<mx:Image x="188" y="300" width="71" height="19" id="reinDot1"/>
+			<mx:Image x="46" y="299" width="71" height="19" id="reinDot2"/>
+			<symbols:FigureDisplay id="regin" x="118" y="291" width="59" height="24" maxMedian="5"/>
+			<symbols:FigureDisplay  x="257" y="292" width="81" height="24" id="tenRegin"  maxMedian="5"/>
+			<symbols:FigureDisplay id="figure_regin" x="150" y="240" width="45" height="43"  maxMedian="1"/>
+		</s:Group>
+		<s:Group right="40" bottom="33" width="327" height="356">
+  <!--<s:Image x="0" y="0" width="100%" height="100%"/>-->
+			<mx:Image id="img_general_Bar1" x="0" y="0" width="327" height="356" />
+			<mx:Image id="img_god_title" top="-27" width="96" height="54" horizontalCenter="0"/>
+			<mx:Image id="img_godGeneralPhoto" bottom="33" width="320" height="289"
+					  horizontalCenter="0"/>
+			<s:Button id="btn_god" x="38" bottom="65" width="85" click="btn_clickHandler(event)"
+					  skinClass="cn.sevencool.sangocraft.web.skin.button.AskGodBtnSkin"/>
+			<s:Button id="btn_tenGod" x="178" bottom="65" width="85" click="btn_clickHandler(event)"
+					  skinClass="cn.sevencool.sangocraft.web.skin.button.TenPumpBtnSkin"/>
+			<mx:Image x="171" y="295" id="blackBottom4"/>
+			<mx:Image x="26" y="295" id="blackBottom3"/>
+			<mx:Image x="190" y="300" id="ingot1"/>
+			<mx:Image x="49" y="300" id="ingot2"/>
+			<symbols:FigureDisplay id="tenIngot" x="120" y="291" width="24" height="21"  maxMedian="5"/>
+			<symbols:FigureDisplay id="ingot" x="268" y="292" width="33" height="22"  maxMedian="5"/>
+			<symbols:FigureDisplay id="figure_gold" x="150" y="240" width="46" height="46"  maxMedian="1"/>
+		</s:Group>
+	</s:TitleWindow>
+</symbols:BasePanel>

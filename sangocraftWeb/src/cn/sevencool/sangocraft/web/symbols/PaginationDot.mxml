@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 creationComplete="group1_creationCompleteHandler(event)">
+	
+	<fx:Metadata>
+		[Event(name="PageChange", type="flash.events.Event")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import spark.components.Button;
+			
+			
+			private var _totalPage:int =0;
+			
+			private var _btnDic:Dictionary = new Dictionary();
+			
+			private var _nowPage:int = 0
+			
+			public function get nowPage():int
+			{
+				return _nowPage;
+			}
+			
+			public function set nowPage(value:int):void
+			{
+				_nowPage = value;
+			}
+			
+			public function get totalPage():int
+			{
+				return _totalPage;
+			}
+			
+			public function set totalPage(value:int):void
+			{
+				_totalPage = value;
+				btn_group.removeAllElements();
+				for(var i:int= 0;i<totalPage;i++)
+				{
+					
+					if(!_btnDic[i+1])
+					{
+						var btn_new: Button = new Button();
+						btn_new.width = 20;
+						btn_new.name = (i+1).toString();
+						btn_new.addEventListener(MouseEvent.CLICK,onClick);
+						_btnDic[i+1] = btn_new ;
+					}
+					btn_group.addElement(_btnDic[i+1]);
+				}
+			}
+			
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+			}
+			
+			private function onClick(e:MouseEvent):void
+			{
+				nowPage = parseInt((e.target as Button).name);
+				this.dispatchEvent(new Event("PageChange"));
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:HGroup id="btn_group" left="0" top="0" gap="5" />
+</s:Group>

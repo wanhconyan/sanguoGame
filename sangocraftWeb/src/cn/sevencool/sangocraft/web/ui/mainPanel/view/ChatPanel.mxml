@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+	project: sangocraft_Web
+	@class: ChatPanel
+	@author: zhouyan
+	@usage: 主界面_聊天面板
+	@since: 2013-9-4
+	@modified: 2013-10-14
+	@modifier: wangtaofeng wangfuyuan
+-->
+
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   width="350" height="350" contentBackgroundAlpha="0.0" xmlns:controls="fl.controls.*" xmlns:view="cn.sevencool.sangocraft.web.ui.mainPanel.view.*">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.data.manager.mainPanel.handlerKey.ChatHandlerKey;
+			import cn.sevencool.sangocraft.data.model.ChatMessage;
+			import cn.sevencool.sangocraft.data.model.RSWhisperInfo;
+			import cn.sevencool.sangocraft.data.symbols.SystemModelLocator;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.ui.mainPanel.mediator.MainPanelMediator;
+			
+			import flash.filters.GlowFilter;
+			
+			import mx.events.FlexEvent;
+			
+			[Embed(source="../../../../../../../../assets/images/chat/zongChosen.png")]
+			private static var zongChosen: Class;
+			[Embed(source="../../../../../../../../assets/images/chat/whisper_Select.png")]
+			private static var whisperSelect: Class;
+			/**cd时间*/
+			private static const CD:int = 10;
+			private var _timer:Timer = new Timer(1000);
+			private var isCD:Boolean = false;
+			private var curCDsecond:int = 0;
+			/**cd时间-私聊*/
+			private static const CD_wsp:int = 1;
+			private var _timer_wsp:Timer = new Timer(1000);
+			private var isCD_wsp:Boolean = false;
+			private var curCDsecond_wsp:int = 0;
+			
+			
+			/**
+			 * 聊天文本框
+			 * */
+			[Bindable]
+			private var _txtField:TextField = null;
+			
+			/**
+			 * 键盘滚动信息存储条数
+			 * */
+			private var _rollDataValue:Array=[];
+			
+			private var _rollInt:int=0;
+
+			private var _mediatorUI:MainPanelMediator = null;
+			
+			/**
+			 * 是否有未读的消息
+			 * */
+			private var hasNewMessage:Boolean;
+			private var _unReadMessage:int;
+			
+			override public function set mediatorUI($value:AbstractMediator):void
+			{
+				_mediatorUI = $value as MainPanelMediator;
+			}
+			
+			override public function get type():int
+			{
+				return UIMananger.TYPE_PANEL;
+			}
+			
+			/**
+			 * 显示文字
+			 * */
+			public function set setData(value:String):void
+			{
+				if(_txtField)
+				{
+					_txtField.htmlText = '<p>'+value+'</p>';
+					chatScroll.viewPort = _txtField;
+				}
+			}
+			/**
+			 * 显示未读的的私聊消息 
+			 */
+			public function showUnreadMessage($num:int):void{
+				if(chartType.selectedValue==1)return;
+				_unReadMessage+=$num;
+				lbl_unreadNum.text = String(_unReadMessage);
+				lbl_unreadNum.visible = true;
+			}
+			/**
+			 * 点击按钮‘确定发送’
+			 * */
+			protected function btn_enter_clickHandler(event:MouseEvent):void
+			{
+				chatScroll.viewPort = _txtField ;
+				if(txt.text.length==0 ){
+					this.stage.focus = null;
+					return;
+				}
+				if(chartType.selectedValue==2){
+					if(isCD){
+						showFormatError(0);
+						txt.text = '';
+						return;
+					}
+				}else{
+					if(isCD_wsp){
+						showFormatError(0);
+						txt.text = '';
+						return;
+					}
+				}
+				if(chartType.selectedValue==1&&!checkFormat()){
+					showFormatError(1);
+					txt.text = '';
+					return;
+				}
+				if(getByteLength(txt.text)>100){
+					//Alert.show('输入的内容长度不能超过100！');
+					showFormatError(2);
+					txt.text = '';
+					return;
+				}
+				var text:String = txt.text;
+				if(chartType.selectedValue==1)text = '/'+_selectName+':'+text;
+				_mediatorUI.clickChat(text,int(chartType.selectedValue),_selectID);
+				
+				if(chartType.selectedValue==2){
+					//发送成功启动cd
+					isCD = true;
+					_timer.start();
+				}else{
+					isCD_wsp = true;
+					_timer_wsp.start();
+				}
+				
+				addRollData(text);
+				_rollInt=0;
+				if(chartType.selectedValue==1){
+					targetName.text ='/'+_selectName+':';
+				}else{
+					_selectID = -1;
+					_selectName = '';
+				}
+				txt.text = '';
+			}
+
+			private var isFirtClickTxt:Boolean = true;
+			/**
+			 * 点击输入框
+			 * */
+			protected function txt_clickHandler(event:MouseEvent):void
+			{
+				if(isFirtClickTxt){
+					txt.text ='';
+					isFirtClickTxt = false;
+				}
+			}
+			
+			override protected function onDataChange(type:String=""):void
+			{
+				switch(type)
+				{
+					case "RSWhisperInfo":
+						var sr:RSWhisperInfo = SystemModelLocator.getInstance().getPropertyByVo(RSWhisperInfo) as RSWhisperInfo;
+						break;
+					default:
+						throw new Error("type"+type);
+				}
+			}
+			
+			
+			
+			/**
+			 * 键盘滚动信息
+			 * */
+			protected function rollData($evt:KeyboardEvent):void
+			{
+				if(_rollDataValue.length>0)
+				{
+					switch($evt.keyCode)
+					{
+						case 38:
+							if(_rollInt>=_rollDataValue.length)
+							{
+								_rollInt=0;
+							}
+							_rollInt++;
+							txt.text = _rollDataValue[_rollDataValue.length-_rollInt];
+							break;
+						case 40:
+							_rollInt--;
+							if(_rollInt<=0)
+							{
+								_rollInt = _rollDataValue.length;
+							}
+							txt.text = _rollDataValue[_rollDataValue.length-_rollInt];
+							break;
+						default:
+							trace("no need:rollData" + $evt.keyCode);
+					}
+				}
+			}
+			
+			/**
+			 * 切换聊天类型
+			 **/
+			protected function chartType_changeHandler(event:Event):void
+			{
+				_mediatorUI.chartChangeType();
+				switch(int(chartType.selectedValue))
+				{
+					case ChatHandlerKey.CHAT_GM:
+					{
+						selectImg.source = new zongChosen() as Bitmap ;
+						txt.text = '';
+						targetName.text='';
+						txt.width = 250;
+						targetName.width=0;
+						break;
+					}
+					case ChatHandlerKey.CHAT_WHISPER:
+					{
+						selectImg.source = new whisperSelect() as Bitmap ;
+						//显示私聊
+						_mediatorUI.showWhisperChat();
+						lbl_unreadNum.visible = false;
+						_unReadMessage = 0;
+						break;
+					}
+					default:
+					{
+						break;
+					}
+				}
+				_selectID = -1;
+				_selectName = '';
+			}
+			
+			/**
+			 * 回车处理
+			 * */
+			protected function txt_enterHandler(event:FlexEvent):void
+			{
+				btn_enter_clickHandler(null);
+			}
+			
+			/**
+			 * 面板创建完成
+			 * */
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				panelID =4;
+				_txtField = new TextField();
+				var format:TextFormat = new TextFormat();
+				format.size = 14;
+				sp_txt.addChild(_txtField);
+				_txtField.width = 320;
+				_txtField.height = 280;
+				_txtField.textColor = 0Xf5f5f5;
+				_txtField.wordWrap = true;
+				_txtField.defaultTextFormat=format;
+				_txtField.multiline = true;
+				_txtField.addEventListener(TextEvent.LINK,refClickHandler);
+				_txtField.filters=[new GlowFilter(0x000000,100,2,2, 5,1,false,false)];
+				_timer.addEventListener(TimerEvent.TIMER,onCDTimer);
+				_timer_wsp.addEventListener(TimerEvent.TIMER,onCDWSPTimer);
+			}
+			
+			
+			/**
+			 * 键盘滚动信息存储条数
+			 * @param $str 当前输入框整理的字符串
+			 * */
+			private function addRollData($str:String):void
+			{
+				if(_rollDataValue.length>=10)
+				{
+					_rollDataValue.shift();
+				}
+				_rollDataValue.push($str);
+			}
+			
+			
+			/**选中的玩家姓名*/
+			private var _selectName:String = '';
+			/**选中的玩家id*/
+			private var _selectID:int=-1; 
+			
+			/**
+			 * 点击名字超链接
+			 * */
+			protected function refClickHandler(e:TextEvent):void
+			{
+				var name:String = e.text.split(',')[0];
+				var id:int = int (e.text.split(',')[1]);
+				
+				_selectName = name;
+				_selectID = id;
+				
+				//弹出菜单
+				isPopShow = true;
+				popMenu.x = mouseX;
+				popMenu.y = mouseY;
+				popMenu.show(name,id);
+				//speakTo(name);
+			}
+			
+			/**
+			 * 文本框失去焦点触发
+			 * */
+			protected function txt_focusOutHandler(event:FocusEvent):void
+			{
+				if(txt.text.length==0){
+					isFirtClickTxt = true;
+					txt.text = '在此输入文字';
+				}
+			}
+			
+			
+			/**
+			 * 切换到对某人私聊
+			 */
+			public function speakTo($name:String,$id:int):void
+			{
+				chartType.selectedValue = 1;
+				chartType_changeHandler(null);
+				_selectName = $name;;
+				_selectID = $id;
+				targetName.text='/'+_selectName+':';
+				targetName.width = getByteLength(targetName.text)*7;
+				txt.width = 250-targetName.width;
+				isFirtClickTxt = false;
+				this.stage.focus = txt;
+				txt.text = '';
+				txt.selectRange(txt.text.length ,txt.text.length) ;
+			}
+			
+			/**
+			 * 检测私聊格式是否合法（检测是否选择了私聊对象）
+			 * */
+			private function checkFormat():Boolean
+			{
+//				var str:String = txt.text;
+//				if(str.charAt(0)=='@')return true;//gm
+//				return (str.charAt(0)=='/')&&(str.indexOf(':')>1);
+				return _selectName.length>0;
+			}
+			
+			private var isPopShow:Boolean;
+			/**点击隐藏菜单*/
+			protected function onClickHidePopMenu(event:MouseEvent):void
+			{
+				if(!isPopShow){
+					popMenu.visible = false;
+				}
+				isPopShow = false;
+			}
+			
+			/**
+			 * 计算字符串的字节数 
+			 * @param str
+			 * @return 
+			 * 
+			 */		
+			private function getByteLength(str:String):int{
+				var ba:ByteArray=new ByteArray;
+				ba.writeMultiByte(str,"");
+				return ba.length;
+			}
+
+			/**
+			 * 追加显示错误信息
+			 * */
+			private function showFormatError($type:int):void
+			{
+//				chartType.selectedValue = 2;
+//				chartType_changeHandler(null);
+				var chat:ChatMessage = new ChatMessage();
+				chat.btChatType = 3;//系统
+				switch($type){
+					case 0://cd
+						var t:int;
+						t = chartType.selectedValue==2?(CD-curCDsecond):1;
+						chat.szChatMsg = '您发言太快了，休息'+t+'秒再说吧';
+						break;
+					case 1://格式
+						chat.btChatType = ChatHandlerKey.CHAT_SYSTEM_PRIVATE;
+						chat.szChatMsg = '私聊对象不能为空!';
+						break;
+					case 2://超长
+						chat.szChatMsg = '内容长度不能超过100中文字符哦';
+						break;
+					default:
+						throw new Error('no error type');
+						break;
+				}
+				_mediatorUI.recChatMessage(chat);
+			}
+			
+			protected function onCDTimer(event:TimerEvent):void
+			{
+				curCDsecond++;
+				if(curCDsecond>=CD){
+					_timer.stop();
+					curCDsecond = 0;
+					isCD = false;
+				}
+			}
+			
+			protected function onCDWSPTimer(event:TimerEvent):void
+			{
+				curCDsecond_wsp+=1;
+				if(curCDsecond_wsp>=CD_wsp){
+					_timer_wsp.stop();
+					curCDsecond_wsp = 0;
+					isCD_wsp = false;
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<s:RadioButtonGroup id="chartType" change="chartType_changeHandler(event)"/>
+	</fx:Declarations>
+	<s:BitmapImage source="@Embed('../../../../../../../../assets/images/chat/newBack.png')"/>
+	<s:Image x="12" y="317" source="@Embed('../../../../../../../../assets/images/chat/zongChosen.png')" id="selectImg"/>
+	<s:HGroup x="4" y="7" width="346" height="281" gap="0">
+		<s:SpriteVisualElement id="sp_txt" width="327" height="280" click="onClickHidePopMenu(event)"/>
+		<s:Group height="277">
+			<symbols:ChatScroolBar height="277" id="chatScroll" width="7" isShow="false" maxLine="6" viewPort="{_txtField}"/>
+		</s:Group>
+	</s:HGroup>
+	<s:HGroup id="hg_type" x="1" y="287" width="73" gap="0">
+		<s:RadioButton id="radbtn_comprehress" label="综合" selected="true" groupName="chartType" value="2"
+					   skinClass="cn.sevencool.sangocraft.web.skin.radionButton.comprehressRbtnSkin"/>
+		<s:RadioButton id="radbtn_whisper" label="私聊" selected="false" groupName="chartType" value="1"
+					   skinClass="cn.sevencool.sangocraft.web.skin.radionButton.WhisperRbtnSkin">
+		</s:RadioButton>
+			
+	</s:HGroup>
+	<!--<s:HGroup x="10" y="316" gap="2">-->
+		<s:Image x="39" y="318"
+				 source="@Embed('../../../../../../../../assets/images/chat/inputBottom.png')"/>
+		<s:HGroup x="44" y="318">
+			<s:TextInput id="targetName" height="25" width="0" fontSize="14" color="#7A6A6A" borderVisible="false" editable="false"/>
+			<s:TextInput id="txt"  width="242" height="25" click="txt_clickHandler(event)" borderVisible="false"
+						 color="#7A6A6A" enter="txt_enterHandler(event)" 
+						 focusOut="txt_focusOutHandler(event)" fontSize="14" keyUp="rollData(event)"
+						 maxChars="100" text="在此输入文字"
+						 skinClass="cn.sevencool.sangocraft.web.skin.textInput.TextInputSkin"/>
+		</s:HGroup>
+		<s:Button id="btn_enter" x="300" y="316" click="btn_enter_clickHandler(event)"
+				  skinClass="cn.sevencool.sangocraft.web.skin.button.InputBtnSkin"/>
+	<!--</s:HGroup>-->
+	<s:Label id="lbl_unreadNum" x="60" y="{hg_type.y}" color="#FF0000" fontSize="15" fontWeight="bold" text="2" visible="false"/>
+	<view:PopMenu id="popMenu" visible="false"/>
+</symbols:BasePanel>

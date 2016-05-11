@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	project: sangocraft_Web
+	@class: FomationIR
+	@author: zhoujingye
+	@usage: 编队ItemRenderer
+	@since: 2013-8-26
+	@modified: 2013-8-26
+	@modifier: zhoujingye 
+-->
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				creationComplete="itemrenderer1_creationCompleteHandler(event)"
+				autoDrawBackground="false" currentState="empty"
+				dataChange="itemrenderer1_dataChangeHandler(event)"
+				click.contain="arrange_clickHandler(event)"
+				width="110" height="140" xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.barracks.mediator.IUIOperatableBarracksMediator;
+			import cn.sevencool.sangocraft.data.manager.utils.MediatorUtil;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.data.vo.ItemOperationVO;
+			import cn.sevencool.sangocraft.data.vo.MonsterInfo;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.symbols.FigureDisplay;
+			import cn.sevencool.sangocraft.web.ui.barracks.mediator.BarracksMediator;
+			import cn.sevencool.sangocraft.web.ui.sell.view.ChoosePanel;
+			
+			import mx.events.FlexEvent;
+			
+			/**
+			 * 加载的图片容器
+			 * */
+			private var _head:Bitmap = null;
+			private var _command:Bitmap = null;
+			private var _genBottom:Bitmap = null;
+			private var _genCard:Bitmap = null;
+			private var _commandLvl:Bitmap = null;
+			private var _commandEmptyLvl:Bitmap = null;
+			private var _emptyHead:Bitmap = null;
+			private var _genLvl:Bitmap = null;
+			/**
+			 * 选择面板
+			 * */
+			private var _chociePanel:ChoosePanel=null;
+			/**
+			 * 将领VO
+			 * */
+			private var _info:MonsterInfo = null ; 
+			/**
+			 * 资源管理器
+			 * */
+			private var _materialManager:MaterialManager=MaterialManager.getInstance();
+			/**
+			 * 显示管理器
+			 * */
+			private var _uiManager:UIMananger=UIMananger.getInstance();
+			/**
+			 * 兵种图标
+			 * */
+			private static const ICONARR:Array=['pikemanIcon','cavalrymanIcon','archerIcon'];
+			/**
+			 * 兵营Mediator
+			 * */
+			private var _militaryM:BarracksMediator = null;
+			/**
+			 * 数据改变
+			 * */
+			protected function itemrenderer1_dataChangeHandler(event:FlexEvent):void
+			{
+				_info = data as MonsterInfo ; 
+				if(_info.onlyID==-1)
+				{
+					currentState='empty';
+					commandLvl.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'emptyCommand',_commandLvl));
+					commandEmptyLvl.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'emptyCommand',_commandEmptyLvl));
+					emptyHead.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'askIcon',_emptyHead));
+					genBottom.visible=false;
+					genCard.visible=false;
+					head.visible=true;
+					genLvlNum.visible=false;
+					addImg();
+					return;
+				} 
+				if(_info.onlyID!=-1)
+				{
+					currentState='contain';
+					genLvlNum.visible=true;
+					namebottom.label=_info.monsterName;
+					figure.figureHandler(_info.leaderShip.toString(),MaterialKeys.LVLBIG,12); 
+					genLvlNum.figureHandler(_info.level.toString(),MaterialKeys.LVLSMALL,10);
+					var armyType:int=(_info.theType-1)/5;
+					var str:String=ICONARR[armyType];
+					genType.solderType = _info.theType;
+					addImg();
+					return;
+				}
+			}
+			
+			
+			/**
+			 * 加载人物图片
+			 * */ 
+			private function addImg():void
+			{
+				head.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'generalCell',_head));
+				command.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'foamationCommand',_command));
+				genBottom.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'genBottom',_genBottom));
+				genCard.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'genCard',_genCard));
+				if(_info&&_info.onlyID != -1&&this.currentState =="contain" && initialized)
+				{
+					img_head.addChild(_materialManager.getIcon(MaterialKeys.BIG_HEAD,_info.picID.toString()));//以后换成人物专属图标
+				}
+				if(_info.teamLoc==0)
+				{
+					genBottom.visible=true;
+					genCard.visible=true;
+					head.visible=false;
+				}
+				if(_info.teamLoc!=0)
+				{
+					genBottom.visible=false;
+					genCard.visible=false;
+					head.visible=true;
+				}
+			}
+			
+			
+			/**
+			 * 点击安排将领按钮
+			 * */
+			protected function arrange_clickHandler(event:MouseEvent):void
+			{
+				_chociePanel.teamLoc=_info.teamLoc;
+				_chociePanel.teamId=_info.teamId;
+				//判断是否有武将 确定移除按钮是否可用
+				if(_info.teamLoc != 0&&_info.onlyID!=-1)
+				{
+					_chociePanel.isMonster = true;
+				}
+				if(_info.teamLoc == 0||_info.onlyID==-1)
+				{
+					_chociePanel.isMonster = false;
+				}
+				if(_info.onlyID!=-1)
+				{
+					var item:ItemOperationVO=_militaryM.getItemByIdInBag(_info.onlyID);
+					if(item)
+					{
+						_chociePanel.itemVO=item;
+					}
+				}
+				if(_info.onlyID==-1)
+				{
+					_chociePanel.itemVO=null;
+				}
+				_chociePanel.panelType=1;
+				_uiManager.showOrHide(ChoosePanel);
+				
+			}
+			
+			
+			/**
+			 * 创建完成
+			 * */
+			protected function itemrenderer1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_head = new Bitmap();
+				_command = new Bitmap();
+				_genBottom = new Bitmap();
+				_genCard = new Bitmap();
+				_commandLvl = new Bitmap();
+				_commandEmptyLvl = new Bitmap();
+				_emptyHead = new Bitmap();
+				_genLvl = new Bitmap();
+				addImg();
+				_chociePanel = _uiManager.getUIObj(ChoosePanel) as ChoosePanel ;
+				genLvl.addChild(_materialManager.getIcon(MaterialKeys.LVLSMALL,'',_genLvl));
+				_militaryM=MediatorUtil.getMediatorByInterface(IUIOperatableBarracksMediator) as BarracksMediator;
+			}
+			
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="contain"/>
+		<s:State name="empty"/>
+	</s:states>
+	<s:SpriteVisualElement id="genBottom" visible="false" 
+						    x="9" y="-3" width="90"
+						   height="130"/>
+	<s:SpriteVisualElement  x="15" y="3" width="80" height="93" id="head"/>
+	<s:SpriteVisualElement id="genCard" visible="false"  height="130"
+						   x="15" y="2" width="81"/>
+	<mx:Image id="img_head" includeIn="contain" y="14" width="60" height="60" horizontalCenter="0"
+			  visible.contain="true"
+			  visible.empty="false"/>
+	<s:SpriteVisualElement  x="23" y="13" width="67" height="65" id="emptyHead" visible="false" visible.empty="true"/>
+	<mx:Image id="command" x="10" y="116" width="42" height="24"
+			  x.contain="10" y.contain="114"
+			  x.empty="10" y.empty="114"/>
+	<s:Button visible="false" x="16" y="79" color="#ffe9a4" id="namebottom"
+			  skinClass="cn.sevencool.sangocraft.web.skin.button.FormationNameSkin"
+			  visible.contain="true" x.contain="17" y.contain="8"
+			  x.empty="16" y.empty="80"/>
+	<mx:Image id="commandLvl" visible="false" visible.empty="true"
+			  x.empty="87" y.empty="114" width.empty="17" height.empty="15"/>
+	
+	<symbols:FigureDisplay  x.contain="68" y.contain="101" height.contain="23"
+							maxMedian="5"
+							visible="false" visible.contain="true" id="figure"/>
+	<mx:Image id="commandEmptyLvl" visible="false" x="87" y="101" width="21" height="19"
+			  x.contain="96" y.contain="90" width.contain="24" height.contain="18"
+			  visible.empty="true" x.empty="67" y.empty="113"/>
+	
+	<symbols:SolderType id="genType" x="20" y="11" visible.contain="true" visible.empty="false"/>
+	<mx:Image id="genLvl" visible="false" visible.contain="true"
+			  x="48" y="58" width="27" height="20"/>
+	<symbols:FigureDisplay id="genLvlNum" x="66" y="48" width="18" height="20"
+						   maxMedian="3"
+						   x.contain="68" y.contain="48"/>
+	
+	<s:Button visible="false" x="17" y="76" width="76" height="30"
+			  click="arrange_clickHandler(event)" label="点击出战"
+			  skinClass="cn.sevencool.sangocraft.web.skin.button.ClickBattleButtonSkin"
+			  visible.empty="true" x.empty="17" y.empty="78"/>
+</s:ItemRenderer>

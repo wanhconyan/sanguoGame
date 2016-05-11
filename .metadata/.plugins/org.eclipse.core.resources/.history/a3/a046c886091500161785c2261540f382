@@ -1,0 +1,88 @@
+package com.core.loader
+{
+	import flash.display.Bitmap;
+	import flash.display.Loader;
+	import flash.display.LoaderInfo;
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.IOErrorEvent;
+	import flash.net.URLLoader;
+	import flash.net.URLRequest;
+	
+	public class LoadThread extends EventDispatcher
+	{
+		private var urlLoader:URLLoader ;
+		
+		private var unitLoader:UnitLoader ;
+		
+		public var loadInfo:LoadInfo;
+		
+		private var loader:Loader ;
+		
+		private var _loadNext:Function ;
+		public function LoadThread()
+		{
+		}
+		
+		public function load($loadInfo:LoadInfo):void
+		{
+			loadInfo = $loadInfo ;
+			var  type:String  = $loadInfo.type;
+			if(type == LoadInfo.UNITFILE)
+			{
+				if(!unitLoader)
+				{
+					unitLoader = new UnitLoader();
+					unitLoader.addEventListener(Event.COMPLETE,onUnitLoadComplete);
+				}
+				unitLoader.load($loadInfo);
+			}
+			if(type == LoadInfo.IMG)
+			{
+				if(!loader)
+				{
+					loader = new Loader();
+				}
+				loader.contentLoaderInfo.addEventListener(Event.COMPLETE,onComplete);
+				loader.contentLoaderInfo.addEventListener(IOErrorEvent.IO_ERROR,onIOError);
+				loader.load(new URLRequest($loadInfo.url));
+			}
+			
+			if(type == LoadInfo.FILE)
+			{
+				if(urlLoader)
+				{
+					urlLoader = new URLLoader(new URLRequest());
+				
+				}
+			}
+			
+		}
+		
+		protected function onIOError(event:IOErrorEvent):void
+		{
+			// TODO Auto-generated method stub
+			trace("LoadThread.onIOError(event)");
+			
+		}
+		
+		protected function onUnitLoadComplete(event:Event):void
+		{
+			this.dispatchEvent(new Event(Event.COMPLETE));			
+		}
+		
+		protected function onComplete(event:Event):void
+		{
+			 var data:* =  Bitmap((event.target as LoaderInfo).content).bitmapData ;
+			loadInfo.data = data ;
+			loadInfo.complete(loadInfo);
+			this.dispatchEvent(new Event(Event.COMPLETE));
+		}
+		
+		protected function onProgress(event:Event):void
+		{
+			// TODO Auto-generated method stub
+			
+		}		
+	}
+}

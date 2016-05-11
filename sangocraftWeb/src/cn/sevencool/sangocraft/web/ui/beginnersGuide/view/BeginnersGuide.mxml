@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+project: sangocraft_Web
+@class: GameGuide
+@author: zhouyan
+@usage: 新手引导
+@since: 2013-10-10
+@modified: 2013-10-10
+@modifier: zhouyan
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   xmlns:view="cn.sevencool.sangocraft.web.ui.gameGuide.view.*" >
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			
+			import mx.events.FlexEvent;
+			
+			private var _mediator:* = null ;
+			override public function set mediatorUI($value:AbstractMediator):void
+			{
+//				_mediator = $value as GameGuideMediator;
+//				guideType.mediatorUI = $value;
+			}
+			
+			/**
+			 * 点击按钮‘退出新手引导’
+			 * */
+			protected function btn_quitGuide_clickHandler(event:MouseEvent):void
+			{
+				_mediator.closeGuide();
+			}
+			
+			override public function get type():int
+			{
+				return UIMananger.TYPE_WIZARD;
+			}
+			
+			override public function get usableCount():int
+			{
+				return 1;
+			}
+			
+			protected function testGroup_changeHandler(event:Event):void
+			{
+//				testGroup.label =  testGroup.selected ? '去除网格':'显示网格' ;
+//				btnSp.visible =  testGroup.selected ;
+			}
+			
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				testGroup_changeHandler(null);
+			}
+			
+			protected function testGrid_clickHandler(event:MouseEvent):void
+			{
+				_mediator.clickGrid(event);
+			}
+			
+		]]>
+	</fx:Script>
+	<symbols:layout>
+		<s:BasicLayout/>
+	</symbols:layout>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<!--蒙版层-->
+<!--	<s:Group id="maskSp">
+		<s:Group id="maskGroup" />
+	</s:Group>-->
+	<!--测试按钮层-->
+<!--	<s:Group id="btnSp" click="testGrid_clickHandler(event)" >
+		<s:SkinnableContainer id="testGrid" left="0" top="0" backgroundAlpha="0.2"
+							  backgroundColor="#3CFF00"/>
+		<s:Group id="testClickPoint"  left="0" top="0" />
+		<view:GuideTypePanel verticalCenter="50" id="guideType"/>
+	</s:Group>
+	<s:Group left="0" verticalCenter="100">
+		<s:Button id="btn_quitGuide" label="退出新手引导" left="10" verticalCenter="0"
+				  click="btn_quitGuide_clickHandler(event)"/>
+		<s:CheckBox id="testGroup" left="10" verticalCenter="50" 
+					change="testGroup_changeHandler(event)"
+					selected="false" label="显示网格"/>
+	</s:Group>-->
+	<!--框框层-->
+	<s:Group id="freamSp" />
+	<!--文本层-->
+	<s:Group id="lblSp" />
+	<!--箭头层-->
+	<s:SWFLoader id="arrow" 
+				 source="@Embed('../../../../../../../../assets/images/gameGuide/arrow.swf')"/>
+</symbols:BasePanel>

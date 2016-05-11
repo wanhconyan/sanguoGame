@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 creationComplete="group1_creationCompleteHandler(event)"
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="200" height="20">
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			private var _starNum:int=0;
+
+			public function set starNum(value:int):void
+			{
+				_starNum = value;
+				for(var i:int=1;i<=10;i++){
+					if(i<=_starNum){
+						this['star'+i].visible=true;
+					} else {
+						this['star'+i].visible=false;
+					}
+				}
+			}
+
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:HGroup x="0" y="1" width="200" gap="2">
+		<s:BitmapImage id="star1" height="18"  width="18"   visible="false"
+					   source="@Embed('../../../../../../assets/images/playerInfo/generalStar.png')"/>
+		<s:BitmapImage id="star2" height="18"  width="18"   visible="false"
+					   source="@Embed('../../../../../../assets/images/playerInfo/generalStar.png')"/>
+		<s:BitmapImage id="star3" height="18"  width="18"   visible="false"
+					   source="@Embed('../../../../../../assets/images/playerInfo/generalStar.png')"/>
+		<s:BitmapImage id="star4" height="18"  width="18"  visible="false"
+					   source="@Embed('../../../../../../assets/images/playerInfo/generalStar.png')"/>
+		<s:BitmapImage id="star5" height="18"  width="18"   visible="false"
+					   source="@Embed('../../../../../../assets/images/playerInfo/generalStar.png')"/>
+		<s:BitmapImage id="star6" height="18"  width="18"   visible="false" 
+					   source="@Embed('../../../../../../assets/images/playerInfo/generalStar.png')"/>
+		<s:BitmapImage id="star7" height="18"  width="18"   visible="false"
+					   source="@Embed('../../../../../../assets/images/playerInfo/generalStar.png')"/>
+		<s:BitmapImage id="star8" height="18"  width="18"   visible="false" 
+					   source="@Embed('../../../../../../assets/images/playerInfo/generalStar.png')"/>
+		<s:BitmapImage id="star9" height="18"  width="18"   visible="false" 
+					   source="@Embed('../../../../../../assets/images/playerInfo/generalStar.png')"/>
+		<s:BitmapImage id="star10" height="18"  width="18"  visible="false" 
+					   source="@Embed('../../../../../../assets/images/playerInfo/generalStar.png')"/>
+	</s:HGroup>
+</s:Group>

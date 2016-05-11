@@ -1,0 +1,589 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+project: sangocraft_Web
+@class: SocialRelativePanel
+@author: wangtaofeng
+@usage: 社交面板
+@since: 2013-8-22
+@modified: 2013-8-22
+@modifier: wangtaofeng
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   width="645" height="490"
+				   xmlns:view="cn.sevencool.sangocraft.web.ui.socialRelative.view.*"
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   xmlns:titleWindow="cn.sevencool.sangocraft.web.skin.titleWindow.*"
+				   xmlns:alert="cn.sevencool.sangocraft.web.skin.alert.*">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.data.symbols.CommonData;
+			import cn.sevencool.sangocraft.data.symbols.SystemModelLocator;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.web.events.MenuClickEvents;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.symbols.FilterFctory;
+			import cn.sevencool.sangocraft.web.symbols.ItemMenuPopup;
+			import cn.sevencool.sangocraft.web.ui.socialRelative.mediator.SocialRelativeMediator;
+			import cn.sevencool.sangocraft.web.ui.socialRelative.view.itemrender.FriendApplyIR;
+			import cn.sevencool.sangocraft.web.ui.socialRelative.view.itemrender.MyFriendIR;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			
+			import sango.fight._madvise;
+			
+			import spark.core.SpriteVisualElement;
+			import spark.filters.GlowFilter;	
+			
+			private static const TIMER_COUNT:Number = 5000 ;
+			
+			private static const GOOD_FRIEND:String = '';
+			
+			/**
+			 * 好友数组前一页或者后一页内容
+			 * */
+			[Bindable]
+			public var preOrNextColl:ArrayCollection = new ArrayCollection();
+			
+			/**
+			 * 资源类型 好友0,申请好友1
+			 * */
+			private var _type:int = 0;
+			
+			private var _page:int = -1;
+			
+			
+			[Bindable]
+			private var _socialM:SocialRelativeMediator = null;
+			
+			/**
+			 * 社交导航
+			 * */
+			private var _viewColl:ArrayCollection = new ArrayCollection();
+			
+			/**
+			 * 邮件发包时间间隔
+			 * */
+			private var _emailTimer:Timer = null;
+			
+			/**
+			 * 申请好友发包间隔
+			 * */
+			private var _applyTimer:Timer = null;
+			
+			/**
+			 * 好友列表发包
+			 * */
+			private var _friendTimer:Timer = null;
+			
+			/**
+			 * 邮件锁定发包
+			 * */
+			private var _isLock:Boolean = false;
+			
+			private var _lockApply:Boolean = false;
+			
+			private var _isFristQuest:Boolean = false;
+			
+			private var _lockFriend:Boolean = false;
+			override public function get needBundleList():Array
+			{
+				var urlArr:Array = [] ;
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.MAINFIGURE,'0'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.MAINFIGURE,'1'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.MAINFIGURE,'2'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.MAINFIGURE,'3'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.MAINFIGURE,'4'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.MAINFIGURE,'5'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.MAINFIGURE,'6'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.MAINFIGURE,'7'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.MAINFIGURE,'8'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.MAINFIGURE,'9'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'0'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'1'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'2'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'3'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'4'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'5'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'6'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'7'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'8'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'9'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'0'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'1'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'2'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'3'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'4'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'5'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'6'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'7'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'8'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'9'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,''));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,''));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'dropDownList_1'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'dropDownList_2'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'dropDownList_3'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'dropDownList_4'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'titleBottom'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'generalCell'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'frame1'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'generalName'));
+				return urlArr;
+			}
+			
+			override public function set mediatorUI($value:AbstractMediator):void
+			{
+				_socialM = $value as SocialRelativeMediator;
+				
+				isFristQuest = true;
+				
+				if(!_socialM||!initialized)
+				{
+					return ;
+				}
+				onShow();					
+			}		
+			
+			
+			public function get mediator():SocialRelativeMediator
+			{
+				
+				return _socialM;
+			}
+			
+			
+			/**
+			 * 我的好友数提示信息
+			 * */
+			public function setFriendTipVisible(bool:Boolean):void
+			{
+				if(bool)
+				{
+					numberTip.tipInfo = '您还没有好友，赶快去邀请小伙伴哟！';
+					numberTip.visible = true;
+					return;
+				}
+				numberTip.visible = false;
+			}
+			
+			
+			/**
+			 * 申请好友数提示信息
+			 * */
+			public function setFriendApplyTipVisible(bool:Boolean):void
+			{
+				if(bool)
+				{
+					numberTip.tipInfo = '您暂时没有好友申请';
+					numberTip.visible = true;
+					return;
+				}
+				numberTip.visible = false;
+			}
+			
+			/**
+			 * 刷新数字显示
+			 * */
+			public function refreshNum($num:int = 0,$emailNum:int = 0):void
+			{
+				if(!initialized)
+				{
+					return;
+				}
+				var friendNum:int = $num
+				if(friendNum>9)
+				{
+					apply_num.visible = true;
+					apply_num.figureHandler("N",MaterialKeys.MAINFIGURE,15);
+				}else if(friendNum < 9 && friendNum !=-1 && friendNum != 0)
+				{
+					
+					apply_num.visible = true;
+					apply_num.figureHandler(friendNum.toString(),MaterialKeys.MAINFIGURE,15);
+				}else
+				{
+					apply_num.visible = false;
+				}
+				var emailNum:int = $emailNum
+				if(emailNum>9)
+				{
+					email_num.visible = true;
+					email_num.figureHandler("N",MaterialKeys.MAINFIGURE,15);
+					
+				}else if(emailNum !=0 && emailNum != -1)
+				{
+					email_num.visible = true;
+					email_num.figureHandler(emailNum.toString(),MaterialKeys.MAINFIGURE,15);
+				}else
+				{
+					email_num.visible = false;
+				}
+			}
+			
+			
+			/**
+			 * 选项卡的选择
+			 * */
+			protected function tb_Menu_clickHandler(event:MouseEvent):void
+			{
+				numberTip.visible = false;
+				switch(tb_Menu.selectedIndex)
+				{
+					case 0:
+						_friendTimer.start();
+						this.currentState = "myFriend";
+						_type = 0
+						if(lockFriend)
+						{
+							_socialM.updateFriendList();
+							lockFriend =false;
+							return;
+						}
+						_socialM.getTranslationInfo();
+						break;
+					case 1:
+						
+						_applyTimer.start();
+						this.currentState = 'myApplyFriend';
+						_type = 1;
+						if(lockApply)
+						{
+							lockApply = false;
+							_socialM.sendSGetFriendListVO(1);
+						}else
+						{
+							_socialM.getApplyTranslation()
+						}
+						break;
+					case 2:
+						this.currentState = 'searchFriend';
+						break;
+					case 3:
+						_emailTimer.start();
+						this.currentState = 'email'
+						email.currentState = "emailList";
+						if(isLock)
+						{
+							_socialM.openEmailPanel()
+							isLock = false;
+						}
+						break;
+					default:
+						
+						throw new Error("tb_Menu.selectedIndex"+tb_Menu.selectedIndex)
+				}
+				tw_Social.title = (this.currentState == 'email')?"邮 件" : "好 友";
+			}
+			
+			
+			/**
+			 * 分頁更新
+			 * */
+			protected function grouppagination1_PageChangeHandler(event:Event):void
+			{
+				_socialM.refreshPage(paga_group.nowPage,_type);
+			}
+			
+			
+			/**关闭面板*/
+			protected function tw_Social_closeHandler(event:CloseEvent):void
+			{
+				this.currentState = "myFriend";
+				tb_Menu.selectedIndex = 0; 
+				UIMananger.getInstance().hide(this);	
+			}
+			
+			
+			/**
+			 * 面板创建完成
+			 * */
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				isLock = true;
+				lockApply = true;
+				lockFriend = false;
+				_emailTimer = new Timer(TIMER_COUNT);
+				_applyTimer = new Timer(TIMER_COUNT);
+				_friendTimer = new Timer(TIMER_COUNT);
+				tw_Social.title = "好 友"	;
+				_viewColl.source = ["我的好友","申请好友","搜索好友","邮件"];
+				this.currentState = "myFriend";
+				tb_Menu.dataProvider = _viewColl;
+				lbl_total.filters = FilterFctory.SocialPerFilter;
+				lbl_total.filters = FilterFctory.BarrackNumFilter;
+				
+				CommonData.stage.addEventListener(MouseEvent.CLICK , popNextClickHandler) ; 
+				SystemModelLocator.getInstance().addEventListener(MenuClickEvents.MYFRIEND,FrClickHandler);
+				SystemModelLocator.getInstance().addEventListener(MenuClickEvents.FRIENDAPPLY,AppClickHandler);
+				_emailTimer.addEventListener(TimerEvent.TIMER,onEmailTimer);
+				_applyTimer.addEventListener(TimerEvent.TIMER,onApplyTimer);
+				_friendTimer.addEventListener(TimerEvent.TIMER,onFriendTimer);
+				onShow();
+			}
+			
+			
+			/**
+			 * 我的好友
+			 * */
+			protected function FrClickHandler($evt:MenuClickEvents):void
+			{
+				menu.currentState = 'sendOrDelOrdetail';
+				menu.x = this.mouseX ;
+				menu.y = this.mouseY - 40 ;
+//				menu.friendVO =$evt.friendVO;
+				menu.visible=true;
+			}
+			
+			
+			/**
+			 * 好友申请
+			 * */
+			protected function AppClickHandler($evt:MenuClickEvents):void
+			{
+				menu.currentState = 'sendOrDetail';
+				menu.x = this.mouseX ;
+				menu.y = this.mouseY - 40 ;
+//				menu.friendVO =$evt.friendVO ;
+				menu.visible=true;
+			}
+			
+			
+			protected override function onShow():void
+			{
+				if(!initialized)
+				{
+					return ;
+				}
+				if(isFristQuest)
+				{
+					_socialM.sendSGetFriendListVO(0);
+					_socialM.updateFriendList();
+					_isFristQuest = false;
+				}
+				if(this.currentState == "myFriend")
+				{
+					_socialM.getTranslationInfo();
+				} 
+				refreshNum();
+			}
+			
+			protected override function stateChanged(oldState:String, newState:String, recursive:Boolean):void
+			{
+				tw_Social.title = (this.currentState == "email")?"邮 件":"好 友";
+				
+				lbl_total.visible = drop_list.visible = (this.currentState == "myFriend")?true:false;
+			}
+			
+			
+			protected function drop_list_listChangeHandler(event:Event):void
+			{
+				if(this.currentState =="myFriend")
+				{
+					_socialM.sortFriendList(1,drop_list.currentSelect[0]);
+					
+				}
+				if(this.currentState =="myApplyFriend")
+				{
+					_socialM.sortFriendList(2,drop_list.currentSelect[0]);
+				}
+				
+			}
+			
+			/**
+			 * 关闭面板时关闭时间监听
+			 * */
+			protected override function onClose():void
+			{
+				_applyTimer.stop();
+				_friendTimer.stop();
+				_emailTimer.stop();
+			}
+			
+			
+			private function popNextClickHandler(evt:MouseEvent):void
+			{
+				if((evt.target is SpriteVisualElement && evt.target.parent.document is MyFriendIR ) ||
+					(evt.target is SpriteVisualElement && evt.target.parent.document is FriendApplyIR))
+				{
+					return;
+				}
+				menu.visible=false;
+			} 
+			
+			private function paga_group_RightClikHandler(event:Event):void
+			{
+				if(this.currentState =="myFriend")
+				{
+					
+				}else
+				{
+				}
+			}
+			
+			private function paga_group_LeftClikHandler(event:Event):void
+			{
+				if(this.currentState =="myFriend")
+				{
+					
+				}else
+				{
+					
+				}
+			}
+			
+			
+			/**
+			 * 邮件发包间隔监听
+			 * */
+			private function onEmailTimer(e:TimerEvent):void
+			{
+				isLock = true;
+			}
+			
+			private function onApplyTimer(e:TimerEvent):void
+			{
+				lockApply = true;
+			}
+			
+			private function onFriendTimer(e:TimerEvent):void
+			{
+				lockFriend = true;
+			}
+			
+			public function get isLock():Boolean
+			{
+				return _isLock;
+			}
+			
+			public function set isLock(value:Boolean):void
+			{
+				_isLock = value;
+			}
+			
+			/**
+			 * 申请好友锁定发包
+			 * */
+			public function get lockApply():Boolean
+			{
+				return _lockApply;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set lockApply(value:Boolean):void
+			{
+				_lockApply = value;
+			}
+			
+			private function get isFristQuest():Boolean
+			{
+				return _isFristQuest;
+			}
+			
+			private function set isFristQuest(value:Boolean):void
+			{
+				_isFristQuest = value;
+			}
+			
+			/**
+			 * 好友请求刷新数据
+			 * */
+			private function get lockFriend():Boolean
+			{
+				return _lockFriend;
+			}
+			
+			/**
+			 * @private
+			 */
+			private function set lockFriend(value:Boolean):void
+			{
+				_lockFriend = value;
+			}
+			
+			
+		]]>
+	</fx:Script>
+	<symbols:layout>
+		<s:BasicLayout/>
+	</symbols:layout>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<!--	
+		<s:Move id="moveL" target="{friendColl}" duration="500"/>
+		<s:Move id="moveR" target="{fr}"  duration="500"/>
+		<s:Move id="moveL1" target="{dataGroup1}" duration="500"/>
+		<s:Move id="moveR1" target="{dataGroup1}"  duration="500"/>
+		
+		<s:Move id="moveL" target="{friendColl}" duration="500"/>
+		<s:Move id="moveR" target="{fr}"  duration="500"/>
+		<s:Move id="moveL1" target="{dataGroup1}" duration="500"/>
+		<s:Move id="moveR1" target="{dataGroup1}"  duration="500"/>-->
+	</fx:Declarations>
+	<symbols:states>
+		<s:State name="myFriend"/>
+		<s:State name="myApplyFriend"/>
+		<s:State name="searchFriend"/>
+		<s:State name="email"/>
+	</symbols:states>
+	<s:TitleWindow id="tw_Social" x="0" y="0" width="100%" height="100%" close="tw_Social_closeHandler(event)"
+				   skinClass="cn.sevencool.sangocraft.web.skin.titleWindow.SGTitleWindowSkin" x.myFriend="0" y.myFriend="0">
+		<s:SkinnableContainer width="630"  x="1" y="39" height="382"
+							  skinClass="cn.sevencool.sangocraft.web.skin.BottomContainerSkin"/>
+		<s:Label id="lbl_total" color="#eee6dc" 
+				 filters="{[new spark.filters.GlowFilter(0x201712,1,2,2,5,1,false,false)]}"
+				 fontFamily="hyxl" fontSize="20"  visible.myFriend="true"  visible="false" 
+				 x="457" y="18"/>
+		<s:TabBar id="tb_Menu" x="42" y="16" width="332" height="25"
+				  click="tb_Menu_clickHandler(event)" />		
+		<s:DataGroup id="friendSource" x="67" y="56" width="477" height="328" includeIn="myFriend"
+					 itemRenderer="cn.sevencool.sangocraft.web.ui.socialRelative.view.itemrender.MyFriendIR">
+			<s:layout>
+				<s:TileLayout requestedColumnCount="2" requestedRowCount="3" horizontalGap="35" verticalGap="12"/>
+			</s:layout>
+		</s:DataGroup>
+		
+		<s:DataGroup id="applyFriendSource" x="67" y="56" width="477" height="328"  includeIn="myApplyFriend"
+					 itemRenderer="cn.sevencool.sangocraft.web.ui.socialRelative.view.itemrender.FriendApplyIR">
+			<s:layout>
+				<s:TileLayout requestedColumnCount="2" requestedRowCount="3" horizontalGap="35" verticalGap="12"/>
+			</s:layout>
+		</s:DataGroup>
+		<view:SearchFriPanel width="333" height="201" horizontalCenter="0" includeIn="searchFriend" y="56"
+							 mediatorUI="{_socialM}"
+							 verticalCenter="-37"/>								
+		<view:ShowEmailPanel  id="email"  y="56" visible.email="true" visible="false"
+							  width="530" height="360" horizontalCenter="-2" mediatorUI="{_socialM}" verticalCenter="1"/>				
+		<symbols:FigureDisplay id="email_num" x="360" y="-3" width="31" height="36" maxMedian="1"/>
+		<symbols:FigureDisplay id="apply_num"  y="-3" width="34" height="36" x="195" maxMedian="1"/>
+		<symbols:BarracksList  id="drop_list" x="509" y="16" listChange="drop_list_listChangeHandler(event)"/> 
+		<view:NumberTip id="numberTip" visible="false" x="115" y="94" visible.searchFriend="false" visible.email="false"/>
+		<s:Group includeIn="myFriend,myApplyFriend" x="67" y="56" width="477" height="328" visible="false">
+			<s:DataGroup id="friendSource1" x="67" y="56" width="477" height="328"  includeIn="myApplyFriend"
+						 itemRenderer="cn.sevencool.sangocraft.web.ui.socialRelative.view.itemrender.FriendApplyIR">
+				<s:layout>
+					<s:TileLayout requestedColumnCount="2" requestedRowCount="3" horizontalGap="35" verticalGap="12"/>
+				</s:layout>
+			</s:DataGroup>
+			<s:DataGroup id="applyFriendSource1" height="328"  includeIn="myApplyFriend"
+						 itemRenderer="cn.sevencool.sangocraft.web.ui.socialRelative.view.itemrender.FriendApplyIR">
+				<s:layout>
+					<s:TileLayout requestedColumnCount="2" requestedRowCount="3" horizontalGap="35" verticalGap="12"/>
+				</s:layout>
+			</s:DataGroup>
+		</s:Group>
+	</s:TitleWindow>
+	<symbols:Grouppagination id="paga_group" width="630" height="34" horizontalCenter="0" includeIn="myFriend,myApplyFriend"
+							 PageChange="grouppagination1_PageChangeHandler(event)" RightClik="paga_group_RightClikHandler(event)"
+							 LeftClik="paga_group_LeftClikHandler(event)"
+							 verticalCenter="0"/>
+	<symbols:ItemMenuPopup id="menu" visible="false"/>
+</symbols:BasePanel>

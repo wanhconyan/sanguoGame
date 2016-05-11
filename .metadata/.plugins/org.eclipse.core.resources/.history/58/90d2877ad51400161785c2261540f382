@@ -1,0 +1,32 @@
+package com.sanguo.manager
+{
+	import com.core.view.BaseModule;
+	import com.module.battle.BattleModule;
+
+	public class ModuleManager
+	{
+		private var modules:Array = [];
+		public function ModuleManager()
+		{
+			
+			
+		}
+		
+		public function start():void
+		{
+			var arr:Array = getModules();
+			for each(var baseModule:BaseModule in arr)
+			{
+				baseModule.start();
+			}
+		}
+		
+		
+		public function getModules():Array
+		{
+			return [
+				new BattleModule(),// 战斗模块
+			];
+		}
+	}
+}

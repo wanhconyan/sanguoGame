@@ -1,0 +1,16 @@
+package com.starling.battle.view
+{
+	import starling.display.Sprite;
+	
+	/**
+	 * @author wcy
+	 * 
+	 */	
+	public class Unit extends Sprite
+	{
+		public function Unit()
+		{
+			super();
+		}
+	}
+}

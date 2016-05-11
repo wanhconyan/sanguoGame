@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 creationComplete="group1_creationCompleteHandler(event)"
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
+	
+	<fx:Metadata>   
+		[Event(name="listPaveComplete", type="cn.sevencool.sangocraft.web.symbols.itemsBox.LatticeEvent")]
+	</fx:Metadata> 
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			private var _latticeMap:Array = [] ;
+			private var _stateCount:int=-1;
+			private var _stateArr:Array=['SHOWLVL','SHOWNUM','SHOWWORD'];
+			private var _itemTimer:Timer= null;
+			private var _latticeDic:Dictionary =null;
+			
+			/**
+			 * 是否响应被点击，默认响应
+			 * */
+			public var isClickBack:Boolean=true;
+			protected function group1_creationCompleteHandler(event:FlexEvent):void{
+				_itemTimer = new Timer(2000);
+				_latticeDic = new Dictionary();
+				paint() ;
+				setData() ;
+			}
+			
+			public function get length():uint{
+				return _latticeMap.length ;
+			}
+			
+			/**画上格子*/
+			public function paint():void{
+				_latticeMap = [] ;
+				var padding_left:Number  = isNaN(_margin[0]) ? 0 : Number(_margin[0]) ;
+				var padding_top:Number = isNaN(_margin[1]) ? 0 : Number(_margin[1]) ;
+				var padding_right:Number = isNaN(_margin[2]) ? 0 : Number(_margin[2]) ;
+				var padding_bottom:Number = isNaN(_margin[3]) ? 0 : Number(_margin[3]) ;
+				for(var i:int = 0 ; i < _row ; i ++)
+				{
+					for(var j:int = 0 ; j < _col ; j++)
+					{
+						var indexL:int =_latticeMap.length-1 ;
+						if(!_latticeDic[indexL])
+						{
+							_latticeDic[indexL] = latticeCreate() ;
+						}
+						var lattice:LatticeUltra = _latticeDic[indexL];
+						_latticeMap.push(lattice) ;
+						lattice.index = _latticeMap.length - 1 ;
+						lattice.x = j * lattice.latticeWidth  + ((j+1) * padding_left) + (j * padding_right) ;
+						lattice.y = i * lattice.latticeHeight + ((i+1) * padding_top) + (i * padding_bottom) ;
+					}
+				}
+				dispatchEvent(new LatticeEvent(LatticeEvent.LIST_PAVE_COMPLETE)) ;
+			}
+
+			
+			private var _latticeClickFunction:Function = null ;
+			/**元素单击响应的处理函数*/
+			public function set latticeClickFunction(value:Function):void{
+				_latticeClickFunction = value ;
+			}
+			
+			private function latticeCreate():LatticeUltra{
+				var lattice:LatticeUltra = new _renderer() ;
+				list.addElement(lattice) ;
+				lattice.addEventListener(LatticeEvent.LATTICE_CLICK , latticeClickHandler) ;
+				return lattice ;
+			}
+			
+			/**
+			 * 开始刷新物品状态
+			 * */
+			public function startRefreshItemTimer():void{
+				if(_itemTimer.running)
+				{
+					_itemTimer.stop();
+				}
+				_itemTimer.start();
+				if(!_itemTimer.hasEventListener(TimerEvent.TIMER)){
+					_itemTimer.addEventListener(TimerEvent.TIMER, timeRefesh);
+				}
+			}
+			
+			/**
+			 * 移除物品计时刷新状态
+			 * */
+			public function removeItemTimer():void
+			{
+				if(_itemTimer.running){
+					_itemTimer.stop();
+					_stateCount=-1;
+				}
+				if(_itemTimer.hasEventListener(TimerEvent.TIMER)){
+					_itemTimer.removeEventListener(TimerEvent.TIMER, timeRefesh);
+				}
+			}
+			/**
+			 * 两秒种改变一下物品的状态
+			 * */
+			private function timeRefesh(evt:TimerEvent):void
+			{
+				_stateCount++;
+				if(_stateCount>2){
+					_stateCount=0;
+				}
+				for(var k:int=0;k<_data.length;k++){
+					var latticeU:LatticeUltra = getLattice(k) ;
+					latticeU.itemShowState=_stateArr[_stateCount];
+				}
+			}
+
+			private function latticeClickHandler(evt:LatticeEvent):void{
+				if(!isClickBack)
+					return;
+				var lattice:LatticeUltra = evt.currentTarget as LatticeUltra ;
+				selectIndex = lattice.index ;
+				
+				if(_latticeClickFunction != null || lattice.lockImgs){
+					_latticeClickFunction(lattice) ;
+				}
+			}
+			
+			private var _data:Array = null ;
+			public function set data(value:Array):void{
+				_data = value ;
+				setData() ;
+			}
+			
+			/**将所有数据数据铺在格子上*/
+			private function setData():void{
+				_selectIndex = -1 ;
+				if(_data == null || _latticeMap.length == 0){
+					return ;
+				}
+				var len:uint = _data.length ;
+				for(var i:int = 0 ; i < len ; i++){
+					var element:Object = _data[i] ;
+					parking(element) ;
+				}
+			}
+			
+			private function parking($element:Object):void{
+				if($element == null){
+					return ;
+				}
+				var index:int = -1 ;
+				if(index == -1){
+					index = _data.indexOf($element) ;
+				}
+				var lattice:LatticeUltra = getLattice(index) ;
+				if(lattice){
+					lattice.add($element) ;
+				}
+			}
+			
+			private var _margin:Array = [] ;
+			/**间隔 0左 , 1上 , 2 右 , 3下*/
+			public function set margin(value:Array):void{
+				_margin = value ;
+			}
+			
+			private var _row:uint = 0 ;
+			/**行数*/
+			public function set row(value:uint):void{
+				_row = value ;
+			}
+			public function get row():uint{
+				return _row ;
+			}
+			
+			private var _col:uint = 0 ;
+			/**列数*/
+			public function set col(value:uint):void{
+				_col = value ;
+			}
+			public function get col():uint{
+				return _col ;
+			}
+			
+			private var _renderer:Class = null ;
+			/**子项内容*/
+			public function set renderer(value:Class):void{
+				_renderer = value ;
+			}
+
+			/**根据行列坐标得到rendrer*/
+			private function getLattice(index:uint):LatticeUltra{
+				if(_latticeMap == null){
+					return null ;
+				}
+				
+				return _latticeMap[index] ;
+			}
+			
+			private var _selectIndex:int = -1 ;
+			/**
+			 * 刷新当前选中的物品框
+			 * */
+			private function set selectIndex(value:int):void{
+				var lastLattice:LatticeUltra = getLattice(_selectIndex) ;
+				var selectLattice:LatticeUltra = getLattice(value) ;
+				if(_selectIndex == value || selectLattice == null){
+					lastLattice.state = LatticeUltra.STATE_NORMAL ;
+					_selectIndex=-1;
+					return ;
+				}
+				_selectIndex = value ;
+				if(lastLattice){
+					lastLattice.state = LatticeUltra.STATE_NORMAL ;
+				}
+				selectLattice.state = LatticeUltra.STATE_SELECT ;
+			}
+			
+			
+			private var _unLockCount:int = 0; 
+			public function get lockCount():int
+			{
+				return _unLockCount;
+			}
+			
+			public function set lockCount(value:int):void
+			{
+				_unLockCount = value;
+				for(var i:int=_unLockCount ; i<row*col ; i++)
+				{
+					var lattice:LatticeUltra = getLattice(i) ;
+					lattice.state=LatticeUltra.STATE_NORMAL ;
+					lattice.lockImgs=true;
+				}
+				if( _unLockCount > row*col )
+				{
+					return ;
+				}
+				for(var j:int=0;j<_unLockCount;j++)
+				{
+					var lattice1:LatticeUltra = getLattice(j) ;
+					lattice1.state=LatticeUltra.STATE_NORMAL ;
+					lattice1.lockImgs=false;
+				}
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:Group id="list" />
+</s:Group>

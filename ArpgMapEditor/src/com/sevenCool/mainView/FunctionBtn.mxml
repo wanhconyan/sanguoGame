@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 creationComplete="group1_creationCompleteHandler(event)"
+		 addedToStage="group1_addedToStageHandler(event)"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" minWidth="800" height="30" xmlns:mainView="com.sevenCool.mainView.*">
+	<fx:Script>
+		<![CDATA[
+			import com.sevenCool.control.MenuManager;
+			import com.sevenCool.mainView.map.MapControl;
+			import com.sevenCool.mainView.map.MapGrid;
+			import com.sevenCool.mainView.vo.GridSelectVO;
+			import com.sevenCool.manager.MapManager;
+			import com.sevenCool.map.WalkPoint;
+			import com.sevenCool.util.Colors;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Menu;
+			import mx.events.FlexEvent;
+			import mx.events.MenuEvent;
+			
+			
+			private var _menuManager:MenuManager = null;
+			
+			
+			private var _menu:Menu = null;
+			
+			private var _arr:ArrayCollection = null;
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_menuManager = MenuManager.getInstance();
+				_menu = Menu.createMenu(this.stage,fileItem,false);
+				_menu.labelField ='@label'
+				_menu.addEventListener(MenuEvent.ITEM_CLICK,onItemClick);
+				initGrid();
+			}
+			
+			
+			private function initGrid():void
+			{
+				var gridSelect1:GridSelectVO = new GridSelectVO(Colors.UN_WALKABLE,MapGrid.UN_WALK_ROAD,"不可行走");
+				var gridSelect2:GridSelectVO = new GridSelectVO(Colors.PLAN_ROAD,MapGrid.WALK_ROAD,"可行走");
+				var gridSelect3:GridSelectVO = new GridSelectVO(Colors.HILL_ROAD,MapGrid.MASK,"遮罩");
+				_arr = new ArrayCollection();
+				_arr.source = [gridSelect2,gridSelect1,gridSelect3];
+				gridSelect.arr = _arr ;
+			}
+			
+			protected function onMouseClick(event:MouseEvent):void
+			{
+				if(event.target != open)
+				{
+					_menu.hide();
+				}
+			}
+			
+			protected function onOpenMouseClick(event:MouseEvent):void
+			{
+				if(!_menu.visible)
+				{
+					_menu.show(open.x,open.y + open.height);
+				}else
+				{
+					_menu.hide();
+				}
+			
+			}
+			
+			protected function group1_addedToStageHandler(event:Event):void
+			{
+				this.stage.addEventListener(MouseEvent.CLICK,onMouseClick);
+			}
+			
+			protected function onItemClick(event:MenuEvent):void
+			{
+				var item:Object = event.item;
+				var index:int = event.item.@data[0] ; 
+				MenuManager.getInstance().menuClick(index);
+			}
+			
+			protected function save_clickHandler(event:MouseEvent):void
+			{
+				
+			}
+			
+			protected function move_check_clickHandler(event:MouseEvent):void
+			{
+				MapControl.getIntance().isMove = move_check.selected ;
+				
+			}
+			
+			protected function move_brush_clickHandler(event:MouseEvent):void
+			{
+				MapControl.getIntance().isBrush = true;				
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<fx:XML id="fileItem">
+			<root>
+				<menuitem label="新建地图" data="1"/>
+				<menuitem label="打开地图" data="2"/>
+				<menuitem label="保存地图" data="3"/>
+				<menuitem label="地图另存为" data="5"/>
+				<menuitem label="退出" data="4"/>
+			</root>
+		</fx:XML>
+	</fx:Declarations>
+	
+	
+	<s:Rect id="shadow" left="-1" right="-1" top="-1" bottom="-1" radiusX="2">
+		<s:fill>
+			<s:LinearGradient rotation="90">
+				<s:GradientEntry color="0x777777" 
+								 alpha="1" />
+			</s:LinearGradient>
+		</s:fill>
+	</s:Rect>
+	<s:HGroup id="btnGroup" width="100%" y="2" gap="5">
+	<mx:LinkButton id="open" width="51" height="26" label="文件" color="0xffffff" click="onOpenMouseClick(event)"/>
+	<mx:LinkButton id="save" width="51" height="26" label="预览" color="0xffffff" click="save_clickHandler(event)"/>
+	<mainView:GridSelect id="gridSelect" height="26" width="26"/>
+	<s:CheckBox id="move_check" width="25" height="22" y="3" skinClass="com.sevenCool.mainView.skinClass.MoveCheckSkin" click="move_check_clickHandler(event)" toolTip="选择移动"/>
+	<s:CheckBox id="move_brush" skinClass="com.sevenCool.mainView.skinClass.CheckBoxBrushSkin" click="move_brush_clickHandler(event)"/>
+	</s:HGroup>
+</s:Group>

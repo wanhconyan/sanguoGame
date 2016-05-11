@@ -1,0 +1,54 @@
+
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+@namespace spark "spark.skins.spark.*";
+*
+{
+	font-family:"新宋体";
+	focus-color: #9d8f8f;
+	font-size: 14;
+}
+s|Label
+{
+	color:#9d8f8f;
+	font-size: 12;
+}
+s|TitleWindow
+{
+	color:#d9cfbb;
+	skin-class: ClassReference("cn.sevencool.sangocraft.web.skin.titleWindow.SGTitleWindowSkin");
+}
+s|Button
+{
+	skin-class: ClassReference("cn.sevencool.sangocraft.web.skin.button.BaseButtonSkin");
+}
+s|TabBar
+{
+	skin-class: ClassReference("cn.sevencool.sangocraft.web.skin.tabBar.PreBattleTabSkin");
+}
+s|VScrollBar
+{
+	skin-class: ClassReference("cn.sevencool.sangocraft.web.skin.vscrollBar.MyVScrollBar");
+}
+mx|Alert
+{
+	color:#d4af80;
+	border-skin: ClassReference("cn.sevencool.sangocraft.web.skin.alert.AlertSkin");
+	modal-transparency: 0;
+	modal-transparency-blur: 0;
+	text-field-class: ClassReference("cn.sevencool.sangocraft.web.skin.ButtonText");
+}
+mx|Button
+{
+	font-weight: normal;
+	font-size: 14;
+	disabled-skin: Embed(source="../assets/images/alert/1.png");
+	down-skin: Embed(source="../assets/images/alert/1.png");
+	over-skin: Embed(source="../assets/images/alert/1.png");
+	up-skin: Embed(source="../assets/images/alert/1.png");
+	text-selected-color: #95ff23;
+	text-roll-over-color:  #95ff23;
+	disabled-color:#95ff23;
+	color: #737373;
+	text-field-class: ClassReference("cn.sevencool.sangocraft.web.skin.ButtonText");
+}

@@ -1,0 +1,14 @@
+package com.module.map
+{
+	import starling.display.Image;
+	import starling.display.Sprite;
+	
+	public class BattleScene extends Sprite
+	{
+		private var _image:Image;
+		public function BattleScene()
+		{
+			super();
+		}
+	}
+}

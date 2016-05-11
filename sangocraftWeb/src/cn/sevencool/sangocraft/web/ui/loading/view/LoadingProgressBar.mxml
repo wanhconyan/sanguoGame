@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	project: sangocraft_Web
+	@class: LoadingProgressBar
+	@author: zhouyan
+	@usage: 面板进度加载条
+	@since: 2013-8-23
+	@modified: 2013-8-23
+	@modifier: zhouyan 
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   width="546" height="260">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			
+			import mx.events.FlexEvent;
+			import mx.utils.StringUtil;
+			
+			import flash.filters.GlowFilter;
+			
+			private var loadBar:LoadingProgress = null;
+			override public function get type():int
+			{
+				return UIMananger.TYPE_ALERT;
+			}
+			
+			override public function get usableCount():int
+			{
+				return 1;
+			}
+			
+			/**
+			 * 刷新显示数据
+			 * @param $description 加载描述
+			 * @param $alreadyNum 已经加载的数据
+			 * @param $totalNum 需要加载的数据的总数
+			 * @param $totalBar 总进度
+			 * @param $endBar 总进度
+			 * */
+			public function refreshProgress($description:String,
+											$alreadyNum:Number,$totalNum:Number,
+										   $totalBar:int,$endBar:int):void
+			{
+				var progress:String = int($alreadyNum/$totalNum*100)+"%" ;
+//				light.width = $alreadyNum/Number($totalNum.toFixed(2))*470 ;
+//				point.x = 2 + $alreadyNum/Number($totalNum.toFixed(2))*470 ;
+//				lbl_descration.text = StringUtil.substitute('正在为您加载{0}：{1}，总进度：{2}/{3}',
+//					$description,progress,$totalBar,$endBar);
+				if(loadBar)
+				{
+					var percent:Number = $alreadyNum/Number($totalNum.toFixed(2));
+					loadBar.loadProgressBar.width = 470 * percent ; 
+					loadBar.loadSpark.x = -36 + 472 * percent   ; 
+					loadBar.loadText.text =  StringUtil.substitute('正在为您加载{0}：{1}，总进度：{2}/{3}',
+						$description,progress,$totalBar,$endBar);;
+					loadBar.loadText.filters = [new flash.filters.GlowFilter(0x310705, 100, 2, 2, 5, 1, false, false)];
+				}
+			}
+			
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				loadBar = new LoadingProgress();
+				sp.addChild(loadBar);
+				this.addEventListener(Event.COMPLETE , hide);
+				
+			}
+			
+			protected override function onShow():void
+			{
+				if(!initialized)
+				{
+					return ;
+				}
+				loadBar.loadText.text = "主文件加载当前加载进度1%";
+				sp.addChild(loadBar);
+			} 
+			
+			private function hide($evt:Event):void
+			{
+				if(this.stage)
+				{
+					UIMananger.getInstance().hide(this);
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<symbols:layout>
+		<s:BasicLayout/>
+	</symbols:layout>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:SpriteVisualElement id="sp"/>
+</symbols:BasePanel>

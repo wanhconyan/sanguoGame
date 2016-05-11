@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   width="400" height="300">
+	<symbols:layout>
+		<s:BasicLayout/>
+	</symbols:layout>
+	<fx:Script>
+		<![CDATA[
+			/**
+			 * 提示内容显示
+			 * */
+			private var _tipInfo:String = '';
+
+			public function get tipInfo():String
+			{
+				return _tipInfo;
+			}
+
+			public function set tipInfo(value:String):void
+			{
+				_tipInfo = value;
+				lab_Content.text = value
+			}
+			
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:SkinnableContainer x="18" y="59"  id="alertSkin" skinClass="cn.sevencool.sangocraft.web.ui.socialRelative.view.NumberTipSkin"/>
+	<s:Label id="lab_Content" x="-8" y="116" width="100%" color="white" textAlign="center" verticalAlign="middle"/>
+</symbols:BasePanel>	

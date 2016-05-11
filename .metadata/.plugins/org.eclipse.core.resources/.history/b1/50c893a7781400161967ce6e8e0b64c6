@@ -1,0 +1,13 @@
+package com.sanguo.manager
+{
+	import flash.utils.Dictionary;
+
+	public class BattleManager
+	{
+		private static var _instance:BattleManager ;
+		public var formationDic:Dictionary = null;
+		public function BattleManager()
+		{
+		}
+	}
+}

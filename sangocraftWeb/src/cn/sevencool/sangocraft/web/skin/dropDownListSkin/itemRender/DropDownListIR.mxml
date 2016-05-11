@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				width="58" height="18" autoDrawBackground="false"
+				buttonMode="true"
+				dataChange="itemrenderer1_dataChangeHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			
+			import mx.events.FlexEvent;
+			
+			private var _key:String = MaterialKeys.OTHER;
+			private var _mater:MaterialManager = MaterialManager.getInstance();
+			protected function itemrenderer1_dataChangeHandler(event:FlexEvent):void
+			{
+				var url:String = data as String;
+				img_show.addChild(_mater.getIcon(_key,url));
+				img_bar.addChild(_mater.getIcon(_key,'marchPathBar'));
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<mx:Image id="img_bar" width="58" height="18"/>
+	<mx:Image id="img_show" width="58" height="18"/>
+</s:ItemRenderer>

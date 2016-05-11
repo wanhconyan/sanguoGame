@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				width="520" height="33" autoDrawBackground="false"
+				dataChange="itemrenderer1_dataChangeHandler(event)" fontSize="14">
+	
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.vo.EMailVO;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.ui.socialRelative.mediator.SocialRelativeMediator;
+			import cn.sevencool.sangocraft.web.ui.socialRelative.view.EmailPanel;
+			import cn.sevencool.sangocraft.web.ui.socialRelative.view.SocialRelativePanel;
+			
+			import mx.events.FlexEvent;
+			
+			import spark.filters.GlowFilter;
+			
+			private var _email:EMailVO = null;
+			
+			private var _socialM:SocialRelativeMediator = null;
+			
+			
+			/**
+			 * 点击邮件主题查看邮件
+			 * */
+			protected function lbl_theme_clickHandler(event:MouseEvent):void
+			{
+				_socialM.readEmail(_email.dwMailID,itemIndex+1);
+				
+			}
+			
+			protected function itemrenderer1_dataChangeHandler(event:FlexEvent):void
+			{
+				
+				if(!data)
+				{
+					return; 
+				}
+				var social:SocialRelativePanel = UIMananger.getInstance().getUIObj(SocialRelativePanel) as SocialRelativePanel;
+				
+				_socialM  = social.mediator;
+				
+				_email = data as EMailVO;
+				
+				lbl_sender.text = _email.szSenderName;
+				
+				lbl_theme.text = _email.szTitle;
+				
+				lbl_time.text = _email.szSendTime;
+				
+				if(_email.boRead)
+				{
+					lbl_state.text = '已读';
+	
+				}else
+				{
+					lbl_state.text = '未读';
+				}
+				check_state.selected = _email.isCheck;
+				setFontColor(_email.boRead);
+			}
+			
+			
+			/**
+			 * 选择框是否选择触发
+			 * */
+			protected function check_state_clickHandler(event:MouseEvent):void
+			{
+				_email.isCheck = check_state.selected;  
+				for each(var em:EMailVO in _socialM.mailArr)
+				{
+					
+					if(em.dwMailID == _email.dwMailID)
+					{
+						em.isCheck = _email.isCheck;
+						break;
+					}
+				}
+			}
+			
+			
+			/**
+			 * 设置邮件是显示颜色
+			 * */
+			private function setFontColor($isBool:Boolean):void
+			{
+				if($isBool)
+				{
+					lbl_sender.setStyle("color",'0x7f7e70');
+					lbl_theme.setStyle("color",'0x7f7e70');
+					lbl_time.setStyle("color",'0x7f7e70');
+					lbl_state.setStyle("color",'0x7f7e70');
+				
+				}else
+				{
+					if(lbl_sender.text =="系统")
+					{
+						lbl_sender.setStyle("color",'0xff6000');
+					}
+					lbl_sender.setStyle("color",'0xdde3cf');
+					lbl_theme.setStyle("color",'0xdde3cf');
+					lbl_time.setStyle("color",'0xdde3cf');
+					lbl_state.setStyle("color",'0xdde3cf');
+				}
+			
+			}
+		]]>
+	</fx:Script>
+	
+	
+	
+	<s:Group width="520" height="33" verticalCenter="0">
+		
+		<s:CheckBox id="check_state" x="46" width="13" height="13"
+					click="check_state_clickHandler(event)"
+					skinClass="cn.sevencool.sangocraft.web.skin.checkBox.EmailCheckBoxSkin"
+					verticalCenter="0"/>
+		
+		<s:Label id="lbl_sender" x="77" width="115" fontSize="14" textAlign="center" 
+				 verticalAlign="middle" verticalCenter="0"/>
+		
+		<s:Label id="lbl_theme" x="222" width="165" click="lbl_theme_clickHandler(event)" 
+				 fontSize="14" textAlign="center" verticalAlign="middle" verticalCenter="0"/>
+		
+		<s:Label id="lbl_time" x="398" width="54" fontSize="14" textAlign="center"
+				 verticalAlign="middle" verticalCenter="0"/>
+		
+		<s:Label id="lbl_state" x="467" width="42" fontSize="14" textAlign="center"
+				 verticalAlign="middle" verticalCenter="0"/>
+	</s:Group>
+	
+</s:ItemRenderer>

@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+project: sangocraft_Web
+@class: battleUIPanel
+@author: 
+@usage: 军力显示
+@since: 2013-9-4
+@modified: 2013-9-6
+@modifier: wangcongyan 
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				    creationComplete="basepanel1_creationCompleteHandler(event)"
+				   width.enemy="416" height.enemy="114"
+				   width.oneself="490" height.oneself="145" xmlns:view="cn.sevencool.sangocraft.web.ui.mainPanel.view.*">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.data.symbols.CommonData;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.data.symbols.material.factory.ImageFactory;
+			import cn.sevencool.sangocraft.data.vo.FightDataVo;
+			import cn.sevencool.sangocraft.web.battle.ai.FightLogical;
+			import cn.sevencool.sangocraft.web.ui.mainPanel.mediator.MainPanelMediator;
+			
+			import com.sevencool.rtslogic.Battlefield;
+			
+			import mx.events.FlexEvent;
+			private var _mediator:MainPanelMediator = null ;
+			
+			private var _myPower:int = 0; 
+			
+			private var powerDic:Dictionary = new Dictionary(); 
+				
+			private var _bit:Bitmap = null;
+			
+			private var _frameIndex:int =  -1;
+			/**
+			 * 图片加载key
+			 * */
+			private var _key:String = MaterialKeys.OTHER;
+			
+			private var _mask:Sprite  = null;
+			
+			private var combatArayBar:Bitmap = null;
+			
+			private var power:Bitmap = null;
+			
+			private var combatBar:Bitmap = null;
+			
+			private var _restraintBit:Bitmap = null;
+			override public function set mediatorUI($value:AbstractMediator):void
+			{
+				_mediator = $value as MainPanelMediator ;
+			}
+			
+			/**
+			 * 显示数据设置
+			 * */
+			public function set addData($arr:Array):void
+			{
+				var arr:Array = [];				
+				switch(currentState)
+				{
+					case 'oneself':
+					{
+						 arr = $arr[0];
+						while(arr.length<6)
+						{
+							arr.push(null);
+						}
+						alliteOne.fightDataInitVO = arr[0] as FightDataVo;
+						alliteTwo.fightDataInitVO = arr[1] as FightDataVo;
+						alliteThree.fightDataInitVO = arr[2] as FightDataVo;
+						alliteFour.fightDataInitVO = arr[3] as FightDataVo;
+						alliteFive.fightDataInitVO = arr[4] as FightDataVo;
+						alliteSix.fightDataInitVO = arr[5] as FightDataVo;
+						
+						break;
+					}
+					case 'enemy':
+					{
+						arr = $arr[1];
+						while(arr.length<6)
+						{
+							arr.push(null);
+						}
+						armyBattleOne.fightData = arr[0] as FightDataVo;
+						armyBattleTwo.fightData = arr[1] as FightDataVo;
+						armyBattleThree.fightData = arr[2] as FightDataVo;
+						armyBattleFour.fightData = arr[3] as FightDataVo;
+						armyBattleFive.fightData = arr[4] as FightDataVo;
+						armyBattleSix.fightData = arr[5] as FightDataVo;
+						break;
+					}
+					default:
+						throw new Error('recognitionAward' + currentState) ;
+				}
+				onShow();
+			}
+			
+			
+			/**
+			 * 点击按钮‘全军出击’
+			 * */
+			protected function btn_AllF_clickHandler(event:MouseEvent):void
+			{
+				FightLogical.AllArmyHitOutOperate(CommonData.dwOnlyID,Battlefield.getActivityBattlefield().round + 2);
+			}
+			
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				panelID =6;
+				var combatBarUrl:String = MaterialManager.getInstance().getURL(MaterialKeys.OTHER,"combatBar");
+				var combatArayBarUrl:String = MaterialManager.getInstance().getURL(MaterialKeys.OTHER,"combatArayBar");
+				var powerUrl:String = MaterialManager.getInstance().getURL(MaterialKeys.OTHER,"power");	
+				img_Lead_Power.addChild(MaterialManager.getInstance().getIcon(_key,'leadPointBar'));
+				_bit =MaterialManager.getInstance().getIcon(_key,"leadPointBarPower")
+					
+				_restraintBit = new Bitmap();	
+				_mask = new Sprite();
+				img_Lead_show.addChild(_bit);
+				img_Lead_Power.visible = true;
+				img_Lead_show.visible = false;
+				combatArayBar = new Bitmap();
+				power = new Bitmap();
+				combatBar = new Bitmap();
+				
+				ImageFactory.getBitmap(combatArayBarUrl,combatArayBar);
+				ImageFactory.getBitmap(combatBarUrl,combatBar);
+				ImageFactory.getBitmap(powerUrl,power);
+				var str:String = MaterialManager.getInstance().getURL(MaterialKeys.OTHER,"battleRestraint");
+				ImageFactory.getBitmap(str,_restraintBit)
+				_restraintBit.addEventListener(Event.COMPLETE,onBattleComplete);
+				power.addEventListener(Event.COMPLETE,onPowerComplete);
+				combatBar.addEventListener(Event.COMPLETE,onComplete);
+				
+				img_back.source = combatArayBarUrl ;
+				onShow();
+			}
+			
+			protected override function onShow():void
+			{
+				if(!initialized)
+				{
+					return ;
+				}
+				refreshMask(0);
+				if(currentState == 'oneself')
+				{
+					img_back.visible = true;
+					img_Ememyback.visible = false;
+					fillEle.figureHandler(myPower.toString(),MaterialKeys.BATTLE_BUREAU,10);
+					refreshMask(myPower);
+					
+				}else
+				{
+					img_Ememyback.visible = true;
+					img_back.visible = false;
+					img_back.source = combatBar;
+					refreshMask(myPower);
+				}
+			}
+			
+			private function refreshMask($power:int):void
+			{
+				img_Lead_show.visible = true;
+				var len:int = (myPower+ Math.floor(myPower/3)) * 20 ;
+				
+				if(myPower == 10)
+				{
+					len = len - 2;
+				}
+				_mask.graphics.clear();
+				_mask.graphics.beginFill(0xff0000);
+				_mask.graphics.drawRect(0,0,len,11);
+				_mask.graphics.endFill();
+				img_Lead_show.mask = _mask;
+			}
+			
+			private function onPowerComplete(e:Event):void
+			{
+				if(currentState == 'oneself')
+				{
+					img_power.source = power;
+				}
+				
+			}
+			private function onComplete(e:Event):void
+			{
+				img_Ememyback.source = combatBar;
+			}
+			
+			/**
+			 * 克制关系图
+			 * */
+			private function onBattleComplete($e:Event):void
+			{
+				img_restraint.addChild(_restraintBit);
+				
+			}
+				
+			/**
+			 * 指挥点数
+			 * */
+			public function get myPower():int
+			{
+				return _myPower;
+			}
+
+			/**
+			 * @private
+			 */
+			public function set myPower(value:int):void
+			{
+				if(value>=12)
+				{
+					_myPower = 12;
+				}else
+				{
+					_myPower = value;
+				}
+			}
+
+			public function get frameIndex():int
+			{
+				return _frameIndex;
+			}
+
+			public function set frameIndex(value:int):void
+			{
+				_frameIndex = value;
+			}
+
+			
+		]]>
+	</fx:Script>
+	<symbols:layout>
+		<s:BasicLayout/>
+	</symbols:layout>
+	<symbols:states>
+		<s:State name="oneself"/>
+		<s:State name="enemy"/>
+	</symbols:states>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:Group y="0" left="0" width="490" height="150"
+			 width.enemy="416" height.enemy="114">
+		<s:Image id="img_back" width="490" height="140"
+				 x="0" bottom="0" />
+		<s:Image id="img_Ememyback" y="0"
+				 x="0" bottom="0" width="416" height="76"/>
+		<s:Image id="img_point"
+				 x="52" y="113"
+				 left="52" bottom="39"/>
+		<s:SpriteVisualElement id="img_Lead_Power" left="90" bottom="39" width="300" height="14"
+				 left.enemy="90" bottom.enemy="18"
+				 left.oneself="100" bottom.oneself="25"/>
+		<s:SpriteVisualElement id="img_Lead_show" left="90" bottom="39" width="300" height="14"
+							   left.enemy="90" bottom.enemy="18"
+							   left.oneself="100" bottom.oneself="25"/>
+	</s:Group>
+	<s:Group includeIn="oneself" y="0" left="0" width="490" height="150">
+		<s:HGroup left="108" bottom="39" width="360" height="86" gap="5">
+			<view:AlliesBattle id="alliteOne"/>
+			<view:AlliesBattle id="alliteTwo"/>
+			<view:AlliesBattle id="alliteThree"/>
+			<view:AlliesBattle id="alliteFour"/>
+			<view:AlliesBattle id="alliteFive"/>
+			<view:AlliesBattle id="alliteSix"/>
+		</s:HGroup>
+		<symbols:FigureDisplay id="fillEle" x="72" y="97" width="44" height="30" maxMedian="2"/>
+		<s:Image id="img_power" left="25" bottom="26" width="48" height="12"/>
+		<s:Image id="img_powerPoint"/>
+		<s:Button id="btn_AllF" left="18" top="25" width="70" height="70"  buttonMode="true"
+				  click="btn_AllF_clickHandler(event)"
+				  skinClass="cn.sevencool.sangocraft.web.skin.button.ButtonAllAramyMatchBtnSkin"/>
+		
+	</s:Group>
+	
+	<s:Group x="0" y="0" width="411" height="114" includeIn="enemy">
+		<s:HGroup x="80" bottom="22" width="321" height="83" gap="5">
+			<view:AramyBattle id="armyBattleOne"/>
+			<view:AramyBattle id="armyBattleTwo"/>
+			<view:AramyBattle id="armyBattleThree"/>
+			<view:AramyBattle id="armyBattleFour"/>
+			<view:AramyBattle id="armyBattleFive"/>
+			<view:AramyBattle id="armyBattleSix"/>
+		</s:HGroup>
+	</s:Group>
+	<mx:Image  id="img_restraint" x="330" y="110" width="68" height="81" visible="false" visible.enemy="true"/>
+</symbols:BasePanel>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   width="1130" height="492">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			
+			import com.sevencool.rtslogic.vo.BattleFrameVO;
+			import com.sevencool.rtslogic.vo.BattleTeamVO;
+			import com.sevencool.rtslogic.vo.BuffVO;
+			
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				// TODO Auto-generated method stub
+			}
+			
+			public function addInfo($info:String):void
+			{
+				txt.text = $info.toString();
+			}
+			
+			protected function titlewindow1_closeHandler(event:CloseEvent):void
+			{
+				UIMananger.getInstance().hide(this);
+			}
+			
+			override public function get type():int
+			{
+				return UIMananger.TYPE_ALERT;
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:TitleWindow width="100%" height="100%" title="战斗数据"
+				   close="titlewindow1_closeHandler(event)" >
+		<!--<s:TextArea width="520" height="377" horizontalCenter="0"
+					verticalCenter="0" id="txt"/>-->
+		<s:TextArea width="90%" height="377" horizontalCenter="0"
+				 verticalCenter="0" id="txt"/>
+	</s:TitleWindow>
+</symbols:BasePanel>

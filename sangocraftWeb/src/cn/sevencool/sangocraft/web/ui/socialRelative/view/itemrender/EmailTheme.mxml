@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:GridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+					xmlns:s="library://ns.adobe.com/flex/spark"
+					xmlns:mx="library://ns.adobe.com/flex/mx"
+					width="140" height="20" click="lblData_clickHandler(event)"
+					clipAndEnableScrolling="true"
+					dataChange="griditemrenderer1_dataChangeHandler(event)">
+	
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.vo.EMailVO;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.ui.socialRelative.mediator.SocialRelativeMediator;
+			import cn.sevencool.sangocraft.web.ui.socialRelative.view.EmailPanel;
+			
+			import mx.events.FlexEvent;
+			
+			private var emailVO:EMailVO = null;
+			
+			private var _socialM:SocialRelativeMediator = null;
+			override public function prepare(hasBeenRecycled:Boolean):void {
+				
+			}
+			
+			protected function griditemrenderer1_dataChangeHandler(event:FlexEvent):void
+			{
+				var email:EmailPanel =  UIMananger.getInstance().getUIObj(EmailPanel) as EmailPanel;
+				
+				_socialM = email.mediator;
+				emailVO = data as EMailVO ;
+				lblData.text = emailVO.rgetMail.szTitle;
+			}
+			
+			
+			/**
+			 * 点击邮件主题
+			 * */
+			protected function lblData_clickHandler(event:MouseEvent):void
+			{
+				
+				
+				_socialM.readEmail(emailVO.rgetMail.dwMailID);
+				
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Label id="lblData" top="0" horizontalCenter="0" textAlign="center" verticalAlign="middle"/>
+	
+	
+	
+</s:GridItemRenderer>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*" 
+				   width="530" height="360"
+				   xmlns:view="cn.sevencool.sangocraft.web.ui.socialRelative.view.*">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.web.ui.socialRelative.mediator.SocialRelativeMediator;		
+			
+			[Bindable]
+			private var _mediator:SocialRelativeMediator = null ;				
+			
+			override public function set mediatorUI($value:AbstractMediator):void
+			{								
+				_mediator = $value as SocialRelativeMediator ;
+			}
+			
+			protected function pageChange_PageChangeHandler(event:Event):void
+			{
+				_mediator.refreshPage(pageChange.nowPage,2)	
+			}
+			
+			
+			/**
+			 * 收到邮件数提示信息
+			 * */
+			 public function setEmailTipVisible(bool:Boolean):void
+			{
+				if(bool)
+				 {
+					emailTip.tipInfo = '您暂时没有收到邮件';
+					emailTip.visible = true;
+				}
+				else
+				{
+					emailTip.visible = false;
+				}  
+			} 
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<symbols:states>
+		<s:State name="emailList" />
+		<s:State name="readEmail" />
+		<s:State name="writeEmail"/>
+	</symbols:states>
+	<view:EmailPanel id="email_emaiList" mediatorUI="{_mediator}"
+					 visible="false" visible.emailList="true"
+					 verticalCenter="0"/>
+	<view:RecieveEmailPanel id="email_recieve" mediatorUI="{_mediator}"  visible="false" visible.readEmail="true"/>
+	<view:WriteEmailPanel id="email_write" mediatorUI="{_mediator}" visible="false" visible.writeEmail="true"/>
+	<symbols:Grouppagination id="pageChange" width="630" height="34" 
+							 visible="true" visible.readEmail="false"
+							 PageChange="pageChange_PageChangeHandler(event)" verticalCenter="-35"
+							 width.emailList="602" horizontalCenter.emailList="0"
+							 verticalCenter.emailList="0" x.readEmail="-48" x.writeEmail="-48"/>
+	<view:NumberTip id="emailTip" visible="false" 
+					horizontalCenter.emailList="0" verticalCenter.emailList="37" x="90" y="68"/>
+</symbols:BasePanel>

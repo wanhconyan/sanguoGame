@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+
+ADOBE SYSTEMS INCORPORATED
+Copyright 2008 Adobe Systems Incorporated
+All Rights Reserved.
+
+NOTICE: Adobe permits you to use, modify, and distribute this file
+in accordance with the terms of the license agreement accompanying it.
+
+-->
+
+<!--- The default wireframe skin class for the Spark Button component. 
+Skin classes in the wireframe package are useful for using as a simple base for a custom skin.
+
+@see spark.components.Button
+
+@langversion 3.0
+@playerversion Flash 10
+@playerversion AIR 1.5
+@productversion Flex 4
+-->
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" 
+		minWidth="19" minHeight="21"
+		width="19" height="21">
+	
+	<fx:Metadata>
+		/** 
+		* @copy spark.skins.spark.ApplicationSkin#hostComponent
+		*/
+		[HostComponent("spark.components.Button")]
+	</fx:Metadata>
+	
+	<s:states>
+		<s:State name="up" />
+		<s:State name="over" />
+		<s:State name="down" />
+		<s:State name="disabled" />
+	</s:states>
+	
+	<s:BitmapImage smooth="true" source="@Embed('../../../../../../../assets/images/titleWindow/x1.png')" includeIn="up" left="0" y="0" />
+	<s:BitmapImage smooth="true" source="@Embed('../../../../../../../assets/images/titleWindow/x2.png')" includeIn="down" left="0" y="1" />
+	<s:BitmapImage smooth="true" source="@Embed('../../../../../../../assets/images/titleWindow/x3.png')" includeIn="over,disabled" left="0" y="0" />
+</s:Skin>

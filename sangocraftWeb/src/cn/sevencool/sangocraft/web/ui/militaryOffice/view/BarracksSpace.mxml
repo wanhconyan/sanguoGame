@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+project: sangocraft_Web
+@class: BarracksSpace
+@author: zhouyan
+@usage: 招贤府——兵营空间不足提示
+@since: 2013-8-16
+@modified: 2013-8-16
+@modifier: zhouyan 
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*" 
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   width="385" height="358">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.data.manager.barracks.mediator.IUIOperatableBarracksMediator;
+			import cn.sevencool.sangocraft.data.manager.utils.MediatorUtil;
+			import cn.sevencool.sangocraft.data.model.RSExtensionPackage;
+			import cn.sevencool.sangocraft.data.symbols.ItemsManager;
+			import cn.sevencool.sangocraft.data.symbols.SoundManager;
+			import cn.sevencool.sangocraft.data.symbols.SystemModelLocator;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.symbols.AlertPanel;
+			import cn.sevencool.sangocraft.web.ui.barracks.mediator.BarracksMediator;
+			import cn.sevencool.sangocraft.web.ui.battleField.view.ExpeditionPanel;
+			import cn.sevencool.sangocraft.web.ui.sell.view.ChoosePanel;
+			
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			
+			import spark.filters.GlowFilter;
+			
+			private var _mater:MaterialManager = MaterialManager.getInstance();
+			public var isBattle:Boolean = false;
+			
+			/**
+			 * 装载底图图片的容器
+			 * */
+			private var _lightBar:Bitmap = null;
+			
+			/**
+			 * 装载警号图片的容器
+			 * */
+			private var _tipTitle:Bitmap = null;
+			
+			/**
+			 * 装载背景图片的容器
+			 * */
+			private var _officeBackBar:Bitmap = null;
+			
+			/**
+			 * 装载提示文字图片的容器
+			 * */
+			private var _tipWord:Bitmap = null;
+			
+			protected function tw_barracksSpace_closeHandler(event:MouseEvent):void
+			{
+				
+			}
+			
+			override public function set mediatorUI($value:AbstractMediator):void
+			{
+				//				throw new Error("Need to plug a mediator！");
+			}
+			
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				UIMananger.getInstance().hide(this);				
+			}
+			
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_lightBar = new Bitmap();
+				_tipTitle = new Bitmap();
+				_officeBackBar = new Bitmap();
+				_tipWord = new Bitmap();
+
+				lightBar.addChild(_mater.getIcon(MaterialKeys.OTHER,'lightBar',_lightBar));
+				img_tipTitle.addChild(_mater.getIcon(MaterialKeys.OTHER,'tipTitle',_tipTitle));
+				img_officeBackBar.addChild(_mater.getIcon(MaterialKeys.OTHER,'officeBackBar',_officeBackBar));
+				img_tipWord.addChild(_mater.getIcon(MaterialKeys.OTHER,'tipWord',_tipWord));
+			}
+			
+			
+			/**
+			 * 数据改变
+			 * */
+			protected override function onDataChange(type:String=""):void
+			{
+				switch(type)
+				{
+					case 'RSExtensionPackage':
+						
+						colseOrShowPanel();
+						break;
+					default:
+						throw new Error("onDataChange" + type);
+				}
+			}
+			
+			/**
+			 * 资源改变
+			 * */
+			protected override function resourcesChanged():void
+			{
+				dataArray=new Vector.<Class>;
+				dataArray.push(RSExtensionPackage);
+			}
+			
+			override public function get needBundleList():Array
+			{
+				var urlArr:Array = [] ;
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'lightBar'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'tipTitle'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'officeBackBar'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'tipWord'));
+				return urlArr;
+			}
+			
+			
+			
+			protected function button2_clickHandler(event:MouseEvent):void
+			{
+				var _choosePanel:ChoosePanel = UIMananger.getInstance().getUIObj(ChoosePanel) as ChoosePanel ;
+				UIMananger.getInstance().showOrHide(ChoosePanel);
+				_choosePanel.panelType=2;
+			}
+			
+			protected function btn_sell_clickHandler(event:MouseEvent):void
+			{
+				var _choosePanel:ChoosePanel = UIMananger.getInstance().getUIObj(ChoosePanel) as ChoosePanel ;
+				UIMananger.getInstance().showOrHide(ChoosePanel);
+				_choosePanel.panelType=5;
+			}
+			
+			protected function btn_enlarge_clickHandler(event:MouseEvent):void
+			{
+				Alert.okLabel = "确认";
+				Alert.cancelLabel = "取消";
+				AlertPanel.show("是否花费6个元宝扩充5个兵营空间？","",Alert.OK|Alert.CANCEL,closeHandle);
+				
+			}
+			
+			private function closeHandle(e:CloseEvent):void
+			{
+				if(e.detail == Alert.OK)
+				{
+					SoundManager.getInstance().musicPlay("Interface01");
+					var barr:BarracksMediator = MediatorUtil.getMediatorByInterface(IUIOperatableBarracksMediator) as BarracksMediator;
+					barr.extensionPackages();
+					return 
+				}
+				SoundManager.getInstance().musicPlay("Interface02");
+			}
+			
+			private function colseOrShowPanel():void
+			{
+				var extensionPackage:RSExtensionPackage = SystemModelLocator.getInstance().getPropertyByVo(RSExtensionPackage) as RSExtensionPackage;
+				if(extensionPackage.nErrorCode_tip==0)
+				{
+					var nowNumber:int = ItemsManager.getInstance().getItems().length;
+					
+					if(nowNumber < extensionPackage.nBagCellCount)
+					{
+						if(isBattle)
+						{
+							UIMananger.getInstance().showOrHide(ExpeditionPanel);
+						}else
+						{
+							UIMananger.getInstance().showOrHide(MilitaryOfficePanel);
+						}
+					}
+				
+				}
+				
+			}
+		]]>
+	</fx:Script>
+	<symbols:layout>
+		<s:BasicLayout/>
+	</symbols:layout>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<mx:Image id="img_officeBackBar"/>
+	<mx:Image id="img_tipTitle" top="-37" width="78" height="74" horizontalCenter="0" />
+	<mx:Image id="lightBar" x="5" y="79"/>
+	<mx:Image id="img_tipWord" top="16" width="78" height="74" horizontalCenter="3"/>
+	<!--<s:Label top="16" width="78" height="74" horizontalCenter="3" text="提示"/>-->
+	<s:Button x="355" y="7" click="button1_clickHandler(event)"
+			  skinClass="cn.sevencool.sangocraft.web.skin.titleWindow.CloseBtnSkin"/>
+	<s:Label x="0" y="77" width="100%" height="40" fontSize="15"
+			 text="兵营容量不足，无法进行征战" textAlign="center" color="#FFE7BC"  filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+			 verticalAlign="middle"/>
+	<s:Button y="227" label="强化" horizontalCenter="0" click="button2_clickHandler(event)" width="100" height="36"/>
+	<s:Button y="277" label="出售" horizontalCenter="0" id="btn_sell" click="btn_sell_clickHandler(event)" width="100" height="36"/>
+	<s:Button y="179" label="扩充" horizontalCenter="0" id="btn_enlarge" click="btn_enlarge_clickHandler(event)" width="100" height="36"/>
+</symbols:BasePanel>

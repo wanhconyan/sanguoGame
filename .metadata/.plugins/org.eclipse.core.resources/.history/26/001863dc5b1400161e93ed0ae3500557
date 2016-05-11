@@ -1,0 +1,32 @@
+package com.core.view
+{
+	import flash.display.Sprite;
+	
+	public class BaseFrame extends Sprite
+	{
+		public function BaseFrame()
+		{
+			super();
+		}
+		
+		
+		public function hide():void
+		{
+		
+		}
+		
+		
+		public function show():void
+		{
+		
+		}
+		
+		public function addComponent($component:BaseComponent):void
+		{
+			$component.regisiter(this);		
+		}
+		
+		
+		
+	}
+}

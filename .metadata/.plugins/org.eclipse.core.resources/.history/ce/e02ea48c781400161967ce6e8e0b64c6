@@ -1,0 +1,9 @@
+package com.sanguo.manager
+{
+	public class BattleManager
+	{
+		public function BattleManager()
+		{
+		}
+	}
+}

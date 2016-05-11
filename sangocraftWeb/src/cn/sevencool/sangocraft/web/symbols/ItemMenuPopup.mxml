@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 click="group1_clickHandler(event)" creationComplete="group1_creationCompleteHandler(event)"
+		 currentState="normal"
+		 width.chooseAndDetail="68" height.chooseAndDetail="41"
+		 width.stengthChooseAndDetail ="68" height.stengthChooseAndDetail="41"
+		 width.formationChooseAndDetail="68" height.formationChooseAndDetail="41"
+		 width.chooseAndGeneralDetail="68" height.chooseAndGeneralDetail="41"
+		 width.detail="68" height.detail="19"
+		 width.stengthDetail="68" height.stengthDetail="19"
+		 width.formationDetail="68" height.formationDetail="19"
+		 width.normal="70"
+		 width.sendOrDelOrdetail="68" height.sendOrDelOrdetail="63"
+		 width.sendOrDetail="70" height.sendOrDetail="43" focusEnabled="false">
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.barracks.mediator.IUIOperatableBarracksMediator;
+			import cn.sevencool.sangocraft.data.manager.sell.mediator.IUIOperatableSellMediator;
+			import cn.sevencool.sangocraft.data.manager.utils.MediatorUtil;
+			import cn.sevencool.sangocraft.data.model.FriendVO;
+			import cn.sevencool.sangocraft.data.model.ReinforcementsVO;
+			import cn.sevencool.sangocraft.data.symbols.ItemManager;
+			import cn.sevencool.sangocraft.data.vo.FriendDisplayVO;
+			import cn.sevencool.sangocraft.data.vo.ItemDescription;
+			import cn.sevencool.sangocraft.data.vo.ItemOperationVO;
+			import cn.sevencool.sangocraft.data.vo.ReinDisplayVO;
+			import cn.sevencool.sangocraft.web.manager.KeyboardManager;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.ui.barracks.mediator.BarracksMediator;
+			import cn.sevencool.sangocraft.web.ui.barracks.view.BarracksPanel;
+			import cn.sevencool.sangocraft.web.ui.barracks.view.GeneralDetailsPanel;
+			import cn.sevencool.sangocraft.web.ui.formation.mediator.FormationMediator;
+			import cn.sevencool.sangocraft.web.ui.formation.view.FormationPanel;
+			import cn.sevencool.sangocraft.web.ui.reinforce.mediator.ReinforceMediator;
+			import cn.sevencool.sangocraft.web.ui.screen.mediator.ScreenMediator;
+			import cn.sevencool.sangocraft.web.ui.sell.mediator.SellMediator;
+			import cn.sevencool.sangocraft.web.ui.sell.view.ChoosePanel;
+			import cn.sevencool.sangocraft.web.ui.socialRelative.mediator.SocialRelativeMediator;
+			import cn.sevencool.sangocraft.web.ui.strengthen.view.StrengthenPanel;
+			import cn.sevencool.sangocraft.web.ui.upgrade.mediator.UpGradeMediator;
+			import cn.sevencool.sangocraft.web.ui.upgrade.view.UpGradePanel;
+			
+			import mx.controls.Alert;
+			import mx.core.UIComponent;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			/**
+			 * 兵营面板
+			 * */
+			private var _barracksPanel:BarracksPanel = null ;
+			/**
+			 * 将领详细面板
+			 * */
+			private var _generalDetailPanel:GeneralDetailsPanel = null ;
+			/**
+			 * 强化面板
+			 * */
+			private var _strengthPanel:StrengthenPanel = null ;
+			
+			/**
+			 * 编队面板
+			 * */
+			private var _formationPanel:FormationPanel = null ;
+			/**
+			 * 转生面板
+			 * */
+			private var _uplvlPanel:UpGradePanel = null ;
+			/**
+			 * 出售面板
+			 * */
+			private var _choosePanel:ChoosePanel = null ;
+			/**
+			 * 出售Meditor
+			 * */
+			private var _sellM:SellMediator=null;
+			/**
+			 * 物品VO
+			 * */
+			private var _item:ItemOperationVO=null;
+			
+			/**
+			 * 转生Mediator
+			 * */
+			private var _upGrade:UpGradeMediator=null;
+			
+			/**
+			 * 援军 Vo
+			 * */
+			private var _reinInfo:ReinDisplayVO;
+			
+			/**
+			 * 好友 Vo
+			 * */
+			private var _friendVO:FriendDisplayVO = new FriendDisplayVO();
+			
+			/**
+			 * 社交 meditor
+			 * */
+			private var _socialM:SocialRelativeMediator = null;
+			/**
+			 * 编队 meditor
+			 * */
+			private var _forM:FormationMediator = null;
+
+			/**
+			 * 援军 Vo
+			 * */
+			private var reinforceVo:ReinforcementsVO = new ReinforcementsVO();
+			
+			/**
+			 * 援军 mediator
+			 * */
+			private var _reinM:ReinforceMediator = null;
+			
+			private var _teamId:int=-1;
+			
+			private var _teamLoc:int=-1;
+
+			public function get teamLoc():int
+			{
+				return _teamLoc;
+			}
+
+			public function set teamLoc(value:int):void
+			{
+				_teamLoc = value;
+			}
+
+			/**
+			 * 所在编队
+			 * */
+			public function get teamId():int
+			{
+				return _teamId;
+			}
+
+			/**
+			 * @private
+			 */
+			public function set teamId(value:int):void
+			{
+				_teamId = value;
+			}
+
+//			/**
+//			 * 我的好友
+//			 * */
+//			public function get friendVO():FriendVO
+//			{
+//				return _friendVO;
+//			}
+//
+//			public function set friendVO(value:FriendVO):void
+//			{
+//				_friendVO = value;
+//			}
+			
+
+//			/**
+//			 * 援军
+//			 * */
+//		 	public function get reinInfo():ReinforcementsVO
+//			{
+//				return _reinInfo;
+//			}
+//
+//			public function set reinInfo(value:ReinforcementsVO):void
+//			{
+//				_reinInfo = value;
+//			}
+			
+    
+			/**
+			 * 物品
+			 * */
+			public function get item():ItemOperationVO
+			{
+				return _item;
+			}
+			
+			public function set item(value:ItemOperationVO):void
+			{
+				_item = value;
+//				if(currentState!='formationDetail'&&!value.removeBtn){
+//					_upGrade=MediatorUtil.getMediatorByInterface(IUIOperatableUpgradeMediator) as UpGradeMediator;
+//					var _transMigration:TransMigration=new TransMigration();
+//					_transMigration=_upGrade.getUpgradeInfo(item);
+//					if(_transMigration.targetOnlyID==-1){
+//						upLvl.enabled=false;
+//					}else {
+//						upLvl.enabled=true;
+//					}
+//					if(value.selectFormations==2||value.item.General.nLocationIndex){
+//						sell.enabled=false;
+//					} else {
+//						sell.enabled=true;
+//					}
+//					var itemDess:ItemDescription = ItemsManager.getInstance().ItemInfo[_item.item.dwBaseID];
+//					if(itemDess.nMonsterType==6||_item.item.General.nLevel==itemDess.nMaxlevel)
+//					{
+//						strenth.enabled=false;
+//					} else {
+//						strenth.enabled=true;
+//					}
+//				}
+			}
+			
+			protected function group1_clickHandler(event:MouseEvent):void
+			{
+				if(!(event.target is Button)){
+					event.stopPropagation() ;
+				}
+			}
+			
+			protected function datail_clickHandler(event:MouseEvent):void
+			{
+				if(_barracksPanel.stage)
+				{
+					UIMananger.getInstance().hide(_barracksPanel);
+				}
+				_generalDetailPanel = UIMananger.getInstance().getUIObj(GeneralDetailsPanel) as GeneralDetailsPanel ;
+				var _mediator:BarracksMediator=MediatorUtil.getMediatorByInterface(IUIOperatableBarracksMediator) as BarracksMediator;
+				_generalDetailPanel.setMediatorUI(_mediator);
+				UIMananger.getInstance().showOrHide(GeneralDetailsPanel);
+				_generalDetailPanel.item=item;
+				_generalDetailPanel.showType = 0;
+				
+			}
+			
+			protected function strenth_clickHandler(event:MouseEvent):void
+			{
+				if(_barracksPanel.stage)
+				{
+					UIMananger.getInstance().hide(_barracksPanel);
+				}
+				UIMananger.getInstance().show(StrengthenPanel);
+				_strengthPanel.item=_item;
+			}
+			
+			protected function upLvl_clickHandler(event:MouseEvent):void
+			{
+				if(_barracksPanel.stage)
+				{
+					UIMananger.getInstance().hide(_barracksPanel);
+				}
+				_uplvlPanel.item=_item;
+				UIMananger.getInstance().showOrHide(UpGradePanel);
+				
+			}
+			/**
+			 * 出售物品，二次确认框
+			 * */
+			private function alertHandle($event:CloseEvent):void
+			{
+				if ($event.detail == Alert.OK ) 
+				{
+					var sellMediator:SellMediator = MediatorUtil.getMediatorByInterface(IUIOperatableSellMediator) as SellMediator;
+					sellMediator.sellItem(_item,false);
+				}
+				
+			}
+			
+
+			protected function sell_clickHandler(event:MouseEvent):void
+			{
+				var itemDes:ItemDescription = ItemManager.getInstance().ItemInfo[item.item.dwBaseID];
+				if(itemDes)
+				{
+					var gold:int = itemDes.nSellPrice;
+					Alert.okLabel = "确认";
+					Alert.cancelLabel = "取消";
+					AlertPanel.show('出售可获得银两'+gold.toString()+'，是否出售？','',Alert.OK|Alert.CANCEL,alertHandle);
+				}
+			}
+			
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_barracksPanel = UIMananger.getInstance().getUIObj(BarracksPanel) as BarracksPanel ;
+				_generalDetailPanel = UIMananger.getInstance().getUIObj(GeneralDetailsPanel) as GeneralDetailsPanel ;
+				_strengthPanel = UIMananger.getInstance().getUIObj(StrengthenPanel) as StrengthenPanel ;
+				_uplvlPanel=UIMananger.getInstance().getUIObj(UpGradePanel) as UpGradePanel ;
+				_sellM=MediatorUtil.getMediatorByInterface(IUIOperatableSellMediator) as SellMediator;
+			}
+			
+			protected function choose_clickHandler(event:MouseEvent):void
+			{
+				if(currentState=='formationChooseAndDetail'){
+					_forM = MediatorUtil.getMediatorByInterface(FormationMediator);
+					_forM.setFormationInfo(teamId,item.item.i64ItemID,_teamLoc);
+					_formationPanel = UIMananger.getInstance().getUIObj(FormationPanel) as FormationPanel ;
+					UIMananger.getInstance().showOrHide(FormationPanel);
+//					_strengthPanel.item=item;
+				}else if(currentState=='stengthChooseAndDetail'){
+					_strengthPanel = UIMananger.getInstance().getUIObj(StrengthenPanel) as StrengthenPanel ;
+					UIMananger.getInstance().showOrHide(StrengthenPanel);
+					_strengthPanel.item=item;
+				}else {
+					_uplvlPanel = UIMananger.getInstance().getUIObj(UpGradePanel) as UpGradePanel ;
+					UIMananger.getInstance().showOrHide(UpGradePanel);
+					_uplvlPanel.item=item;
+				}
+			}
+			
+			
+			/**
+			 * 选择 站前配置
+			 * */
+			protected function preBattle_clickHandler(event:MouseEvent):void
+			{
+				_reinM = MediatorUtil.getMediatorByInterface(ReinforceMediator);
+//				_reinM.menuItemClick(0,reinInfo);
+			}
+			
+			
+			/**
+			 * 援军将领详情
+			 * */
+			protected function Reindatail_clickHandler(event:MouseEvent):void
+			{
+				_reinM = MediatorUtil.getMediatorByInterface(ReinforceMediator);
+//				_reinM.menuItemClick(1,reinInfo);
+			}
+			
+			
+			/**
+			 * 好友将领详情
+			 * */
+			protected function FriDatail_clickHandler(event:MouseEvent):void
+			{
+				_socialM = MediatorUtil.getMediatorByInterface(SocialRelativeMediator);
+//				_socialM.menuItemClick(0,friendVO,friendVO.szName);
+			}
+			
+			
+			/**
+			 * 删除好友
+			 * */
+			protected function delFri_clickHandler(event:MouseEvent):void
+			{
+				Alert.okLabel = "确认";
+				Alert.cancelLabel = "取消";
+				AlertPanel.show("你确定要删除该好友么?","",Alert.OK|Alert.CANCEL,closeHandle);
+			}
+			
+			
+			/**
+			 * 
+			 * 发送邮件
+			 * */
+			protected function sendEmail_clickHandler(event:MouseEvent):void
+			{
+//				_socialM = MediatorUtil.getMediatorByInterface(SocialRelativeMediator);
+//				_socialM.menuItemClick(1,friendVO,friendVO.szName);
+				sendWhisperChatHandler(event);
+			}
+			
+			/**
+			 * 
+			 * 发送私信
+			 * */
+			protected function sendWhisperChatHandler(event:MouseEvent):void
+			{
+//				var chatPanel:ChatPanel = UIMananger.getInstance().getUIObj(ChatPanel) as ChatPanel;
+//				var name:String = friendVO.szName;
+//				var id:int = friendVO.dwOnlyID;
+				var p:UIComponent = this.parent as UIComponent;
+//				while(p){
+//					p.focusEnabled = false;
+//					p = p.parent as UIComponent;
+//				}
+				var screenMediator:ScreenMediator = MediatorUtil.getMediatorByInterface(ScreenMediator);
+//				screenMediator.screenPanel.chat.speakTo(name,id);
+//				chatPanel.speakTo(name,id);
+				KeyboardManager.isToText = true;
+			}
+			
+			private function closeHandle(e:CloseEvent):void
+			{
+				if(e.detail ==Alert.OK)
+				{
+					_socialM = MediatorUtil.getMediatorByInterface(SocialRelativeMediator);
+//					_socialM.menuItemClick(2,friendVO);
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="detail"/>
+		<s:State name="chooseAndDetail"/>
+		<s:State name="stengthDetail"/>
+		<s:State name="stengthChooseAndDetail"/>
+		<s:State name="formationDetail"/>
+		<s:State name="formationChooseAndDetail"/>
+		<s:State name="normal"/>
+		<s:State name="chooseAndGeneralDetail"/>
+		<s:State name="sendOrDelOrdetail"/>
+		<s:State name="sendOrDetail"/>
+	</s:states>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:BitmapImage visible="false"
+				   source="@Embed('../../../../../../assets/images/itemMenu/back.png')"
+				   visible.normal="true" x.normal="-4" y.normal="2"/>
+	<s:BitmapImage visible="false"
+				   source="@Embed('../../../../../../assets/images/itemMenu/back.png')"
+				   x.normal="-4" y.normal="2"
+				   visible.sendOrDelOrdetail="true" x.sendOrDelOrdetail="-4" y.sendOrDelOrdetail="0"
+				   height.sendOrDelOrdetail="63"/>
+	<s:BitmapImage visible="false"
+				   source="@Embed('../../../../../../assets/images/itemMenu/back.png')"
+				   x.normal="-4" y.normal="2"
+				   visible.sendOrDetail="true" x.sendOrDetail="-3" y.sendOrDetail="0"
+				   height.sendOrDetail="43"/>
+	
+	
+	<s:VGroup visible="false" gap="1" horizontalCenter="0" verticalCenter="0"
+			  visible.normal="true" horizontalCenter.normal="-1" verticalCenter.normal="2">
+		<s:Button label="详细" id="datail" click="datail_clickHandler(event)"  width="66" 
+				  skinClass="cn.sevencool.sangocraft.web.skin.button.DetailsSkin"/>
+		<s:Button label="强化" id="strenth"  click="strenth_clickHandler(event)" width="66"
+				  skinClass="cn.sevencool.sangocraft.web.skin.button.StrengtheningBtnSkin"/>
+		<s:Button label="转生" id="upLvl" click="upLvl_clickHandler(event)" width="66"
+				  skinClass="cn.sevencool.sangocraft.web.skin.button.UpBtnSkin"/>
+		<s:Button label="出售" id="sell" click="sell_clickHandler(event)" width="66" 
+				  skinClass="cn.sevencool.sangocraft.web.skin.button.SellSkin"/>
+	</s:VGroup>
+	
+	<s:Button label="将领详情"  click="datail_clickHandler(event)"  width="66" visible="false" visible.detail ="true" visible.stengthDetail ="true" visible.formationDetail="true"
+			  skinClass="cn.sevencool.sangocraft.web.skin.button.GeneralDetail"/>
+	
+	<s:Button label="选择" id="choose" click="choose_clickHandler(event)"  width="66" visible="false" visible.chooseAndDetail ="true" visible.stengthChooseAndDetail ="true"
+			  visible.formationChooseAndDetail="true"
+			  skinClass="cn.sevencool.sangocraft.web.skin.button.ChooseSkin"/>
+	<s:Button visible="false" width="66" label="将领详情" click="datail_clickHandler(event)" visible.stengthChooseAndDetail ="true" visible.formationChooseAndDetail="true"
+			  skinClass="cn.sevencool.sangocraft.web.skin.button.GeneralDetail"
+			  visible.chooseAndDetail="true" x="0" y="20"/>
+	
+	<s:VGroup gap="0" horizontalCenter="0" verticalCenter="0" visible="false" visible.chooseAndGeneralDetail="true" id="Rein">
+	<s:Button label="选择" id="preBattle" click="preBattle_clickHandler(event)"  width="66" visible="false" visible.chooseAndGeneralDetail ="true"
+			  skinClass="cn.sevencool.sangocraft.web.skin.button.ChooseSkin"/>
+
+	<s:Button visible="false" width="66" label="将领详情" click="Reindatail_clickHandler(event)"
+			  visible.chooseAndGeneralDetail="true" x.chooseAndGeneralDetail="0" y.chooseAndGeneralDetail="20"
+			  skinClass="cn.sevencool.sangocraft.web.skin.button.GeneralDetail"/>
+	</s:VGroup>
+		
+	<s:VGroup focusEnabled="false" gap="0" horizontalCenter="0" verticalCenter="0" visible="false" visible.sendOrDelOrdetail="true" id="Fri">
+	<s:Button visible="false" width="66" label="将领详情" click="FriDatail_clickHandler(event)"
+			  visible.sendOrDelOrdetail="true"
+			  skinClass="cn.sevencool.sangocraft.web.skin.button.GeneralDetail"/>
+		
+	<s:Button visible="false" width="66" label="发送邮件" id="sendEmail" click="sendEmail_clickHandler(event)"
+			  visible.sendOrDelOrdetail="true" focusEnabled="false"
+			  skinClass="cn.sevencool.sangocraft.web.skin.button.SendWhisperBtnSkin"/>
+		
+		<s:Button visible="false" width="66" label="删除好友" id="delFri" click="delFri_clickHandler(event)"
+				  visible.sendOrDelOrdetail="true"
+				  skinClass="cn.sevencool.sangocraft.web.skin.button.DelFriendSkin"/>
+		</s:VGroup>
+	<s:VGroup focusEnabled="false" gap="0" horizontalCenter="0" verticalCenter="0" visible="false" visible.sendOrDetail="true">
+		<s:Button visible="false" width="66" label="将领详情" click="FriDatail_clickHandler(event)"
+				  skinClass="cn.sevencool.sangocraft.web.skin.button.GeneralDetail"
+				  visible.sendOrDetail="true"/>
+		
+		<s:Button visible="false" width="66" label="发送私信" click="sendWhisperChatHandler(event)"
+				  visible.sendOrDetail="true" focusEnabled="false"
+				  skinClass="cn.sevencool.sangocraft.web.skin.button.SendWhisperBtnSkin"/>
+	</s:VGroup>
+</s:Group>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+project: sangocraft_Web
+@class: Home
+@author: zhouyan
+@usage: 返回内城
+@since: 2013-9-9
+@modified: 2013-9-9
+@modifier: zhouyan 
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   width="232" height="177" xmlns:view="cn.sevencool.sangocraft.web.ui.mainPanel.view.*">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.data.manager.utils.MediatorUtil;
+			import cn.sevencool.sangocraft.data.symbols.CommonData;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialLoader;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.data.symbols.material.factory.ImageFactory;
+			import cn.sevencool.sangocraft.web.ui.mainPanel.mediator.MainPanelMediator;
+			import cn.sevencool.sangocraft.web.ui.screen.mediator.ScreenMediator;
+			
+			import flash.utils.setTimeout;
+			
+			import mx.events.FlexEvent;
+			import mx.utils.StringUtil;
+			
+			
+			private var _mediator:MainPanelMediator = null ;
+			
+			private var _mater:MaterialManager = MaterialManager.getInstance();
+			private var key:String = MaterialKeys.OTHER;
+			
+			private var _url:String = '';
+			
+			private var _isEnd:Boolean = false;
+			
+			override public function set mediatorUI($value:AbstractMediator):void
+			{
+				_mediator = $value as MainPanelMediator ;
+			}
+			
+			/**
+			 * 点击按钮‘回家’
+			 * */
+			protected function btn_home_clickHandler(event:MouseEvent):void
+			{
+				if(isEnd)
+				{
+					return ;
+				}
+				_mediator.btnclick_home();
+			}
+			
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				panelID =8 ;
+				sp.addChild(_mater.getIcon(key,"battleSmallMap"));
+				onShow();
+			}
+			
+			/**
+			 * 显示
+			 * */
+			protected override function onShow():void
+			{
+				if(!initialized)
+				{
+					return ;
+				}
+			}
+			
+			protected function small_map_creationCompleteHandler(event:FlexEvent):void
+			{
+				small_map.screenMediator = MediatorUtil.getMediatorByInterface(ScreenMediator) as ScreenMediator;
+			}
+			
+			protected function check_lock_clickHandler(event:MouseEvent):void
+			{
+				small_map.isLockView = check_lock.selected; 
+				
+			}
+
+			public function get isEnd():Boolean
+			{
+				return _isEnd;
+			}
+
+			public function set isEnd(value:Boolean):void
+			{
+				_isEnd = value;
+			}
+
+			
+		]]>
+	</fx:Script>
+	<symbols:layout>
+		<s:BasicLayout/>
+	</symbols:layout>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:SpriteVisualElement id="sp" x="-7" y="-4" width="246" height="153"/>
+	<view:SmallMap id="small_map" width="232" height="145" x="0" y="0"  creationComplete="small_map_creationCompleteHandler(event)"/>
+	<s:Button id="btn_home" bottom="0" width="71" height="33"  skinClass="cn.sevencool.sangocraft.web.skin.button.ReturnBtnSkin"
+			  click="btn_home_clickHandler(event)" horizontalCenter="0"/>
+	
+	<s:CheckBox id="check_lock" visible="false" y="-14" click="check_lock_clickHandler(event)"
+				horizontalCenter="0" 
+				skinClass="cn.sevencool.sangocraft.web.skin.checkBox.EyeCheckSkin"/>
+</symbols:BasePanel>

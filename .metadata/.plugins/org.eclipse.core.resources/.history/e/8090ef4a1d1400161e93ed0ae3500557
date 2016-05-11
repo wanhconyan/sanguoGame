@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 
+		 minWidth="800" minHeight="600" xmlns:mainView="com.sevenCool.mainView.*"
+		 creationComplete="group1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import com.core.component.MulitPolygon;
+			import com.core.component.PolyState;
+			import com.sevenCool.manager.FractionManager;
+			
+			import mx.events.FlexEvent;
+			
+			
+			
+			private var _formations:Vector.<PolyState> = null;
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				var originAxis:MulitPolygon = new MulitPolygon();
+				editorLayer.addChild(originAxis);
+				originAxis.addEventListener(MouseEvent.CLICK,onClick);
+				_formations = FractionManager.getInstance().formations;
+			}
+			
+			protected function onClick(event:MouseEvent):void
+			{
+				var polyState:PolyState = null;
+				if(event.target is PolyState)
+				{
+					polyState = event.target as PolyState;	
+//					if(!judgePos(polyState))
+//					{
+//						Alert.show("改点距离之前位置太远");
+//						return ;
+//					}
+					polyState.state = polyState.state == 0 ? 1: 0 ;
+					addOrDeletePolyState(polyState);
+				}				
+			}
+			
+			private function addOrDeletePolyState($polyState:PolyState):void
+			{
+				var index:int = _formations.indexOf($polyState);
+				if(index == -1 && $polyState.state == 1)
+				{
+					_formations.push($polyState);
+				}
+				if(index != -1 && $polyState.state == 1)
+				{
+					_formations.splice(index,1);
+				}
+				
+			}
+			
+			/**
+			 * 判断当前的点是否和之前的点位相距甚远
+			 * */
+			private function judgePos($poly:PolyState):Boolean
+			{
+				var len:int = _formations.length ;
+				var poly:PolyState = null;
+				for(var i:int = 0 ; i < len ; i ++)
+				{
+					poly = _formations[i] as PolyState;
+					var distance:int = (poly.xNode -$poly.xNode) *(poly.xNode -$poly.xNode) + (poly.yNode -$poly.yNode) * (poly.yNode -$poly.yNode)
+					if(distance >36)
+					{
+						return false;
+					}
+				}
+				return true;
+			}
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:SpriteVisualElement id="editorLayer" width="100%" top="0"/>
+	<mainView:FunctionBtn id="functionBtn" width="100%" height="30"/>
+	<mainView:EditorPanel id="editor" width="160" height="100%"  right="0" top="30"/>
+ </s:Group>

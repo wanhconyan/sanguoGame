@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+project: sangocraft_Web
+@class: MyFriendIR
+@author: wangtaofeng
+@usage: 我的好友——好友申请相关信息
+@since: 2013-8-22
+@modified: 2013-8-22
+@modifier: wangtaofeng
+-->
+
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				width="234" height="111" autoDrawBackground="false"
+				dataChange="itemrenderer1_dataChangeHandler(event)"
+				xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				creationComplete="itemrenderer1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.symbols.ItemsManager;
+			import cn.sevencool.sangocraft.data.symbols.SystemModelLocator;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.data.vo.FriendDisplayVO;
+			import cn.sevencool.sangocraft.data.vo.ItemDescription;
+			import cn.sevencool.sangocraft.web.events.MenuClickEvents;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.symbols.AlertPanel;
+			import cn.sevencool.sangocraft.web.symbols.ItemMenuPopup;
+			import cn.sevencool.sangocraft.web.ui.socialRelative.mediator.SocialRelativeMediator;
+			import cn.sevencool.sangocraft.web.ui.socialRelative.view.SocialRelativePanel;
+			
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			
+			import spark.filters.GlowFilter;
+			
+			/**
+			 * 社交 mediator
+			 * */
+			private var _socialM:SocialRelativeMediator = null;
+			
+			/**
+			 * 申请好友VO
+			 * */
+			private var _applyVo:FriendDisplayVO= null;
+			
+			/**
+			 * 菜单容器
+			 * */
+			private var _menu:ItemMenuPopup = null;
+			
+			private var socialRelativePanel:SocialRelativePanel= null;
+			
+			/**
+			 * 物品描述
+			 * */
+			private var _item:ItemDescription = null;
+			
+			/**
+			 * 装载图片的容器
+			 * */
+			private var _titleBottomMap:Bitmap = null;
+			private var _generalCellMap:Bitmap = null;
+			private var _frameMap:Bitmap = null;
+			private var _generalNameMap:Bitmap = null;
+			private var _LV_smallMap:Bitmap = null;
+			private var _LV_bigMap:Bitmap = null;
+			private var _headMap:Bitmap = null;
+			
+			
+			/**
+			 * 数据发生变化
+			 * */
+			protected function itemrenderer1_dataChangeHandler(event:FlexEvent):void
+			{
+				 socialRelativePanel = UIMananger.getInstance().getUIObj(SocialRelativePanel) as SocialRelativePanel;
+				_socialM = socialRelativePanel.mediator;
+				_applyVo = data as FriendDisplayVO;
+				if(!_applyVo)
+				{
+					return ;
+				} 
+				if(!_item || _item.nID != _applyVo.dwCommanderID)
+				{
+					_item = ItemsManager.getInstance().ItemInfo[_applyVo.dwCommanderID];
+					soldier.solderType = _item.nArmType;
+					sp.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.BIG_HEAD ,_item.nHeadId.toString(),_headMap));
+					lbl_name.text = _item.szName;
+				}
+				lab_Name.text = _applyVo.szName;
+				figure_small.figureHandler(_applyVo.btCommanderLevel.toString(),MaterialKeys.LVLSMALL,6);			
+				figure_big.figureHandler(_applyVo.btLevel.toString(),MaterialKeys.LVLBIG,10);
+			}
+						
+			
+			/**
+			 * 拒绝加为好友 按钮
+			 * */
+			protected function btn_Refuse_clickHandler(event:MouseEvent):void
+			{
+				Alert.okLabel = "确认";
+				Alert.cancelLabel = "取消";
+				AlertPanel.show("是否拒绝该玩家的请求","",Alert.OK|Alert.CANCEL,closeHandle);				
+			}
+			
+			
+			/**
+			 * 接受加为好友 按钮
+			 * */
+			protected function btn_Accept_clickHandler(event:MouseEvent):void
+			{
+				_socialM.addApplyFriend(_applyVo.dwOnlyID);		
+				_socialM.sendApplyNum();
+				
+			}
+			
+			
+			/**拒绝添加好友*/
+			private function closeHandle(e:CloseEvent):void
+			{
+				if(e.detail == Alert.OK)
+				{
+					_socialM.delFriendByType(_applyVo.dwOnlyID,1);
+					_socialM.sendApplyNum();
+				}
+			}
+			
+			
+		 	protected function sp_clickHandler(event:MouseEvent):void
+			{
+				var evt:MenuClickEvents = new MenuClickEvents(MenuClickEvents.FRIENDAPPLY);
+				evt.friendVO=_applyVo;
+				evt.menuX = event.stageX ;
+				evt.menuY = event.stageY;
+				SystemModelLocator.getInstance().dispatchEvent(evt);
+			}
+
+			
+			/**
+			 * 完成
+			 * */
+			protected function itemrenderer1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_titleBottomMap = new Bitmap();
+				_generalCellMap = new Bitmap();
+				_frameMap = new Bitmap();
+				_generalNameMap = new Bitmap();
+				_LV_smallMap = new Bitmap();
+				_LV_bigMap = new Bitmap();
+				_headMap = new Bitmap();
+				titleBottom.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'titleBottom',_titleBottomMap)); 
+				generalSign.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'generalCell',_generalCellMap)); 
+				frame.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'frame1',_frameMap)); 
+				nameBottom.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'generalName',_generalNameMap)); 
+				LV_big.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.LVLBIG,'',_LV_bigMap)); 
+				LV_small.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.LVLSMALL ,'',_LV_smallMap)); 
+				_menu = new ItemMenuPopup();
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+
+	</fx:Declarations>
+	<s:Group x="0" y="0" width="100%" height="100%">		
+		<s:Group x="10" y="1" width="90" height="106">
+			<mx:Image id="generalSign" x="1" y="0"/>
+			<mx:Image id="nameBottom" x="7" y="80" width="21" height="18"/>
+			<s:Group id="menuPanel" x="7" y="5"/>
+			<s:SpriteVisualElement id="sp" x="10" y="11" width="48" height="48" click="sp_clickHandler(event)"/>
+			<symbols:FigureDisplay id="figure_small" x="60" y="49" width="15" height="16" maxMedian="3"/>
+			<mx:Image id="LV_small" x="35" y="59" width="20" height="17"/>
+			<s:Label id="lbl_name" y="84" width="46" color="0xa2b3b8"
+					 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5,1, false, false)]}"
+					 horizontalCenter="-4" textAlign="center" verticalAlign="middle"/>
+		</s:Group>
+	</s:Group>	
+	<s:Group x="88" y="1" width="141" height="107">
+		<mx:Image x="4" y="2" id="frame"/>
+		<mx:Image id="titleBottom" x="12" y="10"/>
+		<mx:Image x="34" y="44" id="LV_big"/>
+		<symbols:FigureDisplay id="figure_big" x="67" y="34" width="51" height="13" maxMedian="3"/>
+		<s:HGroup x="23" y="75" width="117" height="27" gap="18">
+			<s:Button  id="btn_accept" click="btn_Accept_clickHandler(event)"
+					   skinClass="cn.sevencool.sangocraft.web.skin.button.AcceptBtnSkin"/>
+			<s:Button id="btn_refuse" x="0" y="64" click="btn_Refuse_clickHandler(event)"
+					  skinClass="cn.sevencool.sangocraft.web.skin.button.RefuseBtnSkin"/>		
+		</s:HGroup>	
+		<s:Label id="lab_Name" x="24" y="15" width="101" height="21" color="0xeee6dc" 
+				 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5,1, false, false)]}"
+				 fontSize="14" text="玩家名字比较长" textAlign="center" verticalAlign="middle"/>			
+	</s:Group>
+	<symbols:SolderType id="soldier" x="16" y="10" height="17"/>
+</s:ItemRenderer>

@@ -1,0 +1,559 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+project: sangocraft_Web
+@class: StrengthenPanel
+@author: zhoujingye
+@usage: 强化面板
+@since: 2013-8-26
+@modified: 2013-8-26
+@modifier: zhoujingye 
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   width="599" height="448" xmlns:itemsBox="cn.sevencool.sangocraft.web.symbols.itemsBox.*">  
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.data.manager.barracks.mediator.IUIOperatableBarracksMediator;
+			import cn.sevencool.sangocraft.data.manager.utils.MediatorUtil;
+			import cn.sevencool.sangocraft.data.model.RGeneralStrengthen;
+			import cn.sevencool.sangocraft.data.symbols.ItemManager;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.data.vo.EnForceVO;
+			import cn.sevencool.sangocraft.data.vo.ItemDescription;
+			import cn.sevencool.sangocraft.data.vo.ItemOperationVO;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.symbols.FigureDisplay;
+			import cn.sevencool.sangocraft.web.symbols.itemsBox.LatticeUltraGroups;
+			import cn.sevencool.sangocraft.web.ui.barracks.mediator.BarracksMediator;
+			import cn.sevencool.sangocraft.web.ui.barracks.view.BarracksPanel;
+			import cn.sevencool.sangocraft.web.ui.sell.view.ChoosePanel;
+			import cn.sevencool.sangocraft.web.ui.strengthen.mediator.StrengthenMediator;
+			
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			
+			import spark.filters.GlowFilter;
+			/**
+			 * 强化Mediator
+			 * */
+			private var _militaryM:StrengthenMediator = null;
+			/**
+			 * 选择面板
+			 * */
+			private  var _choosePanel:ChoosePanel=null;
+			/**
+			 * 强化VO
+			 * */
+			private var _enForceVO:EnForceVO=null;
+			/**
+			 * 物品VO
+			 * */
+			private var _item:ItemOperationVO=null;
+			/**
+			 * 强化材料数组
+			 * */
+			private var _needArr:Array=[];
+			/**
+			 * 兵种图标
+			 * */
+			private static const ICONARR:Array=['pikemanIcon','cavalrymanIcon','archerIcon','instrumentIcon'];
+			/**
+			 * 兵种类型
+			 * */
+			private static const ARMYTYPEARR:Array=['pikeman','cavalryman','Archer','instrumentPic'];
+			/**
+			 * 兵营Mediator
+			 * */
+			private var _barrM:BarracksMediator = null;
+			/**
+			 * 装载图片的容器
+			 * */
+			private var _needExp:Bitmap = null;
+			private var _getExp:Bitmap = null;
+			private var _needMoney:Bitmap = null;
+			private var _bg3:Bitmap = null;
+			private var _bg4:Bitmap = null;
+			private var _bg2:Bitmap = null;
+			private var _expS:Bitmap = null;
+			private var _exp_Progress:Bitmap = null;
+			private var _baseGeneral:Bitmap = null;
+			private var _genLvl:Bitmap = null;
+			private var _genCard:Bitmap = null;
+			private var _genBottom:Bitmap = null;
+			private var _sp:Bitmap = null;
+			private var _genType:Bitmap = null;
+			private var _sodierType:Bitmap = null;
+			/**
+			 * 物品管理器
+			 * */
+			private var _itemManger:ItemManager=null;
+			/**
+			 * 资源管理器
+			 * */
+			private var _materialManager:MaterialManager=null;
+			/**
+			 * 显示管理器
+			 * */
+			private var _uiMananger:UIMananger=null;
+			
+			/**
+			 * @private
+			 */
+			public function set needArr(value:Array):void
+			{
+				_needArr = value;
+				addMaterial();
+			}
+			
+			
+			public function set item(value:ItemOperationVO):void
+			{
+				_item = value;
+				_enForceVO=_militaryM.showGeneralInfo(_item);
+				if(monster1)
+				{
+					showStrengthInfo();
+				}
+			}
+			
+			
+			/**
+			 * @private
+			 */
+			public function set enForceVO(value:EnForceVO):void
+			{
+				_enForceVO = value;
+			}
+			
+			
+			/**
+			 * 设置mediatorUI
+			 * */
+			override public function set mediatorUI($value:AbstractMediator):void
+			{
+				_militaryM = $value as StrengthenMediator;
+			}
+			
+			
+			/**
+			 * 面板使用次数
+			 * */
+			public override function get usableCount():int
+			{
+				return 1 ;
+			}
+			
+			
+			override public function get needBundleList():Array
+			{
+				var urlArr:Array = [] ;
+				_materialManager=MaterialManager.getInstance();
+				urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'1'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'2'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'3'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'4'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'5'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'6'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'7'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'8'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'9')); 
+				urlArr.push(_materialManager.getURL(MaterialKeys.LVLSMALL,'')); 
+				urlArr.push(_materialManager.getURL(MaterialKeys.STRENGTH,'0'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.STRENGTH,'1'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.STRENGTH,'2'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.STRENGTH,'3'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.STRENGTH,'4'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.STRENGTH,'5'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.STRENGTH,'6'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.STRENGTH,'7'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.STRENGTH,'8'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.STRENGTH,'9'));  
+				urlArr.push(_materialManager.getURL(MaterialKeys.GRANDCOUNCILRED,'0'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.GRANDCOUNCILRED,'1'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.GRANDCOUNCILRED,'2'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.GRANDCOUNCILRED,'3'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.GRANDCOUNCILRED,'4'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.GRANDCOUNCILRED,'5'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.GRANDCOUNCILRED,'6'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.GRANDCOUNCILRED,'7'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.GRANDCOUNCILRED,'8'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.GRANDCOUNCILRED,'9'));  
+				urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'attributeBar'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'inkMarks'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'command'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'troops'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'defense'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'attack'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'corps'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'formationBar'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'expBottom'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'currentExpValue'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'spark'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'basechief')); 
+				urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'strengthenMaterial'));
+				urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'upLvlNeedExp')); 
+				urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'upLvlNeedMoney'));
+				return urlArr;
+			}
+			
+			
+			/***
+			 * 面板打开
+			 * */
+			override protected function onShow():void
+			{
+				if(!initialized)
+					return;
+				if(_item)
+				{
+					_item.selectFormations=0;
+					startStrengthen.enabled=false;
+				}
+			} 
+			
+			/**
+			 *面板关闭时调用  需要override 
+			 * 
+			 */		
+			protected override function onClose():void
+			{
+				clearName();
+			}
+			
+			/**
+			 * 资源改变
+			 * */
+			protected override function resourcesChanged():void
+			{
+				dataArray=new Vector.<Class>;
+				dataArray.push(RGeneralStrengthen);
+			}
+			
+			
+			/**
+			 * 数据改变
+			 * */
+			protected override function onDataChange(type:String=""):void
+			{
+				switch(type)
+				{
+					case 'RGeneralStrengthen':
+						_enForceVO=_militaryM.strengtheningBack();
+						showStrengthInfo();
+						break;
+					default:
+						throw new Error("onDataChange" + type);
+				}
+			}
+			
+			
+			/**
+			 * 面板关闭
+			 * */
+			protected function win_closeHandler(event:CloseEvent):void
+			{
+				_uiMananger.hide(this);
+			}
+			
+			
+			/**
+			 * 面板创建完成
+			 * */
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_needExp = new Bitmap();
+				_getExp = new Bitmap();
+				_needMoney = new Bitmap();
+				_bg3 = new Bitmap();
+				_bg4 = new Bitmap();
+				_bg2 = new Bitmap();
+				_expS = new Bitmap();
+				_exp_Progress = new Bitmap();
+				_baseGeneral = new Bitmap();
+				_genLvl = new Bitmap();
+				_genCard = new Bitmap();
+				_genBottom = new Bitmap();
+				_sp = new Bitmap();
+				_genType = new Bitmap();
+				_sodierType = new Bitmap();
+				_itemManger=ItemManager.getInstance();
+				_uiMananger=UIMananger.getInstance();
+				onShow();
+				addImg();
+				showStrengthInfo();
+				_barrM=MediatorUtil.getMediatorByInterface(IUIOperatableBarracksMediator) as BarracksMediator;
+			}
+			
+			
+			/**
+			 * 点击强化按钮
+			 * */
+			protected function startStrengthen_clickHandler(event:MouseEvent):void
+			{
+				_militaryM.generalStrength(_item.item.i64ItemID,_needArr);
+				_choosePanel.details.removeElemAndArr();
+			}
+			
+			
+			/**
+			 * 点击追加按钮
+			 * */
+			protected function add_clickHandler(event:MouseEvent):void
+			{
+				_choosePanel = _uiMananger.getUIObj(ChoosePanel) as ChoosePanel ;
+				_uiMananger.showOrHide(ChoosePanel);
+				_choosePanel.panelType=3;
+				_choosePanel.strengthVO=_enForceVO;
+			}
+			
+			
+			/**
+			 * 关闭面板
+			 * */
+			protected function titlewindow1_closeHandler(event:CloseEvent):void
+			{
+				clearName();
+				_militaryM.closeStrengthenPanelItems();
+				_barrM.clearItemsStateInterface();
+				_uiMananger.showOrHide(BarracksPanel);
+			}
+			
+			
+			/**
+			 * 填充材料
+			 * */
+			private function addMaterial():void
+			{
+				_enForceVO=_militaryM.addMaterial(_item,_needArr);
+				showStrengthInfo();
+			}
+			
+			
+			/**
+			 * 加载人物图片
+			 * */
+			private function addImg():void{
+				needExp.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'currentExpValue',_needExp));
+				getExp.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'upLvlNeedExp',_getExp));
+				needMoney.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'upLvlNeedMoney',_needMoney));
+				bg3.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'attributeBar',_bg3));
+				bg4.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'inkMarks',_bg4));
+				bg2.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'formationBar',_bg2));
+				expS.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'expBottom',_expS));
+				exp_Progress.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'spark',_exp_Progress));
+				baseGeneral.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'basechief',_baseGeneral));
+                genLvl.addChild(_materialManager.getIcon(MaterialKeys.LVLSMALL,'',_genLvl));
+				genCard.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'genCard',_genCard));
+				genBottom.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'genBottom',_genBottom));
+			}
+			
+			
+			/**
+			 * 增加数字显示
+			 * */
+			private function addNum():void
+			{
+				var itemDescription:ItemDescription = _itemManger.ItemInfo[_enForceVO.picID] as ItemDescription;
+				sp.addChild(_materialManager.getIcon(MaterialKeys.BIG_HEAD ,itemDescription.nHeadId.toString(),_sp));
+				commandNum.text = _enForceVO.command.toString();
+				sodierNum.text = _enForceVO.theNumber.toString();
+				denfense.text = _enForceVO.defense.toString();
+				attack.text = _enForceVO.attack.toString();
+				needExpValue.text = _enForceVO.needExperienceValue.toString();
+				if(_militaryM.getPlayerSilver()<_enForceVO.needMoney)
+				{
+					needMoneyValue.setStyle("color","0xfa0505");
+					needMoneyValue.text = _enForceVO.needMoney.toString();
+					startStrengthen.enabled=false;
+				}
+				if(_militaryM.getPlayerSilver()>=_enForceVO.needMoney)
+				{
+					needMoneyValue.setStyle("color","0xeee6dc");
+					needMoneyValue.text = _enForceVO.needMoney.toString();
+					if(_enForceVO.EnForceMaterArr.length>0)
+					{
+						startStrengthen.enabled=true;         
+					} 
+					if(_enForceVO.EnForceMaterArr.length<=0)
+					{
+						startStrengthen.enabled=false;
+					}
+				}
+				var armyType:int = Math.floor(_enForceVO.soldierKind/5);
+				var str:String=ICONARR[armyType];
+				genType.addChild(_materialManager.getIcon(MaterialKeys.OTHER,str,_genType));
+				genLvlNum.figureHandler(_enForceVO.theLV.toString(),MaterialKeys.LVLSMALL,8);
+				sodierType.addChild(_materialManager.getIcon(MaterialKeys.OTHER,str,_sodierType));
+				if(str == 'pikemanIcon')
+				{
+					solider.text = '枪兵';
+				}
+				if(str == 'cavalrymanIcon')
+				{
+					solider.text = '骑兵';
+				}
+				if(str == 'archerIcon')
+				{
+					solider.text = '弓兵';
+				}
+				if(str == 'instrumentIcon')
+				{
+					solider.text = '器械';
+				}
+			}
+			
+			
+			/**
+			 * 显示强化数据
+			 * */
+			private function showStrengthInfo():void
+			{
+				generalName.text=_enForceVO.theName.toString();
+				if(_enForceVO.EnForceMaterArr.length>0)
+				{
+					getExpValue.text = _enForceVO.getExperience.toString()
+				}
+				if(_enForceVO.EnForceMaterArr.length<=0)
+				{
+					getExpValue.text = '0';
+				}
+				if(_enForceVO.currExperienceValue==0||_enForceVO.needExperienceValue==0)
+				{
+					exp.width=5;
+					exp_Progress.x = -4;
+				}
+				if(_enForceVO.currExperienceValue!=0&&_enForceVO.needExperienceValue!=0)
+				{
+					exp.width=_enForceVO.currExperienceValue/_enForceVO.needExperienceValue*310; 
+					exp_Progress.x =exp.width-9;
+				}
+				var arr:Array=[];
+				var len:int=_enForceVO.EnForceMaterArr.length;
+				for(var i:int=0;i<len;i++)
+				{
+					var item:ItemOperationVO=_enForceVO.EnForceMaterArr[i];
+					if(item.selectSell)
+					{
+						item.selectSell=false;
+					}
+					arr.push(item);
+				}
+				material_box.data = arr;
+				setMonsterName(arr);
+				addNum();
+			}
+			/**
+			 * 清理武将名称
+			 * */
+			private function clearName():void
+			{
+				monster1.text='';
+				monster2.text='';
+				monster3.text='';
+				monster4.text='';
+				monster5.text='';
+			}
+			/**
+			 * 设置强化材料
+			 * */
+			private function setMonsterName(arr:Array):void
+			{
+				clearName();
+				var len:int=arr.length;
+				for(var i:int=1;i<=len;i++)
+				{
+					var operateVO:ItemOperationVO=arr[i-1];
+					var itemDes:ItemDescription=_itemManger.ItemInfo[operateVO.item.dwBaseID];
+					this['monster'+i].text=itemDes.szName;
+				}
+				
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:TitleWindow x="1" y="1"  id="win" width="599" height="448" close="titlewindow1_closeHandler(event)" title="强 化">
+		<s:Button x="133" y="342" id="add" click="add_clickHandler(event)" skinClass="cn.sevencool.sangocraft.web.skin.button.AddBtnSkin"
+				  filters="{[new spark.filters.GlowFilter(0x10180f,0.45,1,1,5,1,false,false)]}"
+				  width="120" height="40"/>
+		<s:Button x="334" y="342"  id="startStrengthen" click="startStrengthen_clickHandler(event)" width="120" height="40"
+				  filters="{[new spark.filters.GlowFilter(0x10180f,0.45,1,1,5,1,false,false)]}"
+				  skinClass="cn.sevencool.sangocraft.web.skin.button.StartStrengthenBtnSkin"/>
+		<itemsBox:LatticeList id="material_box" y="234" width="555" height="65" col="5" horizontalCenter="7"
+							  margin="{[6 ,6 , 35 ,6]}" isClickBack="false"
+							  renderer="cn.sevencool.sangocraft.web.symbols.itemsBox.LatticeItem"
+							  row="1"/>
+		<s:Label x="26" y="312" width="99" height="25" text="" textAlign="center" color="#eee6dc" id="monster1" fontSize="14" 
+				 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"/>
+		<s:Label x="136" y="312" width="103" height="25" text="" textAlign="center" color="#eee6dc" id="monster2" fontSize="14"
+				 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"/>
+		<s:Label x="364" y="312" width="103" height="25" text="" textAlign="center" color="#eee6dc" id="monster4" fontSize="14" 
+				 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"/>
+		<s:Label x="250" y="312" width="100" height="25" text="" textAlign="center" color="#eee6dc" id="monster3" fontSize="14"
+				 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"/>
+		<s:Label x="478" y="312" width="100" height="25" text="" textAlign="center" color="#eee6dc" id="monster5" fontSize="14"
+				 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"/>
+	</s:TitleWindow>
+	<s:Group x="150" y="70" width="419" height="172">
+		<mx:Image  x="8" y="68" height="19" width="346"  id="expS"/>
+		<s:BitmapImage x="11" y="69"  height="13" width="349"  id="exp"  source="@Embed('../../../../../../../../assets/images/playerInfo/EXPBar.png')"/>
+		<mx:Image  x="9" y="55" height="34" width="40"   id="exp_Progress"/>
+		<mx:Image id="needExp" x="8" y="94" width="104" height="19"/>
+		<mx:Image id="getExp" x="8" y="114" width="104" height="19" verticalAlign="middle"/>
+		<mx:Image  x="8" y="132" height="19" width="104"  id="needMoney"/>
+		
+		<s:Label id="needExpValue" x="160" y="96" height="19" width="104" fontFamily="hyxl" fontSize="18" color="#eee6dc"
+				 filters="{[new spark.filters.GlowFilter(0x201712,100,2,2,5,1,false,false)]}"/>
+		<s:Label id="getExpValue" x="160" y="118" height="19" width="104" fontFamily="hyxl" fontSize="18" color="#eee6dc"
+				 filters="{[new spark.filters.GlowFilter(0x201712,100,2,2,5,1,false,false)]}"/>
+		<s:Label id="needMoneyValue" x="160" y="138" height="19" width="104" fontFamily="hyxl" fontSize="18" color="#eee6dc"
+				 filters="{[new spark.filters.GlowFilter(0x201712,100,2,2,5,1,false,false)]}"/>
+	</s:Group>
+	<s:SpriteVisualElement id="genBottom" width="90" x="44" y="99" height="130"/>
+	<s:SpriteVisualElement id="genCard" height="130" x="50" y="105" width="81"/>
+	<s:SpriteVisualElement id="sp" x="59" y="117" height="49" width="53"/>
+	<s:Label id="generalName" x="64" y="187" width="56" height="17" color="#A2B3B8" fontSize="12"
+			 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+			 textAlign="center" verticalAlign="middle"/>
+	<mx:Image id="genType"  width="22" height="20"
+			  x="56" y="113"/>
+<mx:Image id="genLvl"  width="15" height="12" x="85" y="162"/>
+	<symbols:FigureDisplay id="genLvlNum" width="18" height="20" x="103" y="153" maxMedian="3"/>
+	<s:Group x="166" y="58" width="417" height="72">
+		<mx:Image  x="-10" y="1" height="41" width="427"  id="bg3"/>
+		<mx:Image  x="-12" y="31" height="41" width="427"  id="bg4"/>
+		
+		<s:Label id="commandNum" x="9" y="43" height="26" width="73" fontFamily="hyxl" fontSize="20" color="#eee6dc"
+				 filters="{[new spark.filters.GlowFilter(0x201712,100,2,2,5,1,false,false)]}"/>
+		<s:Label id="sodierNum"  x="71" y="44" height="26" width="73" fontFamily="hyxl" fontSize="20" color="#eee6dc"
+				 filters="{[new spark.filters.GlowFilter(0x201712,100,2,2,5,1,false,false)]}"/>
+		<s:Label id="denfense" x="156" y="44" height="26" width="73" fontFamily="hyxl" fontSize="20" color="#eee6dc"
+				 filters="{[new spark.filters.GlowFilter(0x201712,100,2,2,5,1,false,false)]}"/>
+		<s:Label id="attack" x="242" y="44" height="26" width="73" fontFamily="hyxl" fontSize="20" color="#eee6dc"
+				 filters="{[new spark.filters.GlowFilter(0x201712,100,2,2,5,1,false,false)]}"/>
+		<mx:Image  x="360" y="46" height="26" width="73"  id="sodierType"/>
+		<s:Label x="319" y="43" id="solider" fontFamily="hyxl" fontSize="20" color="#eee6dc"
+				 filters="{[new spark.filters.GlowFilter(0x201712,100,2,2,5,1,false,false)]}"/>
+		<s:Label id="v1" x="2" y="3" text="统率" verticalAlign="middle" fontFamily="hyxl" fontSize="20" color="#341812"
+				 width="73" height="26"/>
+		<s:Label id="v2" x="76" y="3" text="兵力" verticalAlign="middle" fontFamily="hyxl" fontSize="20" color="#341812"
+				width="73" height="26"/>
+		<s:Label id="v3" x="157" y="3"  text="防御" verticalAlign="middle" fontFamily="hyxl" fontSize="20" color="#341812"
+				  width="73" height="26"/>
+		<s:Label id="v4" x="244" y="3" text="攻击" verticalAlign="middle" fontFamily="hyxl" fontSize="20" color="#341812"
+				 width="73" height="26"/>
+		<s:Label id="v5" x="321" y="3"  text="兵种" verticalAlign="middle" fontFamily="hyxl" fontSize="20" color="#341812"
+				 width="73" height="26"/>
+	</s:Group>
+	<mx:Image  x="29" y="62" height="21" width="62" id="baseGeneral"/>
+	<mx:Image id="bg2" y="227" width="551" height="40" horizontalCenter="0"/>
+	<s:Label id="strengthMaterial" y="241" width="596" height="29" horizontalCenter="5" text="强化材料" fontFamily="hyxl" color="#f9ffa8"
+			 textAlign="center" verticalAlign="middle" fontSize="22" filters="{[new spark.filters.GlowFilter(0xFFFFBE,0.75,7,7,2,1,false,false)]}"/>
+</symbols:BasePanel>

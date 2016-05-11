@@ -1,0 +1,82 @@
+package com.core.component
+{
+	import flash.display.Shape;
+	import flash.display.Sprite;
+	import flash.geom.Matrix;
+	import flash.geom.Point;
+	
+	public class Polygon extends Shape
+	{
+		private var _sideLength:Number = 0 ;
+		
+		/**
+		 * 正多边形边数 
+		 */		
+		private var mNumEdges:int = 0 ;
+		
+		public function Polygon($width:Number = 40,$length:int = 6)
+		{
+			super();
+			_sideLength = $width ;
+			mNumEdges = $length;
+			draw();
+		}
+		
+		/**
+		 * 正多边形边长 
+		 */
+		public function get sideLength():Number
+		{
+			return _sideLength;
+		}
+
+		public function draw(color:uint = 0x0):void
+		{
+//			0xffffff*Math.random()
+			this.graphics.beginFill(color);
+			this.graphics.moveTo(0,0);
+			this.graphics.beginFill(0x999999);
+			this.graphics.drawCircle(0,0,5);
+			this.graphics.beginFill(color);
+			var points:Array = [];
+			var radius:int = sideLength * Math.sin(Math.PI /mNumEdges);
+			var edge:Point = null;
+			for(var i:int = 0 ; i < mNumEdges ; i ++)
+			{
+				edge = Point.polar(radius, i * 2*Math.PI / mNumEdges);
+//				edge = translationPointToPlor(edge);
+//				edge = translationPointToPlor(edge);
+				if(i == 0 )
+				{
+					this.graphics.moveTo(edge.x,edge.y);
+					
+				}else
+				{
+					this.graphics.lineTo(edge.x,edge.y);
+				}
+			}
+		}
+		
+		private static var sacalMat:Matrix = new Matrix(); 
+		private static var m:Matrix = new Matrix();
+		/**
+		 * 将点转化为45度角视图 
+		 * @param $point
+		 * @param $angle
+		 * @return 
+		 */		
+		public static function translationPointToPlor($point:Point,$angle:Number = Math.PI/4):Point
+		{
+			m.rotate($angle);
+			sacalMat.scale(1,1);
+			m.concat(sacalMat);
+			return m.transformPoint($point) ;
+		}
+		
+		
+		public static function get scaleMatrix():Matrix
+		{
+		
+		}
+	}
+}

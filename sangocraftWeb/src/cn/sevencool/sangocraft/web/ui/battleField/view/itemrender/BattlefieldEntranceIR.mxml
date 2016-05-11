@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx" 
+				dataChange="itemrenderer1_dataChangeHandler(event)"
+				autoDrawBackground="true">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.utils.MediatorUtil;
+			import cn.sevencool.sangocraft.data.model.FightSceneInfoVO;
+			import cn.sevencool.sangocraft.data.vo.FightScene;
+			import cn.sevencool.sangocraft.web.ui.battleField.mediator.BattleFieldMediator;
+			
+			import mx.events.FlexEvent;
+			
+			private var fightScene:FightScene;
+			protected function itemrenderer1_dataChangeHandler(event:FlexEvent):void
+			{
+				fightScene = data as FightScene ;
+				if(!fightScene)
+				{
+					return ;
+				}
+				lbl_name.text = fightScene.szFightName;
+				lbl_strength.text = fightScene.nNeedPhysical.toString();
+				lbl_count.text = fightScene.nCanAttackNum.toString();
+//				fightSceneInfoVO.
+			}
+			
+			/**
+			 * 点击按钮  进入战场
+			 * */
+			protected function btn_enter_clickHandler(event:MouseEvent):void
+			{
+				var _mediator:BattleFieldMediator = MediatorUtil.getMediatorByInterface(BattleFieldMediator);
+				_mediator.showPrewarConfiguration(fightScene);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:HGroup gap="0" >
+		<s:Label id="lbl_name" width="152" textAlign="center" verticalAlign="middle" fontFamily="hyxl"/>
+		<s:Label id="lbl_strength" width="152" textAlign="center" verticalAlign="middle" fontFamily="hyxl"/>
+		<s:Label id="lbl_count" width="152" textAlign="center" verticalAlign="middle" fontFamily="hyxl"/>
+		<s:Group width="152">
+			<s:Button id="btn_enter" horizontalCenter="0" click="btn_enter_clickHandler(event)"/>
+		</s:Group>
+	</s:HGroup>
+</s:ItemRenderer>

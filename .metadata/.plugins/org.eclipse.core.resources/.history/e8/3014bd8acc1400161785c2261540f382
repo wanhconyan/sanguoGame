@@ -1,0 +1,41 @@
+package com.module.battle
+{
+	import com.core.event.BattleEvent;
+	import com.core.loader.LoaderManager;
+	import com.core.util.Dispatcher;
+	import com.core.view.BaseModule;
+
+	public class BattleModule extends BaseModule
+	{
+		private var _baseMediator:BattleMediator ;
+		public function BattleModule()
+		{
+			_baseMediator = new BattleMediator();
+		}
+		
+		override public function start():void
+		{
+		
+		}
+		
+		override protected function addModuleEvent():void
+		{
+			Dispatcher.register(BattleEvent.BATTLE_START,onBattleStart);
+		
+		}
+		
+		
+		
+		override protected function removeModuleEvent():void
+		{
+		
+		
+		
+		}
+		
+		public function play():void
+		{
+			_baseMediator.startUp() ;
+		}
+	}
+}

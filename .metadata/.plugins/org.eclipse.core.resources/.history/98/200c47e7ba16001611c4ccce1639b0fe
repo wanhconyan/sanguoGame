@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+			creationComplete="group1_creationCompleteHandler(event)"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			
+			import spark.events.IndexChangeEvent;
+			
+			
+			public var directions:ArrayCollection = null;
+			
+			/**
+			 *方向变化
+			 * */
+			protected function direction_com_changeHandler(event:IndexChangeEvent):void
+			{
+					
+				
+				
+			}
+			
+			
+			/**
+			 * 对象创建完成
+			 * */
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				var directions:Array = [{dir:"上",value:1},{dir:"右上",value:2},{dir:"右",value:3},
+					{dir:"右下",value:4},{dir:"下",value:5},{dir:"左下",vavlue:6},{dir:"左",value:7},{dir:"左上",value:8}];
+				
+				public static const ACTION_STAND_BY:int = 3;
+				
+				public static const ACTION_MOVE:int = 1;
+				
+				public static const ACTION_ATTACK:int = 2;
+				
+				public static const ACTION_DIE:int = 5;
+				
+				public static const ACTION_BE_ATTACK:int = 4;
+				
+				public static const ACTION_THROW:int = 6;
+				
+				public static const ACTION_DEFENSE:int = 7;
+				var actions:Array = [{action:"移动",value:1},{action:"攻击",value:2},{action:"站立",value:3},
+					{action:"右下",value:4},{action:"下",value:5},{action:"左下",vavlue:6},{action:"左",value:7},{action:"左上",value:8}];
+			}
+			
+			
+			/**
+			 * 设置动作变化
+			 * */
+			protected function actr_com_changeHandler(event:IndexChangeEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:VGroup>
+		<s:HGroup>
+			<s:Label text="方向:"/>
+			<s:ComboBox id="direction_com" change="direction_com_changeHandler(event)" width="40"/>
+		</s:HGroup>
+		<s:HGroup>
+			<s:Label text="动作:"/>
+			<s:ComboBox id="actr_com" change="actr_com_changeHandler(event)" width="40"/>
+		</s:HGroup>
+
+	</s:VGroup>
+</s:Group>

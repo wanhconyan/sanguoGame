@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*" width="530" height="382"
+				   xmlns:view="cn.sevencool.sangocraft.web.ui.socialRelative.view.*">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.data.model.RGetMailInfoVO;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.data.vo.EMailVO;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.ui.socialRelative.mediator.SocialRelativeMediator;
+			
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			
+			/**
+			 * 读取的邮件
+			 * */
+			private var _email:EMailVO = null;
+			private var _socialM:SocialRelativeMediator = null;
+			
+			private var _senderMap:Bitmap = null;
+			private var _sendThemeMap:Bitmap = null;
+			private var _emailArr:Array = null;
+			
+			override public function set mediatorUI($value:AbstractMediator):void
+			{
+				
+				_socialM = $value as SocialRelativeMediator;
+				if(!_socialM||!initialized||!_emailArr)
+				{
+					return 
+				}else
+				{
+					onShow();
+				}
+			}
+			
+			
+			/**
+			 * 关闭面板
+			 * */
+			protected function titlewindow1_closeHandler(event:CloseEvent):void
+			{
+				
+				UIMananger.getInstance().hide(this);
+				
+			}
+			
+			/**
+			 * 回复邮件
+			 * */
+			protected function btn_reply_clickHandler(event:MouseEvent):void
+			{
+				
+				_socialM.sendEmail(rGetMailInfoVO.szSenderName,rGetMailInfoVO.szTitle);
+				
+				
+			}
+			
+			/**
+			 * 删除邮件
+			 * */
+			protected function btn_del_clickHandler(event:MouseEvent):void
+			{
+				_socialM.delNowEmail(rGetMailInfoVO.dwMailID)
+				
+			}
+			
+			
+			override protected function onShow():void
+			{
+				if(!_socialM||!initialized||!rGetMailInfoVO||!_emailArr)
+				{
+					return 
+				}
+				
+			}
+			
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_sendThemeMap = new Bitmap();
+				_senderMap = new Bitmap();
+				img_title.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,"sendTheme",_sendThemeMap));
+				img_sender.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,"sender",_senderMap));
+			}
+			
+			
+			override public function get needBundleList():Array
+			{
+				var urlArr:Array = [] ;
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'sendTheme'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'sender'));
+				return urlArr;
+			}
+			
+			
+			private function refreshMainInfo():void
+			{
+				txt_content.text = rGetMailInfoVO.szNotice
+				lbl_revive.text = rGetMailInfoVO.szSenderName;
+				lbl_theme.text = rGetMailInfoVO.szTitle;
+				lbl_time.text = rGetMailInfoVO.szSendTime;
+			}
+			
+			public function get emailArr():Array
+			{
+				return _emailArr;
+			}
+			
+			public function set emailArr(value:Array):void
+			{
+				_emailArr = value;
+			}
+			
+			protected function page_PageChangeHandler(event:Event):void
+			{
+				_socialM.readEmailBefore(page.nowPage);
+				
+			}
+			
+			public function get rGetMailInfoVO():EMailVO
+			{
+				return _email;
+			}
+			
+			public function set rGetMailInfoVO(value:EMailVO):void
+			{
+				_email = value;
+				refreshMainInfo();
+			}
+			
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<mx:Image id="img_title" x="17" y="44" width="62" height="20"/>
+	<s:Label id="lbl_revive" x="100" y="4" width="286" height="29" color="0xdde3cf" fontSize="14"
+			 textAlign="left" verticalAlign="middle"/>
+	<s:Label id="lbl_theme" x="100" y="39" width="286" height="29" color="0xdde3cf" fontSize="14"
+			 textAlign="left" verticalAlign="middle"/>
+	<s:Button x="88" y="327" id="btn_reply" click="btn_reply_clickHandler(event)" visible="false" label="回复" width="98" height="36"/>
+	<s:Button x="353" y="327" id="btn_del" click="btn_del_clickHandler(event)" label="删除" width="98" height="36"/>
+	<mx:Image id="img_sender" x="17" y="7" width="62" height="20"/>
+	<s:TextArea id="txt_content" x="16" y="76" width="500" height="237" color="0xdde3cf" fontSize="14" selectable="false"/>
+	<s:Label x="440" y="10" width="76" height="23" color="#DDE3CF" fontSize="14"  id="lbl_time"
+			 textAlign="center" verticalAlign="middle"/>
+	<symbols:Grouppagination id="page" width="602" height="34" horizontalCenter="0"
+							 PageChange="page_PageChangeHandler(event)" styleName="3"
+							 verticalCenter="0"/>
+</symbols:BasePanel>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					   xmlns:s="library://ns.adobe.com/flex/spark" 
+					   addedToStage="windowedapplication1_addedToStageHandler(event)"
+					   xmlns:mx="library://ns.adobe.com/flex/mx">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.resource.manager.FileManagers;
+			
+			public static const URL:String = "http://127.0.0.1:8080/flashres/res/unit/";
+			protected function onClick(event:MouseEvent):void
+			{
+				FileManagers.getInstance().openFloder();
+				
+			}
+			
+			protected function onLoadComplete(event:Event):void
+			{
+				var data:Object = (event.target as URLLoader).data ;
+				return ;
+				var byte:ByteArray = ByteArray(data)
+				byte.uncompress();
+				var xmlLen:int = byte.readInt() ;
+				byte.position = 0 ;
+				var xmlByte:ByteArray = new ByteArray();
+				xmlByte.readBytes(byte,0,xmlLen);
+				var urlLoader:Loader = new Loader();
+				urlLoader.addEventListener(Event.COMPLETE,onLoaderComplete);
+				urlLoader.loadBytes(xmlByte);
+				
+				
+			}
+			
+			protected function windowedapplication1_addedToStageHandler(event:Event):void
+			{
+				FileManagers.getInstance().container  = container;
+				return ;
+				var loader:URLLoader = new URLLoader();
+				loader.dataFormat = URLLoaderDataFormat.BINARY ;
+				loader.addEventListener(Event.COMPLETE,onLoadComplete);
+				loader.load(new URLRequest(URL + "b1.obj"));
+				
+				FileManagers.getInstance().addEventListener(Event.INIT,onInit);
+				
+			}
+			
+			protected function onLoaderComplete(event:Event):void
+			{
+				trace("rsourceCompress.onLoaderComplete(event)");
+				
+				var data:ByteArray = (event.target as URLLoader).data;
+//				data.position ＝ 0 ;
+				data.endian = Endian.LITTLE_ENDIAN ;
+				var len:int =  data.readInt() ;
+				var xmlByte:ByteArray  = new ByteArray();
+				xmlByte.readBytes(data,0,len );
+				
+				var xml:XML = XML(xmlByte);
+				 
+				
+			}
+			
+			
+			protected function onRefineClick(e:MouseEvent):void
+			{
+				FileManagers.getInstance().openRefineFile();
+				
+			}
+			
+			
+			protected function onChangeClick(e:MouseEvent):void
+			{
+				FileManagers.getInstance().openImg();
+				
+			}
+			
+			protected function onInit(event:Event):void
+			{
+				
+				container.addChild(FileManagers.getInstance().bmpData);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	
+	<s:Button  label="选择需要压缩的文件夹" x="0" y="0" click="onClick(event)"/>
+	
+	<s:Button  label="还原图集" x="200" y="0" click="onRefineClick(event)"/>
+	
+	<s:Button  label="调整图片色温" x="280" y="0" id="changeBmp" click="onChangeClick"/>
+	
+	<s:SpriteVisualElement id="container" width="100%" height="90%" top="30"/>
+</s:WindowedApplication>

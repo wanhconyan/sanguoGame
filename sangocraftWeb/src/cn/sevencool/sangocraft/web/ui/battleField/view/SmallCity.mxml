@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 creationComplete="group1_creationCompleteHandler(event)"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="105" height="82"
+		 xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.utils.MediatorUtil;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.data.symbols.material.factory.ImageFactory;
+			import cn.sevencool.sangocraft.data.vo.FightScene;
+			import cn.sevencool.sangocraft.web.ui.battleField.mediator.BattleFieldMediator;
+			
+			import flash.utils.setTimeout;
+			
+			import mx.events.FlexEvent;
+			
+			import spark.filters.GlowFilter;
+			
+			private var _fightScene:FightScene = null;
+			private var _mater:MaterialManager  = MaterialManager.getInstance();
+			
+			/**
+			 * 容器
+			 * */
+			private var _wordBackBarMap:Bitmap = null;
+			private var _healthPointMap:Bitmap = null;
+			private var _bureauMap:Bitmap = null;
+			private var _smallKnife:Bitmap = null;
+			
+			private var _battleType:int = 0;
+			
+			private var _isNowPass:Boolean ;
+			
+			private var _timer:Timer;
+			
+			[Embed(source="../../../../../../../../assets/smallCity.swf")]
+			private var effectSpark:Class;
+			
+			private var _spark:MovieClip;
+			
+			private var _isFirstPlay:Boolean ;
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_wordBackBarMap = new Bitmap();
+				_healthPointMap = new Bitmap();
+				_bureauMap = new Bitmap();
+				_timer = new Timer(600);
+				_spark = new effectSpark();
+				_spark.gotoAndStop(0);
+				sp_mc.addChild(_spark);
+				sp_mc.visible = false;
+				_timer.addEventListener(TimerEvent.TIMER,onTimer);
+				var hpUrl:String = MaterialManager.getInstance().getURL(MaterialKeys.OTHER,"healthPoint");
+				img_title.addChild(_mater.getIcon(MaterialKeys.OTHER,'wordBackBar',_wordBackBarMap))
+				img_hp.addChild(_mater.getIcon(MaterialKeys.OTHER,'healthPoint',_healthPointMap));
+				img_bureau.addChild(_mater.getIcon(MaterialKeys.OTHER,'bureau',_bureauMap));
+				_smallKnife = new Bitmap();
+			}
+			
+			
+			/**
+			 * 点击进入
+			 * */
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				var _mediator:BattleFieldMediator = MediatorUtil.getMediatorByInterface(BattleFieldMediator);
+				_mediator.showPrewarConfiguration(fightScene);
+			}
+			
+			
+			/**
+			 * 战场信息
+			 * */
+			public function get fightScene():FightScene
+			{
+				return _fightScene;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set fightScene(value:FightScene):void
+			{
+				_fightScene = value;
+				f_bureau.figureHandler(fightScene.nCanAttackNum.toString(),MaterialKeys.BATTLE_BUREAU,8);
+				f_hp.figureHandler(fightScene.nNeedPhysical.toString(),MaterialKeys.BATTLE_BUREAU,8);
+				f_hp1.figureHandler(fightScene.nNeedPhysical.toString(),MaterialKeys.BATTLE_BUREAU,8);
+				lbl_title.text = fightScene.szFightName;
+				if(fightScene.isNowAttack)
+				{
+					img_isNowAttack.visible = true;
+				}else
+				{
+					img_isNowAttack.visible = false;
+				}
+			}
+			
+			/**
+			 * 设置显示延迟
+			 * */
+			private function onTimer(e:TimerEvent):void
+			{
+				this.visible = true;
+				_timer.stop();
+				_timer.reset();
+			}
+			
+			/**
+			 * 1普通类型2活动3条件
+			 * */
+			public function get battleType():int
+			{
+				return _battleType;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set battleType(value:int):void
+			{
+				_battleType = value;
+				group_comm.visible = (battleType == 1) ? true:false;
+				group_special.visible = (battleType == 1) ? false:true;
+			}
+			
+			public function get isNowPass():Boolean
+			{
+				return _isNowPass;
+			}
+			
+			public function set isNowPass(value:Boolean):void
+			{
+				_isNowPass = value;
+				if(isNowPass)
+				{
+					_timer.start();
+				}
+			}
+			
+			
+			protected function button1_mouseOverHandler(event:MouseEvent):void
+			{
+//				sp_mc.visible = true;
+//				if(!isFirstPlay)
+//				{
+//					_spark.gotoAndStop(11);
+//					isFirstPlay = true;;
+//				}
+				
+			}
+			
+			protected function button1_mouseOutHandler(event:MouseEvent):void
+			{
+				sp_mc.visible = false;
+				isFirstPlay = false;
+			}
+			
+			private function get isFirstPlay():Boolean
+			{
+				return _isFirstPlay;
+			}
+			
+			private function set isFirstPlay(value:Boolean):void
+			{
+				_isFirstPlay = value;
+			}
+			
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<mx:Image id="img_isNowAttack" top="-34" width="38" height="39" horizontalCenter="0" source="@Embed('../../../../../../../../assets/images/battle/smallKnife.png')"/>
+	<mx:Image id="img_title" y="-7" width="92" height="34" horizontalCenter="0"/>
+	<s:Label id="lbl_title" y="3" color="#ffe7bc"
+			 filters="{[new spark.filters.GlowFilter(0x101010, 100, 2, 2, 5, 1, false, false)]}"
+			 fontSize="14" horizontalCenter="0" textAlign="center" verticalAlign="middle"/>
+	<s:SpriteVisualElement id="sp_mc" width="71" height="79" horizontalCenter="0" verticalCenter="0"/>
+	<s:Button width="71" height="79" horizontalCenter="0" click="button1_clickHandler(event)"
+			  mouseOver="button1_mouseOverHandler(event)"
+			  mouseOut="button1_mouseOutHandler(event)"
+			  skinClass="cn.sevencool.sangocraft.web.skin.button.CityBtnSkin" verticalCenter="0"/>
+	<s:Group id="group_special" visible="false" bottom="0">
+		<mx:Image id="img_hp" x="-1" bottom="8" width="39" height="17"
+				  source="@Embed('../../../../../../../../assets/images/battle/healthPoint.png')"/>
+		<symbols:FigureDisplay id="f_hp" x="35" y="46" width="22" height="16" maxMedian="3"/>
+		<mx:Image id="img_bureau" x="46" bottom="8" width="30" height="18"/>
+		<symbols:FigureDisplay id="f_bureau" x="81" y="46" width="26" height="19" maxMedian="3"/>
+	</s:Group>	
+	<s:Group id="group_comm" bottom="0" width="71" horizontalCenter="0">
+		<mx:Image id="img_hp1" left="4" bottom="8" width="39" height="18"
+				  source="@Embed('../../../../../../../../assets/images/battle/healthPoint.png')"/>
+		<symbols:FigureDisplay id="f_hp1" right="4" bottom="19" width="22" height="16" maxMedian="3"/>
+	</s:Group>
+</s:Group>

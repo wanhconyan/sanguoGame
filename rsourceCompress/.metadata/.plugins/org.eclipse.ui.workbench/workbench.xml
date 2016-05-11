@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workbench progressCount="58" version="2.0">
+<workbenchAdvisor/>
+<window height="735" maximized="true" width="1024" x="21" y="23">
+<fastViewData fastViewLocation="1024"/>
+<perspectiveBar>
+<itemSize x="348"/>
+</perspectiveBar>
+<coolbarLayout>
+<coolItem id="group.file" itemType="typeGroupMarker"/>
+<coolItem id="org.eclipse.ui.workbench.file" itemType="typeToolBarContribution" x="136" y="22"/>
+<coolItem id="additions" itemType="typeGroupMarker"/>
+<coolItem id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" itemType="typeToolBarContribution" x="-1" y="-1"/>
+<coolItem id="org.eclipse.debug.ui.launchActionSet" itemType="typeToolBarContribution" x="158" y="22"/>
+<coolItem id="org.eclipse.search.searchActionSet" itemType="typeToolBarContribution" x="62" y="22"/>
+<coolItem id="org.eclipse.ui.edit.text.actionSet.presentation" itemType="typeToolBarContribution" x="32" y="22"/>
+<coolItem id="org.eclipse.wst.xml.ui.perspective.NewFileToolBar" itemType="typeToolBarContribution" x="-1" y="-1"/>
+<coolItem id="org.eclipse.wst.xml.ui.design.DesignToolBar" itemType="typeToolBarContribution" x="-1" y="-1"/>
+<coolItem id="group.nav" itemType="typeGroupMarker"/>
+<coolItem id="org.eclipse.ui.workbench.navigate" itemType="typeToolBarContribution" x="152" y="22"/>
+<coolItem id="group.editor" itemType="typeGroupMarker"/>
+<coolItem id="com.adobe.flexbuilder.editors.mxml.MXMLEditor" itemType="typeToolBarContribution" x="-1" y="-1"/>
+<coolItem id="group.help" itemType="typeGroupMarker"/>
+<coolItem id="org.eclipse.ui.workbench.help" itemType="typeToolBarContribution" x="-1" y="-1"/>
+</coolbarLayout>
+<page aggregateWorkingSetId="Aggregate for window 1457236136535" focus="true" label="工作空间 － Flash">
+<editors>
+<editorArea activeWorkbook="DefaultEditorWorkbook">
+<info part="DefaultEditorWorkbook">
+<folder appearance="1" expanded="2">
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+<part id="1"/>
+<part id="2"/>
+<part id="3"/>
+<part id="4"/>
+<part id="5"/>
+<part id="6"/>
+<part id="7"/>
+<part id="8"/>
+<part id="9"/>
+<part id="10"/>
+<part id="11"/>
+<part id="12"/>
+<part id="13"/>
+<part id="14"/>
+<part id="15"/>
+<part id="16"/>
+<part id="17"/>
+</presentation>
+</folder>
+</info>
+</editorArea>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="GameScene.as" partName="GameScene.as" path="/Developments/workspace/ClashRoyal/src/com/clash/view/scene/GameScene.as" title="GameScene.as" tooltip="ClashRoyal/src/com/clash/view/scene/GameScene.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ClashRoyal/src/com/clash/view/scene/GameScene.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="882" selectionTopPixel="630"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="Itarget.as" partName="Itarget.as" path="/Developments/workspace/ClashRoyal/src/com/clash/iunit/Itarget.as" title="Itarget.as" tooltip="ClashRoyal/src/com/clash/iunit/Itarget.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ClashRoyal/src/com/clash/iunit/Itarget.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="34" selectionOffset="560" selectionTopPixel="30"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="Target.as" partName="Target.as" path="/Developments/workspace/ClashRoyal/src/com/clash/component/Target.as" title="Target.as" tooltip="ClashRoyal/src/com/clash/component/Target.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ClashRoyal/src/com/clash/component/Target.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="835" selectionTopPixel="946"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="Dispatcher.as" partName="Dispatcher.as" path="/Developments/workspace/ClashRoyal/src/com/clash/manager/Dispatcher.as" title="Dispatcher.as" tooltip="ClashRoyal/src/com/clash/manager/Dispatcher.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ClashRoyal/src/com/clash/manager/Dispatcher.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="23" selectionTopPixel="0"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="Avatar.as" partName="Avatar.as" path="/Developments/workspace/ClashRoyal/src/com/clash/component/Avatar.as" title="Avatar.as" tooltip="ClashRoyal/src/com/clash/component/Avatar.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ClashRoyal/src/com/clash/component/Avatar.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="235" selectionTopPixel="0"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="HPBar.as" partName="HPBar.as" path="/Developments/workspace/ClashRoyal/src/com/clash/component/HPBar.as" title="HPBar.as" tooltip="ClashRoyal/src/com/clash/component/HPBar.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ClashRoyal/src/com/clash/component/HPBar.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="0" selectionTopPixel="0"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="Effect.as" partName="Effect.as" path="/Developments/workspace/ClashRoyal/src/com/clash/component/Effect.as" title="Effect.as" tooltip="ClashRoyal/src/com/clash/component/Effect.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ClashRoyal/src/com/clash/component/Effect.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="632" selectionTopPixel="372"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="LoopManager.as" partName="LoopManager.as" path="/Developments/workspace/ClashRoyal/src/com/clash/manager/LoopManager.as" title="LoopManager.as" tooltip="ClashRoyal/src/com/clash/manager/LoopManager.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ClashRoyal/src/com/clash/manager/LoopManager.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="2152" selectionTopPixel="1275"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="Config.as" partName="Config.as" path="/Developments/workspace/ClashRoyal/src/com/clash/manager/Config.as" title="Config.as" tooltip="ClashRoyal/src/com/clash/manager/Config.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ClashRoyal/src/com/clash/manager/Config.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="99" selectionTopPixel="0"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="MathUtil.as" partName="MathUtil.as" path="/Developments/workspace/ClashRoyal/src/com/clash/MathUtil.as" title="MathUtil.as" tooltip="ClashRoyal/src/com/clash/MathUtil.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ClashRoyal/src/com/clash/MathUtil.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="182" selectionTopPixel="10"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="Time.as" partName="Time.as" path="/Developments/workspace/ClashRoyal/src/com/clash/manager/Time.as" title="Time.as" tooltip="ClashRoyal/src/com/clash/manager/Time.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ClashRoyal/src/com/clash/manager/Time.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="82" selectionTopPixel="0"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="City.as" partName="City.as" path="/Developments/workspace/ClashRoyal/src/com/clash/component/City.as" title="City.as" tooltip="ClashRoyal/src/com/clash/component/City.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ClashRoyal/src/com/clash/component/City.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="61" selectionTopPixel="0"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="Solider.as" partName="Solider.as" path="/Developments/workspace/ClashRoyal/src/com/clash/component/Solider.as" title="Solider.as" tooltip="ClashRoyal/src/com/clash/component/Solider.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ClashRoyal/src/com/clash/component/Solider.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="138" selectionTopPixel="0"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="CardBoard.as" partName="CardBoard.as" path="/Developments/workspace/ClashRoyal/src/com/clash/view/scene/CardBoard.as" title="CardBoard.as" tooltip="ClashRoyal/src/com/clash/view/scene/CardBoard.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/ClashRoyal/src/com/clash/view/scene/CardBoard.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="107" selectionTopPixel="0"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.mxml.MXMLEditor" name="BoatModelSetter.mxml" partName="BoatModelSetter.mxml" path="/Users/tinsoldier/Desktop/work/project/dhhChinese/BoatObjSetter/src/BoatModelSetter.mxml" title="BoatModelSetter.mxml" tooltip="BoatObjSetter/src/BoatModelSetter.mxml" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/BoatObjSetter/src/BoatModelSetter.mxml"/>
+</editor>
+<editor focus="true" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="BoatView3D.as" partName="BoatView3D.as" path="/Users/tinsoldier/Desktop/work/project/dhhChinese/BoatObjSetter/src/cn/sevencool/shipjourney/boat/BoatView3D.as" title="BoatView3D.as" tooltip="BoatObjSetter/src/cn/sevencool/shipjourney/boat/BoatView3D.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/BoatObjSetter/src/cn/sevencool/shipjourney/boat/BoatView3D.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="15650" selectionTopPixel="60"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="OBJModel.as" partName="OBJModel.as" path="/Users/tinsoldier/Desktop/work/project/dhhChinese/BoatObjSetter/src/cn/sevencool/shipjourney/view/OBJModel.as" title="OBJModel.as" tooltip="BoatObjSetter/src/cn/sevencool/shipjourney/view/OBJModel.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/BoatObjSetter/src/cn/sevencool/shipjourney/view/OBJModel.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="9" selectionOffset="5140" selectionTopPixel="0"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="FlagGroup.as" partName="FlagGroup.as" path="/Users/tinsoldier/Desktop/work/project/dhhChinese/BoatObjSetter/src/cn/sevencool/shipjourney/boat/FlagGroup.as" title="FlagGroup.as" tooltip="BoatObjSetter/src/cn/sevencool/shipjourney/boat/FlagGroup.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/BoatObjSetter/src/cn/sevencool/shipjourney/boat/FlagGroup.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="9" selectionOffset="107" selectionTopPixel="0"/>
+</editor>
+</editors>
+<views>
+<view id="com.adobe.flexbuilder.as.editor.CallHierarchyView" partName="调用层次结构">
+<viewState/>
+</view>
+<view id="org.eclipse.search.ui.views.SearchView" partName="搜索">
+<viewState isPinned="false">
+<view IMemento.internal.id="" org.eclipse.search.lastActivation="0"/>
+<view IMemento.internal.id="org.eclipse.search.text.FileSearchResultPage" org.eclipse.search.lastActivation="1" org.eclipse.search.resultpage.layout="2" org.eclipse.search.resultpage.limit="1000" org.eclipse.search.resultpage.sorting="2"/>
+</viewState>
+</view>
+<view id="org.eclipse.ui.views.ProblemView" partName="问题">
+<viewState PRIMARY_SORT_FIELD="org.eclipse.ui.ide.severityAndDescriptionField" categoryGroup="org.eclipse.ui.ide.severity" markerContentGenerator="org.eclipse.ui.ide.problemsGenerator" partName="问题">
+<columnWidths org.eclipse.ui.ide.locationField="105" org.eclipse.ui.ide.markerType="105" org.eclipse.ui.ide.pathField="140" org.eclipse.ui.ide.resourceField="105" org.eclipse.ui.ide.severityAndDescriptionField="350"/>
+<visible IMemento.internal.id="org.eclipse.ui.ide.severityAndDescriptionField"/>
+<visible IMemento.internal.id="org.eclipse.ui.ide.resourceField"/>
+<visible IMemento.internal.id="org.eclipse.ui.ide.pathField"/>
+<visible IMemento.internal.id="org.eclipse.ui.ide.locationField"/>
+<visible IMemento.internal.id="org.eclipse.ui.ide.markerType"/>
+</viewState>
+</view>
+<view id="com.adobe.flexbuilder.packageexplorer" partName="包资源管理器">
+<viewState LINK_NAVIGATOR_TO_EDITOR="0" fpeIsFlat="0" fpeSortBy="1" sorter="1">
+<fpeExpanded>
+<fpeElement fpePath="/BoatObjSetter"/>
+<fpeElement fpePath="/BoatObjSetter/src"/>
+<fpeElement fpePath="/BoatObjSetter/src/%typeDefaultPackage"/>
+<fpeElement fpePath="/BoatObjSetter/src/assets"/>
+<fpeElement fpePath="/BoatObjSetter/src/cn"/>
+<fpeElement fpePath="/BoatObjSetter/src/cn/sevencool"/>
+<fpeElement fpePath="/BoatObjSetter/src/cn/sevencool/shipjourney"/>
+<fpeElement fpePath="/BoatObjSetter/src/cn/sevencool/shipjourney/boat"/>
+</fpeExpanded>
+<fpeSelection>
+<fpeElement fpePath="/BoatObjSetter/src/cn/sevencool/shipjourney/boat/FlagGroup.as"/>
+</fpeSelection>
+<filters>
+<filter element=".flexProperties" isEnabled="true"/>
+<filter element=".actionScriptProperties" isEnabled="true"/>
+<filter element=".project" isEnabled="true"/>
+<filter element=".settings" isEnabled="true"/>
+<filter element=".flexLibProperties" isEnabled="true"/>
+<filter element=".DS_Store" isEnabled="true"/>
+<filter element=".model" isEnabled="true"/>
+<filter element="*.class" isEnabled="false"/>
+<filter element=".*" isEnabled="false"/>
+<filter element=".flexProperties" isEnabled="true"/>
+<filter element=".actionScriptProperties" isEnabled="true"/>
+<filter element=".project" isEnabled="true"/>
+<filter element=".settings" isEnabled="true"/>
+<filter element=".flexLibProperties" isEnabled="true"/>
+<filter element=".DS_Store" isEnabled="true"/>
+<filter element=".model" isEnabled="true"/>
+<filter element="*.class" isEnabled="false"/>
+<filter element=".*" isEnabled="false"/>
+</filters>
+<expanded>
+<element path="/BoatObjSetter"/>
+</expanded>
+<selection>
+<element path="/BoatObjSetter/src/cn/sevencool/shipjourney/boat/FlagGroup.as"/>
+</selection>
+</viewState>
+</view>
+<view id="com.adobe.flexbuilder.monitors.network.view.NetworkMonitorView" partName="网络监视器">
+<viewState/>
+</view>
+<view id="com.adobe.flexbuilder.dcrad.views.DataServicesView" partName="数据/服务">
+<viewState/>
+</view>
+<view id="org.eclipse.ui.views.ContentOutline" partName="大纲">
+<viewState/>
+</view>
+</views>
+<perspectives activePerspective="com.adobe.flexbuilder.editors.mxml.ui.perspectives.development">
+<perspective editorAreaTrimState="2" editorAreaVisible="1" fixed="0" version="0.016">
+<descriptor class="com.adobe.flexbuilder.mxml.editor.ui.perspectives.DevelopmentPerspectiveFactory" id="com.adobe.flexbuilder.editors.mxml.ui.perspectives.development" label="Flash"/>
+<alwaysOnActionSet id="com.adobe.flexbuilder.editorcore.modeswitch"/>
+<alwaysOnActionSet id="com.adobe.flexbuilder.flashbridge.flashproject.actionSet"/>
+<alwaysOnActionSet id="com.adobe.flexbuilder.designview.activationcontrol"/>
+<alwaysOnActionSet id="org.eclipse.mylyn.context.ui.actionSet"/>
+<alwaysOnActionSet id="org.eclipse.mylyn.doc.actionSet"/>
+<alwaysOnActionSet id="org.eclipse.mylyn.tasks.ui.navigation"/>
+<alwaysOnActionSet id="org.eclipse.ui.cheatsheets.actionSet"/>
+<alwaysOnActionSet id="org.eclipse.search.searchActionSet"/>
+<alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.annotationNavigation"/>
+<alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.navigation"/>
+<alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.convertLineDelimitersTo"/>
+<alwaysOnActionSet id="org.eclipse.ui.externaltools.ExternalToolsSet"/>
+<alwaysOnActionSet id="org.eclipse.ui.actionSet.keyBindings"/>
+<alwaysOnActionSet id="org.eclipse.ui.actionSet.openFiles"/>
+<alwaysOnActionSet id="org.eclipse.wb.core.ui.actionset"/>
+<alwaysOnActionSet id="org.eclipse.debug.ui.launchActionSet"/>
+<alwaysOnActionSet id="org.eclipse.debug.ui.profileActionSet"/>
+<alwaysOnActionSet id="org.eclipse.ui.NavigateActionSet"/>
+<alwaysOnActionSet id="org.eclipse.debug.ui.debugActionSet"/>
+<alwaysOnActionSet id="org.eclipse.debug.ui.breakpointActionSet"/>
+<alwaysOnActionSet id="com.adobe.flexbuilder.debug.ui.flexDebuggingActionSet"/>
+<alwaysOnActionSet id="com.adobe.flexbuilder.dcrad.actionSet"/>
+<alwaysOnActionSet id="com.adobe.flexbuilder.zzz.editors.common.ui.project.publish"/>
+<alwaysOnActionSet id="com.adobe.flexbuilder.exportimport.actionSet1"/>
+<alwaysOnActionSet id="com.adobe.flexbuilder.as.editor.ui.NavigationActions"/>
+<show_view_action id="com.adobe.flexbuilder.mxml.editor.AppearanceView"/>
+<show_view_action id="com.adobe.flexbuilder.mxml.editor.components.ComponentsView"/>
+<show_view_action id="com.adobe.flexbuilder.packageexplorer"/>
+<show_view_action id="org.eclipse.ui.views.ContentOutline"/>
+<show_view_action id="org.eclipse.ui.views.ProblemView"/>
+<show_view_action id="com.adobe.flexbuilder.mxml.editor.inspector.view.PropertiesView"/>
+<show_view_action id="com.adobe.flexbuilder.mxml.editor.states.StatesViewer"/>
+<show_view_action id="com.adobe.flexbuilder.dcrad.views.DataServicesView"/>
+<new_wizard_action id="com.adobe.flexbuilder.editorcore.ui.project.wizards.newproject"/>
+<new_wizard_action id="com.adobe.flexbuilder.project.ui.wizards.FlexLibraryProjectWizard"/>
+<new_wizard_action id="com.adobe.flashbuilder.project.multiplatform.ui.MultiPlatformProjectWizard"/>
+<new_wizard_action id="com.adobe.flexbuilder.project.ui.wizards.NewActionScriptProjectWizard"/>
+<new_wizard_action id="com.adobe.flashbuilder.project.multiplatform.ui.MultiPlatformActionScriptProjectWizard"/>
+<new_wizard_action id="com.adobe.flexbuilder.flashbridge.NewFlashProProjectWizard"/>
+<new_wizard_action id="com.adobe.flexbuilder.editorcore.ui.project.wizards.newflashcatalystproject"/>
+<new_wizard_action id="com.adobe.flexbuilder.mxml.editor.ui.wizards.NewMXMLApplication"/>
+<new_wizard_action id="com.adobe.flexbuilder.mxml.editor.ui.wizards.NewMXMLComponent"/>
+<new_wizard_action id="com.adobe.flexbuilder.mxml.editor.ui.wizards.NewMXMLItemRenderer"/>
+<new_wizard_action id="com.adobe.flexbuilder.mxml.editor.ui.wizards.NewMXMLModule"/>
+<new_wizard_action id="com.adobe.flexbuilder.mxml.editor.ui.wizards.NewMXMLSkin"/>
+<new_wizard_action id="com.adobe.flexbuilder.as.editor.wizards.NewActionScriptFile.flex"/>
+<new_wizard_action id="com.adobe.flexbuilder.as.editor.classWizard.flex"/>
+<new_wizard_action id="com.adobe.flexbuilder.as.editor.interfaceWizard.flex"/>
+<new_wizard_action id="com.adobe.flexbuilder.as.editor.skinnableComponentWizard.flex"/>
+<new_wizard_action id="com.adobe.flexbuilder.css.editor.wizards.NewCSSFile"/>
+<new_wizard_action id="com.adobe.flexbuilder.as.editor.flexUnitClassWizard.flex"/>
+<new_wizard_action id="com.adobe.flexbuilder.as.editor.flexUnitTestSuiteClassWizard.flex"/>
+<new_wizard_action id="com.adobe.flexbuilder.as.editor.packageWizard.flex"/>
+<new_wizard_action id="org.eclipse.ui.wizards.new.folder"/>
+<new_wizard_action id="org.eclipse.ui.wizards.new.file"/>
+<perspective_action id="com.adobe.flexbuilder.editors.mxml.ui.perspectives.development"/>
+<perspective_action id="com.adobe.flexbuilder.debug.ui.perspectives.debug"/>
+<perspective_action id="com.adobe.flash.profiler.ui.ProfilingPerspective"/>
+<hide_toolbar_item_id id="org.eclipse.jdt.ui.actions.OpenProjectWizard"/>
+<hide_toolbar_item_id id="org.eclipse.ui.edit.text.toggleShowSelectedElementOnly"/>
+<view id="com.adobe.flexbuilder.packageexplorer"/>
+<view id="org.eclipse.search.ui.views.SearchView"/>
+<view id="org.eclipse.ui.views.ContentOutline"/>
+<view id="org.eclipse.ui.views.ProblemView"/>
+<view id="com.adobe.flexbuilder.dcrad.views.DataServicesView"/>
+<view id="com.adobe.flexbuilder.monitors.network.view.NetworkMonitorView"/>
+<view id="com.adobe.flexbuilder.as.editor.CallHierarchyView"/>
+<fastViewBars/>
+<layout>
+<mainWindow>
+<info folder="true" part="org.eclipse.ui.internal.ViewStack@d67e21">
+<folder activePageID="com.adobe.flexbuilder.packageexplorer" appearance="2" expanded="2">
+<page content="com.adobe.flexbuilder.packageexplorer" label="包资源管理器"/>
+<page content="org.eclipse.search.ui.views.SearchView" label="搜索"/>
+<page content="org.eclipse.ui.views.ContentOutline" label="大纲"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+<part id="1"/>
+<part id="2"/>
+</presentation>
+</folder>
+</info>
+<info folder="true" part="stickyFolderRight" ratio="0.75" ratioLeft="954" ratioRight="318" relationship="2" relative="org.eclipse.ui.internal.ViewStack@d67e21">
+<folder appearance="2" expanded="2">
+<page content="org.eclipse.help.ui.HelpView" label="LabelNotFound"/>
+<page content="org.eclipse.ui.internal.introview" label="LabelNotFound"/>
+<page content="org.eclipse.ui.cheatsheets.views.CheatSheetView" label="LabelNotFound"/>
+</folder>
+</info>
+<info part="org.eclipse.ui.editorss" ratio="0.39873916" ratioLeft="506" ratioRight="763" relationship="2" relative="org.eclipse.ui.internal.ViewStack@d67e21"/>
+<info folder="true" part="statesViewHolder" ratio="0.6493124" ratioLeft="661" ratioRight="357" relationship="2" relative="org.eclipse.ui.editorss">
+<folder appearance="2" expanded="2">
+<page content="com.adobe.flexbuilder.mxml.editor.states.StatesViewer" label="LabelNotFound"/>
+</folder>
+</info>
+<info folder="true" part="propertiesHolder" ratio="0.24923077" ratioLeft="162" ratioRight="488" relationship="4" relative="statesViewHolder">
+<folder appearance="2" expanded="2">
+<page content="com.adobe.flexbuilder.mxml.editor.inspector.view.PropertiesView" label="LabelNotFound"/>
+<page content="com.adobe.flexbuilder.mxml.editor.AppearanceView" label="LabelNotFound"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
+</folder>
+</info>
+<info folder="true" part="bottomLayout" ratio="0.74923074" ratioLeft="487" ratioRight="163" relationship="4" relative="org.eclipse.ui.editorss">
+<folder activePageID="com.adobe.flexbuilder.as.editor.CallHierarchyView" appearance="2" expanded="2">
+<page content="org.eclipse.ui.views.ProblemView" label="问题"/>
+<page content="com.adobe.flexbuilder.dcrad.views.DataServicesView" label="数据/服务"/>
+<page content="com.adobe.flexbuilder.monitors.network.view.NetworkMonitorView" label="网络监视器"/>
+<page content="com.adobe.flexbuilder.as.editor.CallHierarchyView" label="调用层次结构"/>
+<page content="com.adobe.flexbuilder.as.editor.asdocviewer" label="LabelNotFound"/>
+<page content="org.eclipse.ui.console.ConsoleView" label="LabelNotFound"/>
+<page content="com.adobe.flexbuilder.mxml.editor.design.internal.errors.view.DesignModeProblemsView" label="LabelNotFound"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+<part id="1"/>
+<part id="2"/>
+<part id="3"/>
+</presentation>
+</folder>
+</info>
+<info folder="true" part="outlineHolder" ratio="0.5" ratioLeft="325" ratioRight="325" relationship="4" relative="org.eclipse.ui.internal.ViewStack@d67e21">
+<folder appearance="2" expanded="2">
+<page content="com.adobe.flexbuilder.mxml.editor.components.ComponentsView" label="LabelNotFound"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory"/>
+</folder>
+</info>
+</mainWindow>
+</layout>
+</perspective>
+</perspectives>
+<workingSets/>
+<navigationHistory>
+<editors>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" path="/ClashRoyal/src/com/clash/MathUtil.as"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" path="/ClashRoyal/src/com/clash/component/City.as"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" path="/ClashRoyal/src/com/clash/component/Target.as"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" path="/ClashRoyal/src/com/clash/component/Avatar.as"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" path="/ClashRoyal/src/ClashRoyal.as"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" path="/ClashRoyal/src/com/clash/view/scene/GameScene.as"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" path="/ClashRoyal/src/com/clash/view/scene/CardBoard.as"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" path="/ClashRoyal/src/com/clash/iunit/Itarget.as"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" path="/ClashRoyal/src/com/clash/component/Effect.as"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" path="/ClashRoyal/src/ClashRoyal.as"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.mxml.MXMLEditor" path="/BoatObjSetter/src/BoatModelSetter.mxml"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" path="/BoatObjSetter/src/cn/sevencool/shipjourney/boat/BoatView3D.as"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" path="/BoatObjSetter/src/cn/sevencool/shipjourney/view/OBJModel.as"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" path="/BoatObjSetter/src/cn/sevencool/shipjourney/boat/FlagGroup.as"/>
+</editors>
+<item historyLabel="GameScene.as" index="5">
+<position info="not_deleted" x="280" y="0"/>
+</item>
+<item historyLabel="GameScene.as" index="5">
+<position info="not_deleted" x="113" y="9"/>
+</item>
+<item historyLabel="ClashRoyal.as" index="4">
+<position info="not_deleted" x="238" y="0"/>
+</item>
+<item historyLabel="GameScene.as" index="5">
+<position info="not_deleted" x="113" y="9"/>
+</item>
+<item historyLabel="GameScene.as" index="5">
+<position info="not_deleted" x="836" y="0"/>
+</item>
+<item historyLabel="MathUtil.as" index="0">
+<position info="not_deleted" x="289" y="0"/>
+</item>
+<item historyLabel="MathUtil.as" index="0">
+<position info="not_deleted" x="131" y="0"/>
+</item>
+<item historyLabel="Target.as" index="2">
+<position info="not_deleted" x="1202" y="0"/>
+</item>
+<item historyLabel="Itarget.as" index="7">
+<position info="not_deleted" x="215" y="1"/>
+</item>
+<item historyLabel="Target.as" index="2">
+<position info="not_deleted" x="1354" y="0"/>
+</item>
+<item historyLabel="Itarget.as" index="7">
+<position info="not_deleted" x="239" y="1"/>
+</item>
+<item historyLabel="Target.as" index="2">
+<position info="not_deleted" x="1354" y="0"/>
+</item>
+<item historyLabel="GameScene.as" index="5">
+<position info="not_deleted" x="836" y="0"/>
+</item>
+<item historyLabel="GameScene.as" index="5">
+<position info="not_deleted" x="696" y="0"/>
+</item>
+<item historyLabel="GameScene.as" index="5">
+<position info="not_deleted" x="535" y="0"/>
+</item>
+<item historyLabel="City.as" index="1">
+<position info="not_deleted" x="61" y="0"/>
+</item>
+<item historyLabel="Target.as" index="2">
+<position info="not_deleted" x="257" y="0"/>
+</item>
+<item historyLabel="Itarget.as" index="7">
+<position info="not_deleted" x="318" y="0"/>
+</item>
+<item historyLabel="Target.as" index="2">
+<position info="not_deleted" x="1202" y="0"/>
+</item>
+<item historyLabel="Itarget.as" index="7">
+<position info="not_deleted" x="215" y="1"/>
+</item>
+<item historyLabel="Target.as" index="2">
+<position info="not_deleted" x="868" y="0"/>
+</item>
+<item historyLabel="Itarget.as" index="7">
+<position info="not_deleted" x="323" y="0"/>
+</item>
+<item historyLabel="GameScene.as" index="5">
+<position info="not_deleted" x="769" y="0"/>
+</item>
+<item historyLabel="Target.as" index="2">
+<position info="not_deleted" x="868" y="0"/>
+</item>
+<item historyLabel="Itarget.as" index="7">
+<position info="not_deleted" x="560" y="34"/>
+</item>
+<item historyLabel="Target.as" index="2">
+<position info="not_deleted" x="627" y="0"/>
+</item>
+<item historyLabel="GameScene.as" index="5">
+<position info="not_deleted" x="952" y="0"/>
+</item>
+<item historyLabel="Effect.as" index="8">
+<position info="not_deleted" x="1111" y="0"/>
+</item>
+<item historyLabel="Effect.as" index="8">
+<position info="not_deleted" x="1056" y="0"/>
+</item>
+<item historyLabel="Effect.as" index="8">
+<position info="not_deleted" x="632" y="0"/>
+</item>
+<item historyLabel="Avatar.as" index="3">
+<position info="not_deleted" x="235" y="0"/>
+</item>
+<item historyLabel="City.as" index="1">
+<position info="not_deleted" x="61" y="0"/>
+</item>
+<item historyLabel="MathUtil.as" index="0">
+<position info="not_deleted" x="182" y="0"/>
+</item>
+<item historyLabel="Effect.as" index="8">
+<position info="not_deleted" x="632" y="0"/>
+</item>
+<item historyLabel="Avatar.as" index="3">
+<position info="not_deleted" x="235" y="0"/>
+</item>
+<item historyLabel="Itarget.as" index="7">
+<position info="not_deleted" x="560" y="34"/>
+</item>
+<item historyLabel="Target.as" index="2">
+<position info="not_deleted" x="627" y="0"/>
+</item>
+<item historyLabel="Target.as" index="2">
+<position info="not_deleted" x="835" y="0"/>
+</item>
+<item historyLabel="GameScene.as" index="5">
+<position info="not_deleted" x="952" y="0"/>
+</item>
+<item historyLabel="CardBoard.as" index="6">
+<position info="not_deleted" x="107" y="0"/>
+</item>
+<item historyLabel="GameScene.as" index="5">
+<position info="not_deleted" x="952" y="0"/>
+</item>
+<item historyLabel="GameScene.as" index="5">
+<position info="not_deleted" x="748" y="42"/>
+</item>
+<item historyLabel="GameScene.as" index="5">
+<position info="not_deleted" x="523" y="9"/>
+</item>
+<item historyLabel="ClashRoyal.as" index="9">
+<position info="not_deleted" x="238" y="0"/>
+</item>
+<item historyLabel="BoatModelSetter.mxml" index="10">
+<position info="not_deleted" x="3334" y="10"/>
+</item>
+<item historyLabel="BoatView3D.as" index="11">
+<position info="not_deleted" x="2441" y="13"/>
+</item>
+<item historyLabel="OBJModel.as" index="12">
+<position info="not_deleted" x="5140" y="9"/>
+</item>
+<item historyLabel="FlagGroup.as" index="13">
+<position info="not_deleted" x="107" y="9"/>
+</item>
+<item historyLabel="BoatView3D.as" index="11">
+<position info="not_deleted" x="1751" y="41"/>
+</item>
+<item active="true" historyLabel="BoatView3D.as" index="11">
+<position/>
+</item>
+</navigationHistory>
+<input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
+</page>
+<workbenchWindowAdvisor/>
+<actionBarAdvisor/>
+<trimLayout>
+<trimArea IMemento.internal.id="128">
+<trimItem IMemento.internal.id="org.eclipse.ui.internal.WorkbenchWindow.topBar"/>
+<trimItem IMemento.internal.id="org.eclipse.mylyn.tasks.ui.trim.container"/>
+</trimArea>
+<trimArea IMemento.internal.id="1024">
+<trimItem IMemento.internal.id="org.eclise.ui.internal.FastViewBar"/>
+<trimItem IMemento.internal.id="org.eclipse.jface.action.StatusLineManager"/>
+<trimItem IMemento.internal.id="org.eclipse.ui.internal.progress.ProgressRegion"/>
+</trimArea>
+</trimLayout>
+</window>
+<mruList>
+<file factoryID="com.adobe.flexbuilder.editors.derived.ui.startpage.StartPageEditorInput" id="com.adobe.flexbuilder.ui.StartPage" name="Web 浏览器" tooltip="Flash Builder 欢迎屏幕">
+<persistable iconpath="platform:/plugin/com.adobe.flexbuilder.ui/icons/fb_app_16.png" style="20" tooltip="Flash Builder 欢迎屏幕" url="file:/Applications/Adobe Flash Builder 4.6/eclipse/plugins/com.adobe.flexbuilder.ui.nl1_4.6.1.335153/nl/zh/welcome/index.html?firstLaunch=false&amp;edition=prem&amp;version=460"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="FlagGroup.as" tooltip="BoatObjSetter/src/cn/sevencool/shipjourney/boat/FlagGroup.as">
+<persistable path="/BoatObjSetter/src/cn/sevencool/shipjourney/boat/FlagGroup.as"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="OBJModel.as" tooltip="BoatObjSetter/src/cn/sevencool/shipjourney/view/OBJModel.as">
+<persistable path="/BoatObjSetter/src/cn/sevencool/shipjourney/view/OBJModel.as"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="BoatView3D.as" tooltip="BoatObjSetter/src/cn/sevencool/shipjourney/boat/BoatView3D.as">
+<persistable path="/BoatObjSetter/src/cn/sevencool/shipjourney/boat/BoatView3D.as"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.mxml.MXMLEditor" name="BoatModelSetter.mxml" tooltip="BoatObjSetter/src/BoatModelSetter.mxml">
+<persistable path="/BoatObjSetter/src/BoatModelSetter.mxml"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="CardBoard.as" tooltip="ClashRoyal/src/com/clash/view/scene/CardBoard.as">
+<persistable path="/ClashRoyal/src/com/clash/view/scene/CardBoard.as"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="Solider.as" tooltip="ClashRoyal/src/com/clash/component/Solider.as">
+<persistable path="/ClashRoyal/src/com/clash/component/Solider.as"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="City.as" tooltip="ClashRoyal/src/com/clash/component/City.as">
+<persistable path="/ClashRoyal/src/com/clash/component/City.as"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="Time.as" tooltip="ClashRoyal/src/com/clash/manager/Time.as">
+<persistable path="/ClashRoyal/src/com/clash/manager/Time.as"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="MathUtil.as" tooltip="ClashRoyal/src/com/clash/MathUtil.as">
+<persistable path="/ClashRoyal/src/com/clash/MathUtil.as"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="Config.as" tooltip="ClashRoyal/src/com/clash/manager/Config.as">
+<persistable path="/ClashRoyal/src/com/clash/manager/Config.as"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="Effect.as" tooltip="ClashRoyal/src/com/clash/component/Effect.as">
+<persistable path="/ClashRoyal/src/com/clash/component/Effect.as"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="HPBar.as" tooltip="ClashRoyal/src/com/clash/component/HPBar.as">
+<persistable path="/ClashRoyal/src/com/clash/component/HPBar.as"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="Avatar.as" tooltip="ClashRoyal/src/com/clash/component/Avatar.as">
+<persistable path="/ClashRoyal/src/com/clash/component/Avatar.as"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="Itarget.as" tooltip="ClashRoyal/src/com/clash/iunit/Itarget.as">
+<persistable path="/ClashRoyal/src/com/clash/iunit/Itarget.as"/>
+</file>
+</mruList>
+</workbench>

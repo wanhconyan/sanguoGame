@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 creationComplete="group1_creationCompleteHandler(event)"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="167" height="80" xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*">
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.symbols.ItemManager;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.data.vo.ItemDescription;
+			import cn.sevencool.sangocraft.data.vo.ItemOperationVO;
+			
+			import mx.events.FlexEvent;
+			
+			import spark.filters.GlowFilter;
+			
+			private var _item:ItemOperationVO=null;
+			
+			/**
+			 * 装载图片的容器
+			 * */
+			private var _bottomMap:Bitmap = null;
+			private var _lvMap:Bitmap = null;
+
+			public function get item():ItemOperationVO
+			{
+				return _item;
+			}
+
+			public function set item(value:ItemOperationVO):void
+			{
+				_item = value;
+				var itemDes:ItemDescription=ItemManager.getInstance().ItemInfo[value.item.dwBaseID] as ItemDescription;
+				lvNum.figureHandler(_item.item.General.nLevel.toString(),MaterialKeys.LVLSMALL,6);
+				star.starNum=itemDes.nStarLvl;
+				genName.text=itemDes.szName;
+			}
+
+			
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_bottomMap = new Bitmap();
+				_lvMap = new Bitmap();
+				bottom.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'lightFell',_bottomMap));
+				lv.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.LVLSMALL,'',_lvMap));
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<mx:Image  x="1" y="0" height="80" width="168"  id="bottom"/>
+	<s:Label id="genName" x="19" y="14" width="148" height="21" text="123" textAlign="left"
+			 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"
+			 color="#eee6dc" fontSize="14"
+			 verticalAlign="middle"/>
+	<mx:Image  x="17" y="40" height="19" width="32"  id="lv"/>
+	<symbols:FigureDisplay  id="lvNum" x="39" y="31" height="19" width="38"
+							maxMedian="3"/>
+	<symbols:GeneralSmallStar id="star" x="61" y="45"/>
+</s:Group>

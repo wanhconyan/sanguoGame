@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+project: sangocraft_Web
+@class: ExtractionResultsIR
+@author: zhouyan
+@usage: 招贤府——抽取结果——单个成员信息
+@since: 2013-8-16
+@modified: 2013-8-16
+@modifier: zhouyan 
+-->
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				dataChange="itemrenderer1_dataChangeHandler(event)"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				width="80" height="107" autoDrawBackground="true"
+				xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				creationComplete="itemrenderer1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.data.vo.MonsterInfo;
+			
+			import mx.events.FlexEvent;
+			
+			import spark.filters.GlowFilter;
+			
+			private var monsterInfo:MonsterInfo = null
+			
+			/**
+			 * 兵种类型设置
+			 * */
+			private var _type:int = -1;
+			
+			/**
+			 * 图标类型设置
+			 * */
+			private var _pic:int = -1;
+			
+			/**
+			 * 装载头像图片容器
+			 * */
+			private var _headMap:Bitmap = null;
+			
+			/**
+			 * 装载名字底框图片容器
+			 * */
+			private var _generalNameMap:Bitmap = null;
+			
+			/**
+			 * 装载底框图片容器
+			 * */
+			private var _generalCellMap:Bitmap = null;
+			
+			/**
+			 * 装载等级图片容器
+			 * */
+			private var _lvMap:Bitmap = null;
+
+			/**
+			 * 数据发生变化
+			 * */
+			protected function itemrenderer1_dataChangeHandler(event:FlexEvent):void
+			{
+				monsterInfo = data as MonsterInfo ;
+				if(monsterInfo && _type != monsterInfo.theType)
+				{
+					solderType.solderType = monsterInfo.theType;
+					_type = monsterInfo.theType;
+				}
+				if(monsterInfo && _pic != monsterInfo.picID)
+				{
+					_pic = monsterInfo.picID;
+				   img_h.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.BIG_HEAD,monsterInfo.picID.toString(),_headMap));
+				}
+				if(monsterInfo )
+				{
+					figure.figureHandler(monsterInfo.level.toString(),MaterialKeys.LVLSMALL,15);
+				}
+				lbl_name.text = monsterInfo.monsterName;
+			}
+			
+			
+			protected function itemrenderer1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_headMap = new Bitmap();
+				_generalNameMap = new Bitmap();
+				_generalCellMap = new Bitmap();
+				_lvMap = new Bitmap();
+				img_name.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'generalName',_generalNameMap));
+				img_back.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'generalCell',_generalCellMap));
+				img_lv.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'lv',_lvMap));
+			}
+			
+		]]>
+	</fx:Script>
+	<mx:Image  id="img_back" />
+	<mx:Image id="img_name" x="5" y="79" width="69" height="21"/>
+	<mx:Image id="img_h" x="9" y="10"/>
+	<s:Label id="lbl_name" x="9" y="84" width="58" color="#ffffff"
+			 filters="{[new spark.filters.GlowFilter(0x231f02, 100, 2, 2, 5, 1, false, false)]}"
+			 text="曹操" textAlign="center" verticalAlign="middle"/>
+	<symbols:SolderType id="solderType" left="6" top="6"/>
+	<mx:Image id="img_lv" x="31" y="50"  width="24" height="22"/>
+	<symbols:FigureDisplay id="figure" x="57" y="40" width="38" height="32" maxMedian="3"/>
+</s:ItemRenderer>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	project: sangocraft_Web
+	@class: SoundControl
+	@author: zhouyan
+	@usage: 声音控制面板
+	@since: 2013-10-12
+	@modified: 2013-10-12
+	@modifier: zhouyan 
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*" 
+				   width="90" height="18" 
+				   creationComplete="basepanel1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.symbols.CommonData;
+			import cn.sevencool.sangocraft.data.symbols.SoundManager;
+			
+			import mx.events.FlexEvent;
+			
+			/**
+			 * 面板创建完成
+			 * */
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				panelID = 9 ;
+				var userinfo:Object = CommonData.cookie.data['userinfo'] ;
+				if(userinfo)
+				{
+					chk_backGround.selected = userinfo['isPlay'];
+					SoundManager.getInstance().isplay = chk_backGround.selected ;
+				}else
+				{
+					chk_backGround.selected = true;
+				}
+				onShow();
+			}
+			
+			protected override function onShow():void
+			{
+				if(!initialized)
+				{
+					return ;
+				}
+			}
+			
+			protected function chk_backGround_changeHandler(event:Event):void
+			{
+				var userinfo:Object = new Object ;
+				userinfo['isPlay'] = chk_backGround.selected;
+				CommonData.cookie.data['userinfo'] = userinfo ;
+				CommonData.cookie.flush() ;
+				chk_backGround.label = chk_backGround.selected?'开启背景音乐':'关闭背景音乐';
+				SoundManager.getInstance().isplay = chk_backGround.selected ;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:CheckBox id="chk_backGround" left="0" top="0" label="开启背景音乐" 
+				change="chk_backGround_changeHandler(event)" skinClass="cn.sevencool.sangocraft.web.skin.checkBox.SoundBtnSkin"/>
+</symbols:BasePanel>

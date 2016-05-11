@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				xmlns:s="library://ns.adobe.com/flex/spark" 
+				xmlns:mx="library://ns.adobe.com/flex/mx"  height="26" width="26"
+				dataChange="itemrenderer1_dataChangeHandler(event)"
+				autoDrawBackground="false">
+	<fx:Script>
+		<![CDATA[
+			import com.sevenCool.mainView.vo.GridSelectVO;
+			
+			import mx.events.FlexEvent;
+			
+			protected function itemrenderer1_dataChangeHandler(event:FlexEvent):void
+			{
+				var gridVO:GridSelectVO = data as GridSelectVO;
+				sp.graphics.clear();
+				sp.graphics.beginFill(gridVO.color);
+				sp.graphics.drawRect(0,0,this.width,this.height);
+				this.toolTip = gridVO.toolTip ;
+			}
+		]]>
+	</fx:Script>
+	<s:SpriteVisualElement id="sp" width="26" height="26"/>
+</s:ItemRenderer>

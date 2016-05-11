@@ -1,0 +1,45 @@
+package com.starling.battle.ai
+{
+	import com.starling.battle.view.GameRoot;
+
+	public class BattleField
+	{
+		
+		private static var _instane:BattleField ;
+		public var battleContainer:GameRoot ;
+		
+		public function BattleField()
+		{
+		}
+		
+		/**
+		 * 获取战斗单利 
+		 * @return 
+		 */		
+		public static function get instance():BattleField
+		{
+			if(!_instane)
+			{
+				_instane = new BattleField();
+			}
+			return _instane ;
+		}
+		
+		
+		/**
+		 *战斗先是对象销毁 
+		 */		
+		public function dispose():void
+		{
+			battleContainer.visible = false;
+			
+		}
+		
+		
+		public function start():void
+		{
+		
+		
+		}
+	}
+}

@@ -1,0 +1,833 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workbench progressCount="55" version="2.0">
+<workbenchAdvisor/>
+<window height="735" width="1280" x="90" y="39">
+<fastViewData fastViewLocation="1024">
+<orientation position="512" view="org.eclipse.ui.views.ProblemView"/>
+<orientation position="512" view="org.eclipse.ui.console.ConsoleView"/>
+<orientation position="512" view="com.adobe.flexbuilder.packageexplorer"/>
+</fastViewData>
+<perspectiveBar>
+<itemSize x="333"/>
+</perspectiveBar>
+<coolbarLayout>
+<coolItem id="group.file" itemType="typeGroupMarker"/>
+<coolItem id="org.eclipse.ui.workbench.file" itemType="typeToolBarContribution" x="136" y="22"/>
+<coolItem id="additions" itemType="typeGroupMarker"/>
+<coolItem id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" itemType="typeToolBarContribution" x="-1" y="-1"/>
+<coolItem id="com.adobe.flexbuilder.editors.mxml.MXMLEditor" itemType="typeToolBarContribution" x="-1" y="-1"/>
+<coolItem id="org.eclipse.debug.ui.launchActionSet" itemType="typeToolBarContribution" x="158" y="22"/>
+<coolItem id="org.eclipse.search.searchActionSet" itemType="typeToolBarContribution" x="84" y="22"/>
+<coolItem id="org.eclipse.ui.edit.text.actionSet.presentation" itemType="typeToolBarContribution" x="32" y="22"/>
+<coolItem id="org.eclipse.wst.xml.ui.perspective.NewFileToolBar" itemType="typeToolBarContribution" x="-1" y="-1"/>
+<coolItem id="org.eclipse.wst.xml.ui.design.DesignToolBar" itemType="typeToolBarContribution" x="54" y="22"/>
+<coolItem id="group.nav" itemType="typeGroupMarker"/>
+<coolItem id="org.eclipse.ui.workbench.navigate" itemType="typeToolBarContribution" x="152" y="22"/>
+<coolItem id="group.editor" itemType="typeGroupMarker"/>
+<coolItem id="org.eclipse.wst.xml.ui.internal.tabletree.XMLMultiPageEditorPart" itemType="typeToolBarContribution" x="-1" y="-1"/>
+<coolItem id="org.eclipse.compare.CompareEditor" itemType="typePlaceholder" x="76" y="22"/>
+<coolItem id="group.help" itemType="typeGroupMarker"/>
+<coolItem id="org.eclipse.ui.workbench.help" itemType="typeToolBarContribution" x="-1" y="-1"/>
+</coolbarLayout>
+<page aggregateWorkingSetId="Aggregate for window 1461516738498" focus="true" label="Workspace - Flash">
+<editors>
+<editorArea activeWorkbook="DefaultEditorWorkbook">
+<info part="DefaultEditorWorkbook">
+<folder appearance="1" expanded="2">
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+<part id="1"/>
+<part id="2"/>
+<part id="3"/>
+<part id="4"/>
+<part id="5"/>
+<part id="6"/>
+<part id="7"/>
+<part id="8"/>
+<part id="9"/>
+<part id="10"/>
+<part id="11"/>
+<part id="12"/>
+<part id="13"/>
+<part id="14"/>
+<part id="15"/>
+<part id="16"/>
+<part id="17"/>
+<part id="18"/>
+<part id="19"/>
+<part id="20"/>
+<part id="21"/>
+<part id="22"/>
+<part id="23"/>
+<part id="24"/>
+<part id="25"/>
+<part id="26"/>
+<part id="27"/>
+<part id="28"/>
+<part id="29"/>
+<part id="30"/>
+<part id="31"/>
+<part id="32"/>
+<part id="33"/>
+<part id="34"/>
+<part id="35"/>
+<part id="36"/>
+<part id="37"/>
+<part id="38"/>
+</presentation>
+</folder>
+</info>
+</editorArea>
+<editor id="com.adobe.flexbuilder.editors.mxml.MXMLEditor" name="SkillEditor.mxml" partName="SkillEditor.mxml" path="/Developments/workspace/SkillEditor/src/SkillEditor.mxml" title="SkillEditor.mxml" tooltip="SkillEditor/src/SkillEditor.mxml" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/SkillEditor/src/SkillEditor.mxml"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="BaseView.as" partName="BaseView.as" path="/Developments/workspace/sanguoGame/src/com/starling/battle/view/unit/view/BaseView.as" title="BaseView.as" tooltip="sanguoGame/src/com/starling/battle/view/unit/view/BaseView.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoGame/src/com/starling/battle/view/unit/view/BaseView.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="407" selectionTopPixel="1645"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="BattleField.as" partName="BattleField.as" path="/Developments/workspace/sanguoCore/src/com/core/starling/battle/ai/BattleField.as" title="BattleField.as" tooltip="sanguoCore/src/com/core/starling/battle/ai/BattleField.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoCore/src/com/core/starling/battle/ai/BattleField.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="621" selectionTopPixel="450"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="LoadingPanel.as" partName="LoadingPanel.as" path="/Developments/workspace/sanguoGame/src/com/module/loading/LoadingPanel.as" title="LoadingPanel.as" tooltip="sanguoGame/src/com/module/loading/LoadingPanel.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoGame/src/com/module/loading/LoadingPanel.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="1" selectionOffset="414" selectionTopPixel="265"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="UnitCreator.as" partName="UnitCreator.as" path="/Developments/workspace/sanguoCore/src/com/core/starling/battle/ai/UnitCreator.as" title="UnitCreator.as" tooltip="sanguoCore/src/com/core/starling/battle/ai/UnitCreator.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoCore/src/com/core/starling/battle/ai/UnitCreator.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1794" selectionTopPixel="1035"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="UnitView.as" partName="UnitView.as" path="/Developments/workspace/sanguoCore/src/com/core/starling/battle/view/unit/view/UnitView.as" title="UnitView.as" tooltip="sanguoCore/src/com/core/starling/battle/view/unit/view/UnitView.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoCore/src/com/core/starling/battle/view/unit/view/UnitView.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="2175" selectionTopPixel="996"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="UnitAI.as" partName="UnitAI.as" path="/Developments/workspace/sanguoCore/src/com/core/starling/battle/ai/UnitAI.as" title="UnitAI.as" tooltip="sanguoCore/src/com/core/starling/battle/ai/UnitAI.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoCore/src/com/core/starling/battle/ai/UnitAI.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="36" selectionTopPixel="0"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="BattlePolygon.as" partName="BattlePolygon.as" path="/Developments/workspace/sanguoCore/src/com/core/starling/battle/view/component/BattlePolygon.as" title="BattlePolygon.as" tooltip="sanguoCore/src/com/core/starling/battle/view/component/BattlePolygon.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoCore/src/com/core/starling/battle/view/component/BattlePolygon.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="47" selectionTopPixel="0"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="CustomImage.as" partName="CustomImage.as" path="/Developments/workspace/sanguoCore/src/com/core/starling/battle/view/component/CustomImage.as" title="CustomImage.as" tooltip="sanguoCore/src/com/core/starling/battle/view/component/CustomImage.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoCore/src/com/core/starling/battle/view/component/CustomImage.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="47" selectionTopPixel="0"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="Polygon.as" partName="Polygon.as" path="/Developments/workspace/sanguoCore/src/com/core/starling/battle/view/component/Polygon.as" title="Polygon.as" tooltip="sanguoCore/src/com/core/starling/battle/view/component/Polygon.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoCore/src/com/core/starling/battle/view/component/Polygon.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="48" selectionTopPixel="403"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="BaseView.as" partName="BaseView.as" path="/Developments/workspace/sanguoCore/src/com/core/starling/battle/view/unit/view/BaseView.as" title="BaseView.as" tooltip="sanguoCore/src/com/core/starling/battle/view/unit/view/BaseView.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoCore/src/com/core/starling/battle/view/unit/view/BaseView.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="280" selectionTopPixel="765"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="IUintDisplay.as" partName="IUintDisplay.as" path="/Developments/workspace/sanguoCore/src/com/core/starling/battle/view/unit/IUintDisplay.as" title="IUintDisplay.as" tooltip="sanguoCore/src/com/core/starling/battle/view/unit/IUintDisplay.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoCore/src/com/core/starling/battle/view/unit/IUintDisplay.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="43" selectionTopPixel="300"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="BaseUnit.as" partName="BaseUnit.as" path="/Developments/workspace/sanguoCore/src/com/core/starling/battle/view/unit/BaseUnit.as" title="BaseUnit.as" tooltip="sanguoCore/src/com/core/starling/battle/view/unit/BaseUnit.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoCore/src/com/core/starling/battle/view/unit/BaseUnit.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="107" selectionTopPixel="0"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="GameRoot.as" partName="GameRoot.as" path="/Developments/workspace/sanguoCore/src/com/core/starling/battle/view/GameRoot.as" title="GameRoot.as" tooltip="sanguoCore/src/com/core/starling/battle/view/GameRoot.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoCore/src/com/core/starling/battle/view/GameRoot.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="3170" selectionTopPixel="2325"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="Team.as" partName="Team.as" path="/Developments/workspace/sanguoCore/src/com/core/starling/battle/view/unit/view/Team.as" title="Team.as" tooltip="sanguoCore/src/com/core/starling/battle/view/unit/view/Team.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoCore/src/com/core/starling/battle/view/unit/view/Team.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="2260" selectionTopPixel="0"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="XmlCreateManager.as" partName="XmlCreateManager.as" path="/Developments/workspace/sanguoCore/src/com/core/xmlHelper/XmlCreateManager.as" title="XmlCreateManager.as" tooltip="sanguoCore/src/com/core/xmlHelper/XmlCreateManager.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoCore/src/com/core/xmlHelper/XmlCreateManager.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1515" selectionTopPixel="900"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="IUnit.as" partName="IUnit.as" path="/Developments/workspace/sanguoCore/src/com/core/starling/battle/view/unit/view/IUnit.as" title="IUnit.as" tooltip="sanguoCore/src/com/core/starling/battle/view/unit/view/IUnit.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoCore/src/com/core/starling/battle/view/unit/view/IUnit.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="461" selectionTopPixel="0"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="ActionType.as" partName="ActionType.as" path="/Developments/workspace/sanguoCore/src/com/core/starling/battle/view/unit/ActionType.as" title="ActionType.as" tooltip="sanguoCore/src/com/core/starling/battle/view/unit/ActionType.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoCore/src/com/core/starling/battle/view/unit/ActionType.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="485" selectionOffset="326" selectionTopPixel="643"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="LoopManager.as" partName="LoopManager.as" path="/Developments/workspace/sanguoCore/src/com/core/util/LoopManager.as" title="LoopManager.as" tooltip="sanguoCore/src/com/core/util/LoopManager.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoCore/src/com/core/util/LoopManager.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="22" selectionTopPixel="0"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="BaseModule.as" partName="BaseModule.as" path="/Developments/workspace/sanguoCore/src/com/core/view/BaseModule.as" title="BaseModule.as" tooltip="sanguoCore/src/com/core/view/BaseModule.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoCore/src/com/core/view/BaseModule.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="0" selectionTopPixel="0"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.mxml.MXMLEditor" name="UnitControlPanel.mxml" partName="UnitControlPanel.mxml" path="/Developments/workspace/SkillEditor/src/com/view/unitControl/UnitControlPanel.mxml" title="UnitControlPanel.mxml" tooltip="SkillEditor/src/com/view/unitControl/UnitControlPanel.mxml" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/SkillEditor/src/com/view/unitControl/UnitControlPanel.mxml"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="GameRoot.as" partName="GameRoot.as" path="/Developments/workspace/sanguoGame/src/com/starling/battle/view/GameRoot.as" title="GameRoot.as" tooltip="sanguoGame/src/com/starling/battle/view/GameRoot.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoGame/src/com/starling/battle/view/GameRoot.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="4556" selectionTopPixel="2700"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="StringUtil.as" partName="StringUtil.as" path="/Developments/workspace/sanguoCore/src/com/core/util/stringUtil/StringUtil.as" title="StringUtil.as" tooltip="sanguoCore/src/com/core/util/stringUtil/StringUtil.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoCore/src/com/core/util/stringUtil/StringUtil.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="8568" selectionTopPixel="4605"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="UnitCreator.as" partName="UnitCreator.as" path="/Developments/workspace/sanguoGame/src/com/starling/battle/ai/UnitCreator.as" title="UnitCreator.as" tooltip="sanguoGame/src/com/starling/battle/ai/UnitCreator.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoGame/src/com/starling/battle/ai/UnitCreator.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1525" selectionTopPixel="905"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="BattleField.as" partName="BattleField.as" path="/Developments/workspace/sanguoGame/src/com/starling/battle/ai/BattleField.as" title="BattleField.as" tooltip="sanguoGame/src/com/starling/battle/ai/BattleField.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoGame/src/com/starling/battle/ai/BattleField.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="812" selectionTopPixel="165"/>
+</editor>
+<editor focus="true" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="TextureAtlas.as" partName="TextureAtlas.as" path="/Developments/workspace/Starling/src/starling/textures/TextureAtlas.as" title="TextureAtlas.as" tooltip="Starling/src/starling/textures/TextureAtlas.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Starling/src/starling/textures/TextureAtlas.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="6598" selectionTopPixel="2040"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="Battle.as" partName="Battle.as" path="/Developments/workspace/SkillEditor/src/com/view/unitControl/battle/Battle.as" title="Battle.as" tooltip="SkillEditor/src/com/view/unitControl/battle/Battle.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/SkillEditor/src/com/view/unitControl/battle/Battle.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="0" selectionTopPixel="0"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="BattleMediator.as" partName="BattleMediator.as" path="/Developments/workspace/SkillEditor/src/com/view/unitControl/battle/BattleMediator.as" title="BattleMediator.as" tooltip="SkillEditor/src/com/view/unitControl/battle/BattleMediator.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/SkillEditor/src/com/view/unitControl/battle/BattleMediator.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1491" selectionTopPixel="798"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="App.as" partName="App.as" path="/Developments/workspace/SkillEditor/src/com/view/unitControl/App.as" title="App.as" tooltip="SkillEditor/src/com/view/unitControl/App.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/SkillEditor/src/com/view/unitControl/App.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="427" selectionTopPixel="285"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="BattleModule.as" partName="BattleModule.as" path="/Developments/workspace/SkillEditor/src/com/view/unitControl/battle/BattleModule.as" title="BattleModule.as" tooltip="SkillEditor/src/com/view/unitControl/battle/BattleModule.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/SkillEditor/src/com/view/unitControl/battle/BattleModule.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="741" selectionTopPixel="366"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="MulitPolygon.as" partName="MulitPolygon.as" path="/Developments/workspace/sanguoCore/src/com/core/component/MulitPolygon.as" title="MulitPolygon.as" tooltip="sanguoCore/src/com/core/component/MulitPolygon.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoCore/src/com/core/component/MulitPolygon.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="964" selectionTopPixel="571"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="PolyState.as" partName="PolyState.as" path="/Developments/workspace/sanguoCore/src/com/core/component/PolyState.as" title="PolyState.as" tooltip="sanguoCore/src/com/core/component/PolyState.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoCore/src/com/core/component/PolyState.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="191" selectionTopPixel="0"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="Polygon.as" partName="Polygon.as" path="/Developments/workspace/sanguoCore/src/com/core/component/Polygon.as" title="Polygon.as" tooltip="sanguoCore/src/com/core/component/Polygon.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoCore/src/com/core/component/Polygon.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="932" selectionTopPixel="480"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="FileManagers.as" partName="FileManagers.as" path="/Developments/workspace/SkillEditor/src/com/core/manager/FileManagers.as" title="FileManagers.as" tooltip="SkillEditor/src/com/core/manager/FileManagers.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/SkillEditor/src/com/core/manager/FileManagers.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="5641" selectionTopPixel="3030"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="UnitLoader.as" partName="UnitLoader.as" path="/Developments/workspace/sanguoCore/src/com/core/loader/UnitLoader.as" title="UnitLoader.as" tooltip="sanguoCore/src/com/core/loader/UnitLoader.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoCore/src/com/core/loader/UnitLoader.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="2133" selectionTopPixel="1230"/>
+</editor>
+<editor id="org.eclipse.wst.xml.ui.internal.tabletree.XMLMultiPageEditorPart" name="SkillEditor-app.xml" partName="SkillEditor-app.xml" path="/Developments/workspace/SkillEditor/src/SkillEditor-app.xml" title="SkillEditor-app.xml" tooltip="SkillEditor/src/SkillEditor-app.xml" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/SkillEditor/src/SkillEditor-app.xml"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="Global.as" partName="Global.as" path="/Developments/workspace/sanguoCore/src/com/core/Global.as" title="Global.as" tooltip="sanguoCore/src/com/core/Global.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/sanguoCore/src/com/core/Global.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="221" selectionTopPixel="45"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="DisplayObjectContainer.as" partName="DisplayObjectContainer.as" path="/Developments/workspace/Starling/src/starling/display/DisplayObjectContainer.as" title="DisplayObjectContainer.as" tooltip="Starling/src/starling/display/DisplayObjectContainer.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Starling/src/starling/display/DisplayObjectContainer.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="3819" selectionTopPixel="1215"/>
+</editor>
+<editor id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="Starling.as" partName="Starling.as" path="/Developments/workspace/Starling/src/starling/core/Starling.as" title="Starling.as" tooltip="Starling/src/starling/core/Starling.as" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/Starling/src/starling/core/Starling.as"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="13763" selectionTopPixel="3795"/>
+</editor>
+</editors>
+<views>
+<view id="org.eclipse.team.ui.GenericHistoryView" partName="History">
+<viewState/>
+</view>
+<view id="com.adobe.flexbuilder.as.editor.CallHierarchyView" partName="Call Hierarchy">
+<viewState/>
+</view>
+<view id="org.eclipse.ui.views.ProgressView" partName="Progress">
+<viewState/>
+</view>
+<view id="org.eclipse.search.ui.views.SearchView" partName="Search">
+<viewState isPinned="false">
+<view IMemento.internal.id="" org.eclipse.search.lastActivation="0"/>
+</viewState>
+</view>
+<view id="org.eclipse.debug.ui.DebugView" partName="Debug">
+<viewState/>
+</view>
+<view id="com.adobe.flexbuilder.packageexplorer" partName="Package Explorer">
+<viewState LINK_NAVIGATOR_TO_EDITOR="1" fpeIsFlat="0" fpeSortBy="1" sorter="1">
+<fpeExpanded>
+<fpeElement fpePath="/rsourceCompress"/>
+<fpeElement fpePath="/sanguoCore/src"/>
+<fpeElement fpePath="/sanguoCore/src/com/core"/>
+<fpeElement fpePath="/sanguoCore/src/com/core/component"/>
+<fpeElement fpePath="/sanguoCore/src/com/core/loader"/>
+<fpeElement fpePath="/sanguoCore/src/com/core/starling/battle"/>
+<fpeElement fpePath="/sanguoCore/src/com/core/starling/battle/ai"/>
+<fpeElement fpePath="/sanguoCore/src/com/core/starling/battle/view"/>
+<fpeElement fpePath="/sanguoCore/src/com/core/starling/battle/view/unit"/>
+<fpeElement fpePath="/sanguoCore/src/com/core/starling/battle/view/unit/view"/>
+<fpeElement fpePath="/sanguoGame"/>
+<fpeElement fpePath="/SkillEditor/src"/>
+<fpeElement fpePath="/SkillEditor/src/%typeDefaultPackage"/>
+<fpeElement fpePath="/SkillEditor/src/com"/>
+<fpeElement fpePath="/SkillEditor/src/com/core/manager"/>
+<fpeElement fpePath="/SkillEditor/src/com/view/unitControl"/>
+<fpeElement fpePath="/SkillEditor/src/com/view/unitControl/battle"/>
+<fpeElement fpePath="/Starling/src"/>
+<fpeElement fpePath="/Starling/src/starling"/>
+<fpeElement fpePath="/Starling/src/starling/core"/>
+<fpeElement fpePath="/Starling/src/starling/display"/>
+<fpeElement fpePath="/Starling/src/starling/events"/>
+<fpeElement fpePath="/Starling/src/starling/textures"/>
+<fpeElement fpePath="/Starling/src/starling/utils"/>
+</fpeExpanded>
+<filters>
+<filter element=".flexProperties" isEnabled="true"/>
+<filter element=".actionScriptProperties" isEnabled="true"/>
+<filter element=".project" isEnabled="true"/>
+<filter element=".settings" isEnabled="true"/>
+<filter element=".flexLibProperties" isEnabled="true"/>
+<filter element=".DS_Store" isEnabled="true"/>
+<filter element=".model" isEnabled="true"/>
+<filter element="*.class" isEnabled="false"/>
+<filter element=".*" isEnabled="false"/>
+<filter element=".flexProperties" isEnabled="true"/>
+<filter element=".actionScriptProperties" isEnabled="true"/>
+<filter element=".project" isEnabled="true"/>
+<filter element=".settings" isEnabled="true"/>
+<filter element=".flexLibProperties" isEnabled="true"/>
+<filter element=".DS_Store" isEnabled="true"/>
+<filter element=".model" isEnabled="true"/>
+<filter element="*.class" isEnabled="false"/>
+<filter element=".*" isEnabled="false"/>
+</filters>
+<expanded>
+<element path="/rsourceCompress"/>
+<element path="/sanguoGame"/>
+</expanded>
+</viewState>
+</view>
+<view id="com.adobe.flexbuilder.monitors.network.view.NetworkMonitorView" partName="Network Monitor">
+<viewState/>
+</view>
+<view id="org.eclipse.debug.ui.VariableView" partName="Variables">
+<viewState/>
+</view>
+<view id="org.eclipse.debug.ui.BreakpointView" partName="Breakpoints">
+<viewState/>
+</view>
+<view id="org.eclipse.ui.views.ContentOutline" partName="Outline">
+<viewState/>
+</view>
+<view id="org.eclipse.debug.ui.ExpressionView" partName="Expressions">
+<viewState/>
+</view>
+<view id="org.eclipse.ui.views.ProblemView" partName="Problems">
+<viewState PRIMARY_SORT_FIELD="org.eclipse.ui.ide.severityAndDescriptionField" categoryGroup="org.eclipse.ui.ide.severity" markerContentGenerator="org.eclipse.ui.ide.problemsGenerator" partName="Problems">
+<expanded>
+<category IMemento.internal.id="Errors"/>
+<category IMemento.internal.id="Errors (14 items)"/>
+</expanded>
+<columnWidths org.eclipse.ui.ide.locationField="90" org.eclipse.ui.ide.markerType="90" org.eclipse.ui.ide.pathField="120" org.eclipse.ui.ide.resourceField="90" org.eclipse.ui.ide.severityAndDescriptionField="436"/>
+<visible IMemento.internal.id="org.eclipse.ui.ide.severityAndDescriptionField"/>
+<visible IMemento.internal.id="org.eclipse.ui.ide.resourceField"/>
+<visible IMemento.internal.id="org.eclipse.ui.ide.pathField"/>
+<visible IMemento.internal.id="org.eclipse.ui.ide.locationField"/>
+<visible IMemento.internal.id="org.eclipse.ui.ide.markerType"/>
+</viewState>
+</view>
+<view id="org.eclipse.ui.console.ConsoleView" partName="Console">
+<viewState/>
+</view>
+<view id="com.adobe.flexbuilder.dcrad.views.DataServicesView" partName="Data/Services">
+<viewState/>
+</view>
+<view id="com.adobe.flexbuilder.as.editor.asdocviewer" partName="ASDoc">
+<viewState/>
+</view>
+</views>
+<perspectives activePerspective="com.adobe.flexbuilder.editors.mxml.ui.perspectives.development">
+<perspective editorAreaTrimState="2" editorAreaVisible="1" fixed="0" version="0.016">
+<descriptor class="com.adobe.flexbuilder.mxml.editor.ui.perspectives.DevelopmentPerspectiveFactory" id="com.adobe.flexbuilder.editors.mxml.ui.perspectives.development" label="Flash"/>
+<alwaysOnActionSet id="com.adobe.flexbuilder.flashbridge.flashproject.actionSet"/>
+<alwaysOnActionSet id="org.eclipse.egit.ui.navigation"/>
+<alwaysOnActionSet id="org.eclipse.mylyn.context.ui.actionSet"/>
+<alwaysOnActionSet id="org.eclipse.mylyn.doc.actionSet"/>
+<alwaysOnActionSet id="org.eclipse.mylyn.tasks.ui.navigation"/>
+<alwaysOnActionSet id="org.eclipse.ui.cheatsheets.actionSet"/>
+<alwaysOnActionSet id="org.eclipse.search.searchActionSet"/>
+<alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.annotationNavigation"/>
+<alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.navigation"/>
+<alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.convertLineDelimitersTo"/>
+<alwaysOnActionSet id="org.eclipse.ui.externaltools.ExternalToolsSet"/>
+<alwaysOnActionSet id="org.eclipse.ui.actionSet.keyBindings"/>
+<alwaysOnActionSet id="org.eclipse.ui.actionSet.openFiles"/>
+<alwaysOnActionSet id="org.eclipse.wb.core.ui.actionset"/>
+<alwaysOnActionSet id="org.eclipse.debug.ui.launchActionSet"/>
+<alwaysOnActionSet id="org.eclipse.debug.ui.profileActionSet"/>
+<alwaysOnActionSet id="org.eclipse.ui.NavigateActionSet"/>
+<alwaysOnActionSet id="org.eclipse.debug.ui.breakpointActionSet"/>
+<alwaysOnActionSet id="com.adobe.flexbuilder.debug.ui.flexDebuggingActionSet"/>
+<alwaysOnActionSet id="com.adobe.flexbuilder.zzz.editors.common.ui.project.publish"/>
+<alwaysOnActionSet id="com.adobe.flexbuilder.exportimport.actionSet1"/>
+<alwaysOnActionSet id="com.adobe.flexbuilder.as.editor.ui.NavigationActions"/>
+<alwaysOnActionSet id="org.eclipse.debug.ui.debugActionSet"/>
+<alwaysOnActionSet id="com.adobe.flexbuilder.dcrad.actionSet"/>
+<show_view_action id="com.adobe.flexbuilder.packageexplorer"/>
+<show_view_action id="org.eclipse.ui.views.ContentOutline"/>
+<show_view_action id="org.eclipse.ui.views.ProblemView"/>
+<show_view_action id="com.adobe.flexbuilder.dcrad.views.DataServicesView"/>
+<new_wizard_action id="com.adobe.flexbuilder.editorcore.ui.project.wizards.newproject"/>
+<new_wizard_action id="com.adobe.flexbuilder.project.ui.wizards.FlexLibraryProjectWizard"/>
+<new_wizard_action id="com.adobe.flashbuilder.project.multiplatform.ui.MultiPlatformProjectWizard"/>
+<new_wizard_action id="com.adobe.flexbuilder.project.ui.wizards.NewActionScriptProjectWizard"/>
+<new_wizard_action id="com.adobe.flexbuilder.project.ui.wizards.ActionScriptLibraryProjectWizard"/>
+<new_wizard_action id="com.adobe.flashbuilder.project.multiplatform.ui.MultiPlatformActionScriptProjectWizard"/>
+<new_wizard_action id="com.adobe.flexbuilder.flashbridge.NewFlashProProjectWizard"/>
+<new_wizard_action id="com.adobe.flexbuilder.mxml.editor.ui.wizards.NewMXMLApplication"/>
+<new_wizard_action id="com.adobe.flexbuilder.mxml.editor.ui.wizards.NewMXMLComponent"/>
+<new_wizard_action id="com.adobe.flexbuilder.mxml.editor.ui.wizards.NewMXMLItemRenderer"/>
+<new_wizard_action id="com.adobe.flexbuilder.mxml.editor.ui.wizards.NewMXMLModule"/>
+<new_wizard_action id="com.adobe.flexbuilder.mxml.editor.ui.wizards.NewMXMLSkin"/>
+<new_wizard_action id="com.adobe.flexbuilder.as.editor.wizards.NewActionScriptFile.flex"/>
+<new_wizard_action id="com.adobe.flexbuilder.as.editor.classWizard.flex"/>
+<new_wizard_action id="com.adobe.flexbuilder.as.editor.interfaceWizard.flex"/>
+<new_wizard_action id="com.adobe.flexbuilder.as.editor.skinnableComponentWizard.flex"/>
+<new_wizard_action id="com.adobe.flexbuilder.as.editor.workerWizard.flex"/>
+<new_wizard_action id="com.adobe.flexbuilder.css.editor.wizards.NewCSSFile"/>
+<new_wizard_action id="com.adobe.flexbuilder.as.editor.flexUnitClassWizard.flex"/>
+<new_wizard_action id="com.adobe.flexbuilder.as.editor.flexUnitTestSuiteClassWizard.flex"/>
+<new_wizard_action id="com.adobe.flexbuilder.as.editor.packageWizard.flex"/>
+<new_wizard_action id="org.eclipse.ui.wizards.new.folder"/>
+<new_wizard_action id="org.eclipse.ui.wizards.new.file"/>
+<perspective_action id="com.adobe.flexbuilder.editors.mxml.ui.perspectives.development"/>
+<perspective_action id="com.adobe.flexbuilder.debug.ui.perspectives.debug"/>
+<perspective_action id="com.adobe.flash.profiler.ui.ProfilingPerspective"/>
+<hide_toolbar_item_id id="org.eclipse.jdt.ui.actions.OpenProjectWizard"/>
+<hide_toolbar_item_id id="org.eclipse.ui.edit.text.toggleShowSelectedElementOnly"/>
+<view id="org.eclipse.ui.views.ProblemView"/>
+<view id="com.adobe.flexbuilder.dcrad.views.DataServicesView"/>
+<view id="com.adobe.flexbuilder.monitors.network.view.NetworkMonitorView"/>
+<view id="org.eclipse.ui.console.ConsoleView"/>
+<view id="org.eclipse.ui.views.ProgressView"/>
+<view id="com.adobe.flexbuilder.as.editor.CallHierarchyView"/>
+<view id="org.eclipse.search.ui.views.SearchView"/>
+<view id="org.eclipse.team.ui.GenericHistoryView"/>
+<view id="org.eclipse.debug.ui.DebugView"/>
+<view id="com.adobe.flexbuilder.as.editor.asdocviewer"/>
+<view id="com.adobe.flexbuilder.packageexplorer"/>
+<view id="org.eclipse.ui.views.ContentOutline"/>
+<fastViewBars/>
+<layout>
+<mainWindow>
+<info folder="true" part="org.eclipse.ui.internal.ViewStack@15daa560">
+<folder activePageID="com.adobe.flexbuilder.packageexplorer" appearance="2" expanded="2">
+<page content="com.adobe.flexbuilder.packageexplorer" label="Package Explorer"/>
+<page content="org.eclipse.ui.views.ContentOutline" label="Outline"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+<part id="1"/>
+</presentation>
+</folder>
+</info>
+<info folder="true" part="stickyFolderRight" ratio="0.75" ratioLeft="954" ratioRight="318" relationship="2" relative="org.eclipse.ui.internal.ViewStack@15daa560">
+<folder appearance="2" expanded="2">
+<page content="org.eclipse.help.ui.HelpView" label="LabelNotFound"/>
+<page content="org.eclipse.ui.internal.introview" label="LabelNotFound"/>
+<page content="org.eclipse.ui.cheatsheets.views.CheatSheetView" label="LabelNotFound"/>
+</folder>
+</info>
+<info part="org.eclipse.ui.editorss" ratio="0.20961387" ratioLeft="266" ratioRight="1003" relationship="2" relative="org.eclipse.ui.internal.ViewStack@15daa560"/>
+<info folder="true" part="bottomLayout" ratio="0.5579598" ratioLeft="361" ratioRight="286" relationship="4" relative="org.eclipse.ui.editorss">
+<folder activePageID="org.eclipse.ui.console.ConsoleView" appearance="2" expanded="2">
+<page content="org.eclipse.ui.views.ProblemView" label="Problems"/>
+<page content="com.adobe.flexbuilder.dcrad.views.DataServicesView" label="Data/Services"/>
+<page content="com.adobe.flexbuilder.monitors.network.view.NetworkMonitorView" label="Network Monitor"/>
+<page content="org.eclipse.ui.console.ConsoleView" label="Console"/>
+<page content="org.eclipse.ui.views.ProgressView" label="Progress"/>
+<page content="com.adobe.flexbuilder.as.editor.CallHierarchyView" label="Call Hierarchy"/>
+<page content="org.eclipse.search.ui.views.SearchView" label="Search"/>
+<page content="org.eclipse.team.ui.GenericHistoryView" label="History"/>
+<page content="org.eclipse.debug.ui.DebugView" label="Debug"/>
+<page content="com.adobe.flexbuilder.as.editor.asdocviewer" label="ASDoc"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+<part id="1"/>
+<part id="2"/>
+<part id="3"/>
+<part id="4"/>
+<part id="5"/>
+<part id="6"/>
+<part id="7"/>
+<part id="8"/>
+<part id="9"/>
+</presentation>
+</folder>
+</info>
+</mainWindow>
+</layout>
+</perspective>
+<perspective editorAreaTrimState="2" editorAreaVisible="1" fixed="0" version="0.016">
+<descriptor class="com.adobe.flexbuilder.debug.ui.perspectives.FlexDebugPerspectiveFactory" id="com.adobe.flexbuilder.debug.ui.perspectives.debug" label="Flash Debug"/>
+<alwaysOnActionSet id="com.adobe.flexbuilder.flashbridge.flashproject.actionSet"/>
+<alwaysOnActionSet id="org.eclipse.egit.ui.navigation"/>
+<alwaysOnActionSet id="org.eclipse.mylyn.context.ui.actionSet"/>
+<alwaysOnActionSet id="org.eclipse.mylyn.doc.actionSet"/>
+<alwaysOnActionSet id="org.eclipse.mylyn.tasks.ui.navigation"/>
+<alwaysOnActionSet id="org.eclipse.ui.cheatsheets.actionSet"/>
+<alwaysOnActionSet id="org.eclipse.search.searchActionSet"/>
+<alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.annotationNavigation"/>
+<alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.navigation"/>
+<alwaysOnActionSet id="org.eclipse.ui.edit.text.actionSet.convertLineDelimitersTo"/>
+<alwaysOnActionSet id="org.eclipse.ui.externaltools.ExternalToolsSet"/>
+<alwaysOnActionSet id="org.eclipse.ui.actionSet.keyBindings"/>
+<alwaysOnActionSet id="org.eclipse.ui.actionSet.openFiles"/>
+<alwaysOnActionSet id="org.eclipse.wb.core.ui.actionset"/>
+<alwaysOnActionSet id="org.eclipse.debug.ui.launchActionSet"/>
+<alwaysOnActionSet id="org.eclipse.debug.ui.profileActionSet"/>
+<alwaysOnActionSet id="org.eclipse.ui.NavigateActionSet"/>
+<alwaysOnActionSet id="org.eclipse.debug.ui.breakpointActionSet"/>
+<alwaysOnActionSet id="com.adobe.flexbuilder.debug.ui.flexDebuggingActionSet"/>
+<alwaysOnActionSet id="com.adobe.flexbuilder.zzz.editors.common.ui.project.publish"/>
+<alwaysOnActionSet id="com.adobe.flexbuilder.exportimport.actionSet1"/>
+<alwaysOnActionSet id="com.adobe.flexbuilder.as.editor.ui.NavigationActions"/>
+<alwaysOnActionSet id="org.eclipse.debug.ui.debugActionSet"/>
+<alwaysOnActionSet id="com.adobe.flexbuilder.dcrad.actionSet"/>
+<show_view_action id="org.eclipse.debug.ui.VariableView"/>
+<show_view_action id="org.eclipse.debug.ui.BreakpointView"/>
+<show_view_action id="org.eclipse.debug.ui.ExpressionView"/>
+<show_view_action id="org.eclipse.ui.console.ConsoleView"/>
+<show_view_action id="org.eclipse.debug.ui.DebugView"/>
+<show_view_action id="org.eclipse.ui.views.ProblemView"/>
+<show_view_action id="com.adobe.flexbuilder.packageexplorer"/>
+<show_view_action id="org.eclipse.ui.views.ContentOutline"/>
+<new_wizard_action id="com.adobe.flexbuilder.editorcore.ui.project.wizards.newproject"/>
+<new_wizard_action id="com.adobe.flexbuilder.project.ui.wizards.FlexLibraryProjectWizard"/>
+<new_wizard_action id="com.adobe.flashbuilder.project.multiplatform.ui.MultiPlatformProjectWizard"/>
+<new_wizard_action id="com.adobe.flexbuilder.project.ui.wizards.NewActionScriptProjectWizard"/>
+<new_wizard_action id="com.adobe.flexbuilder.project.ui.wizards.ActionScriptLibraryProjectWizard"/>
+<new_wizard_action id="com.adobe.flashbuilder.project.multiplatform.ui.MultiPlatformActionScriptProjectWizard"/>
+<new_wizard_action id="com.adobe.flexbuilder.flashbridge.NewFlashProProjectWizard"/>
+<new_wizard_action id="com.adobe.flexbuilder.mxml.editor.ui.wizards.NewMXMLApplication"/>
+<new_wizard_action id="com.adobe.flexbuilder.mxml.editor.ui.wizards.NewMXMLComponent"/>
+<new_wizard_action id="com.adobe.flexbuilder.mxml.editor.ui.wizards.NewMXMLItemRenderer"/>
+<new_wizard_action id="com.adobe.flexbuilder.mxml.editor.ui.wizards.NewMXMLModule"/>
+<new_wizard_action id="com.adobe.flexbuilder.mxml.editor.ui.wizards.NewMXMLSkin"/>
+<new_wizard_action id="com.adobe.flexbuilder.as.editor.wizards.NewActionScriptFile.flex"/>
+<new_wizard_action id="com.adobe.flexbuilder.as.editor.classWizard.flex"/>
+<new_wizard_action id="com.adobe.flexbuilder.as.editor.interfaceWizard.flex"/>
+<new_wizard_action id="com.adobe.flexbuilder.as.editor.skinnableComponentWizard.flex"/>
+<new_wizard_action id="com.adobe.flexbuilder.as.editor.workerWizard.flex"/>
+<new_wizard_action id="com.adobe.flexbuilder.css.editor.wizards.NewCSSFile"/>
+<new_wizard_action id="com.adobe.flexbuilder.as.editor.flexUnitClassWizard.flex"/>
+<new_wizard_action id="com.adobe.flexbuilder.as.editor.flexUnitTestSuiteClassWizard.flex"/>
+<new_wizard_action id="com.adobe.flexbuilder.as.editor.packageWizard.flex"/>
+<new_wizard_action id="org.eclipse.ui.wizards.new.folder"/>
+<new_wizard_action id="org.eclipse.ui.wizards.new.file"/>
+<perspective_action id="com.adobe.flexbuilder.editors.mxml.ui.perspectives.development"/>
+<perspective_action id="com.adobe.flexbuilder.debug.ui.perspectives.debug"/>
+<perspective_action id="com.adobe.flash.profiler.ui.ProfilingPerspective"/>
+<hide_toolbar_item_id id="org.eclipse.jdt.ui.actions.OpenProjectWizard"/>
+<hide_toolbar_item_id id="org.eclipse.ui.edit.text.toggleShowSelectedElementOnly"/>
+<view id="org.eclipse.debug.ui.VariableView"/>
+<view id="org.eclipse.debug.ui.BreakpointView"/>
+<view id="org.eclipse.debug.ui.ExpressionView"/>
+<view id="org.eclipse.debug.ui.DebugView"/>
+<view id="com.adobe.flexbuilder.dcrad.views.DataServicesView"/>
+<view id="com.adobe.flexbuilder.monitors.network.view.NetworkMonitorView"/>
+<view id="com.adobe.flexbuilder.as.editor.asdocviewer"/>
+<view id="org.eclipse.ui.views.ProblemView"/>
+<view id="org.eclipse.ui.console.ConsoleView"/>
+<view id="org.eclipse.ui.views.ProgressView"/>
+<view id="com.adobe.flexbuilder.as.editor.CallHierarchyView"/>
+<fastViewBars/>
+<layout>
+<mainWindow>
+<info folder="true" part="org.eclipse.debug.internal.ui.NavigatorFolderView">
+<folder activePageID="org.eclipse.debug.ui.DebugView" appearance="2" expanded="2">
+<page content="org.eclipse.debug.ui.DebugView" label="Debug"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+</presentation>
+</folder>
+</info>
+<info folder="true" part="stickyFolderRight" ratio="0.75" ratioLeft="954" ratioRight="318" relationship="2" relative="org.eclipse.debug.internal.ui.NavigatorFolderView">
+<folder appearance="2" expanded="2">
+<page content="org.eclipse.help.ui.HelpView" label="LabelNotFound"/>
+<page content="org.eclipse.ui.internal.introview" label="LabelNotFound"/>
+<page content="org.eclipse.ui.cheatsheets.views.CheatSheetView" label="LabelNotFound"/>
+</folder>
+</info>
+<info folder="true" part="org.eclipse.debug.internal.ui.ConsoleFolderView" ratio="0.74923074" ratioLeft="487" ratioRight="163" relationship="4" relative="org.eclipse.debug.internal.ui.NavigatorFolderView">
+<folder activePageID="org.eclipse.ui.console.ConsoleView" appearance="2" expanded="2">
+<page content="com.adobe.flexbuilder.dcrad.views.DataServicesView" label="Data/Services"/>
+<page content="com.adobe.flexbuilder.monitors.network.view.NetworkMonitorView" label="Network Monitor"/>
+<page content="com.adobe.flexbuilder.as.editor.asdocviewer" label="ASDoc"/>
+<page content="org.eclipse.ui.views.ProblemView" label="Problems"/>
+<page content="org.eclipse.ui.console.ConsoleView" label="Console"/>
+<page content="org.eclipse.ui.views.ProgressView" label="Progress"/>
+<page content="com.adobe.flexbuilder.as.editor.CallHierarchyView" label="Call Hierarchy"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+<part id="1"/>
+<part id="2"/>
+<part id="3"/>
+<part id="4"/>
+<part id="5"/>
+<part id="6"/>
+</presentation>
+</folder>
+</info>
+<info part="org.eclipse.ui.editorss" ratio="0.3180873" ratioLeft="153" ratioRight="328" relationship="4" relative="org.eclipse.debug.internal.ui.NavigatorFolderView"/>
+<info folder="true" part="org.eclipse.debug.internal.ui.ToolsFolderView" ratio="0.3861308" ratioLeft="490" ratioRight="779" relationship="2" relative="org.eclipse.debug.internal.ui.NavigatorFolderView">
+<folder activePageID="org.eclipse.debug.ui.BreakpointView" appearance="2" expanded="2">
+<page content="org.eclipse.debug.ui.VariableView" label="Variables"/>
+<page content="org.eclipse.debug.ui.BreakpointView" label="Breakpoints"/>
+<page content="org.eclipse.debug.ui.ExpressionView" label="Expressions"/>
+<presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
+<part id="0"/>
+<part id="1"/>
+<part id="2"/>
+</presentation>
+</folder>
+</info>
+</mainWindow>
+</layout>
+</perspective>
+</perspectives>
+<workingSets/>
+<navigationHistory>
+<editors>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" path="/Starling/src/starling/core/Starling.as"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" path="/Starling/src/starling/display/Stage.as"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" path="/Starling/src/starling/display/DisplayObject.as"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" path="/Starling/src/starling/display/DisplayObjectContainer.as"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" path="/Starling/src/starling/events/Event.as"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" path="/Starling/src/starling/events/EnterFrameEvent.as"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" path="/sanguoCore/src/com/core/starling/battle/view/GameRoot.as"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" path="/SkillEditor/src/com/view/unitControl/battle/BattleMediator.as"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" path="/sanguoCore/src/com/core/starling/battle/ai/BattleField.as"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" path="/sanguoCore/src/com/core/starling/battle/ai/UnitCreator.as"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" path="/Starling/src/starling/textures/TextureAtlas.as"/>
+</editors>
+<item historyLabel="Starling.as" index="0">
+<position info="not_deleted" x="13648" y="0"/>
+</item>
+<item historyLabel="Starling.as" index="0">
+<position info="not_deleted" x="13682" y="0"/>
+</item>
+<item historyLabel="Starling.as" index="0">
+<position info="not_deleted" x="13731" y="0"/>
+</item>
+<item historyLabel="Stage.as" index="1">
+<position/>
+</item>
+<item historyLabel="Starling.as" index="0">
+<position info="not_deleted" x="13731" y="0"/>
+</item>
+<item historyLabel="Starling.as" index="0">
+<position info="not_deleted" x="13763" y="0"/>
+</item>
+<item historyLabel="DisplayObject.as" index="2">
+<position info="not_deleted" x="7688" y="0"/>
+</item>
+<item historyLabel="DisplayObject.as" index="2">
+<position info="not_deleted" x="7732" y="0"/>
+</item>
+<item historyLabel="DisplayObject.as" index="2">
+<position info="not_deleted" x="7688" y="0"/>
+</item>
+<item historyLabel="DisplayObject.as" index="2">
+<position info="not_deleted" x="7980" y="0"/>
+</item>
+<item historyLabel="DisplayObject.as" index="2">
+<position info="not_deleted" x="8038" y="0"/>
+</item>
+<item historyLabel="DisplayObject.as" index="2">
+<position info="not_deleted" x="8080" y="0"/>
+</item>
+<item historyLabel="DisplayObject.as" index="2">
+<position info="not_deleted" x="8121" y="0"/>
+</item>
+<item historyLabel="DisplayObject.as" index="2">
+<position info="not_deleted" x="8171" y="0"/>
+</item>
+<item historyLabel="DisplayObjectContainer.as" index="3">
+<position info="not_deleted" x="3819" y="0"/>
+</item>
+<item historyLabel="DisplayObjectContainer.as" index="3">
+<position info="not_deleted" x="3863" y="0"/>
+</item>
+<item historyLabel="DisplayObjectContainer.as" index="3">
+<position info="not_deleted" x="3819" y="0"/>
+</item>
+<item historyLabel="Stage.as" index="1">
+<position info="not_deleted" x="3016" y="0"/>
+</item>
+<item historyLabel="Stage.as" index="1">
+<position info="not_deleted" x="3044" y="0"/>
+</item>
+<item historyLabel="Stage.as" index="1">
+<position info="not_deleted" x="3074" y="0"/>
+</item>
+<item historyLabel="Stage.as" index="1">
+<position info="not_deleted" x="3102" y="0"/>
+</item>
+<item historyLabel="Stage.as" index="1">
+<position info="not_deleted" x="3134" y="0"/>
+</item>
+<item historyLabel="Stage.as" index="1">
+<position info="not_deleted" x="3179" y="0"/>
+</item>
+<item historyLabel="Event.as" index="4">
+<position info="not_deleted" x="5208" y="0"/>
+</item>
+<item historyLabel="Stage.as" index="1">
+<position info="not_deleted" x="3179" y="0"/>
+</item>
+<item historyLabel="Stage.as" index="1">
+<position info="not_deleted" x="3225" y="0"/>
+</item>
+<item historyLabel="EnterFrameEvent.as" index="5">
+<position info="not_deleted" x="1180" y="0"/>
+</item>
+<item historyLabel="Event.as" index="4">
+<position info="not_deleted" x="5768" y="0"/>
+</item>
+<item historyLabel="Event.as" index="4">
+<position info="not_deleted" x="5794" y="0"/>
+</item>
+<item historyLabel="Event.as" index="4">
+<position info="not_deleted" x="5826" y="0"/>
+</item>
+<item historyLabel="GameRoot.as" index="6">
+<position info="not_deleted" x="3170" y="0"/>
+</item>
+<item historyLabel="BattleMediator.as" index="7">
+<position info="not_deleted" x="1491" y="0"/>
+</item>
+<item historyLabel="BattleField.as" index="8">
+<position info="not_deleted" x="1145" y="5"/>
+</item>
+<item historyLabel="BattleField.as" index="8">
+<position info="not_deleted" x="576" y="0"/>
+</item>
+<item historyLabel="BattleField.as" index="8">
+<position info="not_deleted" x="621" y="0"/>
+</item>
+<item historyLabel="BattleField.as" index="8">
+<position info="not_deleted" x="652" y="0"/>
+</item>
+<item historyLabel="BattleField.as" index="8">
+<position info="not_deleted" x="678" y="0"/>
+</item>
+<item historyLabel="BattleField.as" index="8">
+<position info="not_deleted" x="699" y="0"/>
+</item>
+<item historyLabel="BattleField.as" index="8">
+<position info="not_deleted" x="728" y="0"/>
+</item>
+<item historyLabel="BattleField.as" index="8">
+<position info="not_deleted" x="753" y="0"/>
+</item>
+<item historyLabel="BattleField.as" index="8">
+<position info="not_deleted" x="785" y="0"/>
+</item>
+<item historyLabel="BattleField.as" index="8">
+<position info="not_deleted" x="812" y="0"/>
+</item>
+<item historyLabel="BattleField.as" index="8">
+<position info="not_deleted" x="833" y="0"/>
+</item>
+<item historyLabel="BattleField.as" index="8">
+<position info="not_deleted" x="854" y="0"/>
+</item>
+<item historyLabel="BattleField.as" index="8">
+<position info="not_deleted" x="889" y="0"/>
+</item>
+<item historyLabel="UnitCreator.as" index="9">
+<position info="not_deleted" x="1719" y="0"/>
+</item>
+<item historyLabel="BattleField.as" index="8">
+<position info="not_deleted" x="621" y="0"/>
+</item>
+<item historyLabel="UnitCreator.as" index="9">
+<position info="not_deleted" x="1794" y="0"/>
+</item>
+<item historyLabel="BattleField.as" index="8">
+<position info="not_deleted" x="621" y="0"/>
+</item>
+<item active="true" historyLabel="TextureAtlas.as" index="10">
+<position info="not_deleted" x="6598" y="0"/>
+</item>
+</navigationHistory>
+<input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
+</page>
+<workbenchWindowAdvisor/>
+<actionBarAdvisor/>
+<trimLayout>
+<trimArea IMemento.internal.id="16384">
+<trimItem IMemento.internal.id="org.eclipse.ui.internal.ViewStack@15daa560"/>
+<trimItem IMemento.internal.id="org.eclipse.debug.internal.ui.NavigatorFolderView"/>
+</trimArea>
+<trimArea IMemento.internal.id="131072">
+<trimItem IMemento.internal.id="org.eclipse.ui.editorss"/>
+</trimArea>
+<trimArea IMemento.internal.id="128">
+<trimItem IMemento.internal.id="org.eclipse.ui.internal.WorkbenchWindow.topBar"/>
+<trimItem IMemento.internal.id="org.eclipse.mylyn.tasks.ui.trim.container"/>
+</trimArea>
+<trimArea IMemento.internal.id="1024">
+<trimItem IMemento.internal.id="org.eclise.ui.internal.FastViewBar"/>
+<trimItem IMemento.internal.id="org.eclipse.jface.action.StatusLineManager"/>
+<trimItem IMemento.internal.id="org.eclipse.ui.internal.progress.ProgressRegion"/>
+<trimItem IMemento.internal.id="bottomLayout"/>
+<trimItem IMemento.internal.id="org.eclipse.debug.internal.ui.ConsoleFolderView"/>
+</trimArea>
+</trimLayout>
+</window>
+<mruList>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="Starling.as" tooltip="Starling/src/starling/core/Starling.as">
+<persistable path="/Starling/src/starling/core/Starling.as"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="DisplayObjectContainer.as" tooltip="Starling/src/starling/display/DisplayObjectContainer.as">
+<persistable path="/Starling/src/starling/display/DisplayObjectContainer.as"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="Global.as" tooltip="sanguoCore/src/com/core/Global.as">
+<persistable path="/sanguoCore/src/com/core/Global.as"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.wst.xml.ui.internal.tabletree.XMLMultiPageEditorPart" name="SkillEditor-app.xml" tooltip="SkillEditor/src/SkillEditor-app.xml">
+<persistable path="/SkillEditor/src/SkillEditor-app.xml"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="UnitLoader.as" tooltip="sanguoCore/src/com/core/loader/UnitLoader.as">
+<persistable path="/sanguoCore/src/com/core/loader/UnitLoader.as"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="FileManagers.as" tooltip="SkillEditor/src/com/core/manager/FileManagers.as">
+<persistable path="/SkillEditor/src/com/core/manager/FileManagers.as"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="FileManagers.as" tooltip="sanguoCore/src/com/core/util/FileManagers.as">
+<persistable path="/sanguoCore/src/com/core/util/FileManagers.as"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.mxml.MXMLEditor" name="rsourceCompress.mxml" tooltip="rsourceCompress/src/rsourceCompress.mxml">
+<persistable path="/rsourceCompress/src/rsourceCompress.mxml"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="FileManagers.as" tooltip="rsourceCompress/src/com/resource/manager/FileManagers.as">
+<persistable path="/rsourceCompress/src/com/resource/manager/FileManagers.as"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="Polygon.as" tooltip="sanguoCore/src/com/core/component/Polygon.as">
+<persistable path="/sanguoCore/src/com/core/component/Polygon.as"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="PolyState.as" tooltip="sanguoCore/src/com/core/component/PolyState.as">
+<persistable path="/sanguoCore/src/com/core/component/PolyState.as"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="MulitPolygon.as" tooltip="sanguoCore/src/com/core/component/MulitPolygon.as">
+<persistable path="/sanguoCore/src/com/core/component/MulitPolygon.as"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="BattleModule.as" tooltip="SkillEditor/src/com/view/unitControl/battle/BattleModule.as">
+<persistable path="/SkillEditor/src/com/view/unitControl/battle/BattleModule.as"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="App.as" tooltip="SkillEditor/src/com/view/unitControl/App.as">
+<persistable path="/SkillEditor/src/com/view/unitControl/App.as"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.adobe.flexbuilder.editors.actionscript.ActionScriptEditor" name="App.as" tooltip="sanguoGame/src/com/sanguo/manager/App.as">
+<persistable path="/sanguoGame/src/com/sanguo/manager/App.as"/>
+</file>
+</mruList>
+</workbench>

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+project: sangocraft_Web
+@class: ReinforcePanel
+@author: wangtaofeng
+@usage: 援军面板
+@since: 2013-9-10
+@modified: 2013-9-10
+@modifier: wangtaofeng
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   xmlns:dropDownList="cn.sevencool.sangocraft.web.skin.dropDownList.*"
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   xmlns:view="cn.sevencool.sangocraft.web.ui.reinforce.view.*"
+				   width="640" height="450" >
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.data.symbols.CommonData;
+			import cn.sevencool.sangocraft.data.symbols.SystemModelLocator;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.data.vo.ReinDisplayVO;
+			import cn.sevencool.sangocraft.web.events.MenuClickEvents;
+			import cn.sevencool.sangocraft.web.events.SmallPanelEvent;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.ui.battleField.view.ExpeditionInfoPanel;
+			import cn.sevencool.sangocraft.web.ui.reinforce.mediator.ReinforceMediator;
+			
+			import com.greensock.TweenLite;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			
+			import spark.components.Group;
+			import spark.core.SpriteVisualElement;
+			
+			
+			private var _timer:Timer = null ;
+			/**
+			 * 援军资源信息
+			 * */
+			public var reinForceInfo:ArrayCollection = new ArrayCollection();
+			
+			/**
+			 * 援军mediator
+			 * */
+			private var _reinForceM:ReinforceMediator = null;		
+			
+			private var _isSend:Boolean = true;
+			
+			override public function set mediatorUI($value:AbstractMediator):void
+			{
+				_reinForceM = $value as ReinforceMediator;
+				if(_reinForceM && initialized)
+				{
+					onShow();					
+				}
+			}
+			
+			
+			override protected function onClose():void
+			{	
+				reinInfo_info.visible=false;
+				reinInfo_info.x = 416;
+				_timer.stop();
+				_timer.reset();
+			}
+			
+			
+			override protected function onShow():void
+			{			
+				if(!initialized||!_reinForceM)
+				{
+					return
+				}
+				if(isSend)
+				{
+					_reinForceM.sendSGetReinListVO();
+				}
+				_timer.start();
+			}
+			
+			public function get mediator():ReinforceMediator
+			{				
+				return _reinForceM;				
+			}
+			
+			/**
+			 * 关闭面板
+			 * */
+			protected function titlewindow1_closeHandler(event:CloseEvent):void
+			{
+				UIMananger.getInstance().showOrHide(ExpeditionInfoPanel);
+			}
+			
+			/**
+			 * 分頁更新
+			 * */
+			protected function paga_group_PageChangeHandler(event:Event):void
+			{
+				_reinForceM.refreshPage(paga_group.nowPage);
+			}
+			
+			/**标题内容*/
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				panelID = 313;
+				_timer = new Timer(2000);
+				_timer.addEventListener(TimerEvent.TIMER,timerHandler);
+				SystemModelLocator.getInstance().addEventListener(Event.RESIZE , screenResizeHandler);
+				reinInfo_info.addEventListener(SmallPanelEvent.CLOSEPANEL,closeSmallPanel);
+				onShow();
+			}
+			
+			override public function get needBundleList():Array
+			{
+				var urlArr:Array = [] ;
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'frame1'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'titleBottom'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'reginPoint'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'generalCell'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'generalName'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'dropDownList_1'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'dropDownList_2'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'dropDownList_3'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'dropDownList_4'));
+				return urlArr;
+			}
+			
+			public var refreshCount:int = 0;
+			protected function timerHandler($evt:TimerEvent):void
+			{
+				refreshCount = _timer.currentCount%2; 
+				if(isSend == true)
+				{
+					_reinForceM.sortReinforcebyType(barrackList.currentSelect[0],isSend);
+					isSend = false;
+				}else
+				{
+					_reinForceM.sortReinforcebyType(barrackList.currentSelect[0],isSend);
+				}
+			}
+			
+			protected function barrackslist1_listChangeHandler(event:Event):void
+			{
+				_reinForceM.sortReinforcebyType(barrackList.currentSelect[0],isSend);
+			}
+			
+			public function showAlitialsInfo($reinDis:ReinDisplayVO):void
+			{
+				reinInfo_info.mediatorUI = _reinForceM
+				reinInfo_info.reinDisplayVO = $reinDis;
+				if(!reinInfo_info.visible)
+				{
+					reinInfo_info.visible=true;
+					var formationInfoX:int = int(reinInfo_info.x + reinInfo_info.width -14) ;
+					var formationInfoPanelX:int = int(this.x - (reinInfo_info.width/2)) ;
+					TweenLite.to(reinInfo_info,0.3,{x:formationInfoX,alpha:1});
+					TweenLite.to(this,0.3,{x:formationInfoPanelX}); 
+				}
+			}
+			
+			private function closeSmallPanel(event:SmallPanelEvent):void
+			{
+				var detailsX:int = int(reinInfo_info.x - reinInfo_info.width );
+				var panelX:int = int(this.x +(reinInfo_info.width/2)) ;
+				TweenLite.to(reinInfo_info,0.3,{x:detailsX,alpha:0,onComplete:setPanelVisible}); 
+				TweenLite.to(this,0.3,{x:panelX}); 
+			}
+			
+			private function setPanelVisible():void
+			{
+				reinInfo_info.visible=false;
+				reinInfo_info.x = 416 ;
+			}
+			
+			private function screenResizeHandler(e:Event):void
+			{
+				if(reinInfo_info.visible)
+				{
+					this.x = this.x - (reinInfo_info.width/2) ;
+				}
+			}
+			
+			
+			/**
+			 * 是否发送包
+			 * */
+			public function get isSend():Boolean
+			{
+				return _isSend;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set isSend(value:Boolean):void
+			{
+				_isSend = value;
+			}
+			
+			
+		]]>
+	</fx:Script>
+	<symbols:layout>
+		<s:BasicLayout/>
+	</symbols:layout>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<view:ReinInfo id="reinInfo_info"  bottom="6" visible="false" x="416"/>
+	<s:TitleWindow x="0" y="0" width="100%" height="100%" title="援 军" close="titlewindow1_closeHandler(event)" id="tw_title">
+		<s:DataGroup id="reinForce" y="12" width="470" height="336"
+					 horizontalCenter="-8"
+					 itemRenderer="cn.sevencool.sangocraft.web.ui.reinforce.view.ReinforceInfo">
+			<s:layout>
+				<s:TileLayout requestedColumnCount="2" requestedRowCount="3"
+							  horizontalGap="50" verticalGap="-10"/>
+			</s:layout>
+		</s:DataGroup>
+		<symbols:BarracksList id="barrackList"
+							  x="478" y="360" listChange="barrackslist1_listChangeHandler(event)"/>
+		<symbols:Grouppagination id="paga_group" width="595" horizontalCenter="0"
+								 PageChange="paga_group_PageChangeHandler(event)" verticalCenter="0"/>
+	</s:TitleWindow>
+</symbols:BasePanel>

@@ -1,0 +1,12 @@
+package com.module.battle
+{
+	import flash.display.Sprite;
+	
+	public class Battle extends Sprite
+	{
+		public function Battle()
+		{
+			super();
+		}
+	}
+}

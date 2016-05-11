@@ -1,0 +1,22 @@
+package com.module.battle
+{
+	import com.starling.battle.view.GameRoot;
+	
+	import flash.display.Sprite;
+	
+	public class Battle extends Sprite
+	{
+		private var gameRoot:GameRoot = null;
+		
+		public function Battle()
+		{
+			super();
+		}
+	
+		
+		public function end():void
+		{
+		
+		}
+	}
+}

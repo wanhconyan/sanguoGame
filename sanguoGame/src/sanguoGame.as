@@ -1,0 +1,72 @@
+package
+{
+	import com.core.event.BattleEvent;
+	import com.core.util.Dispatcher;
+	import com.sanguo.manager.App;
+	import com.sanguo.manager.LoopManager;
+	import com.sanguo.manager.ModuleManager;
+	
+	import flash.display.Sprite;
+	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.text.TextField;
+
+	[SWF(frameRate = 60, width = 1440, height = 900, backgroundColor = 0xaa8866)]
+	public class sanguoGame extends Sprite
+	{
+		
+		
+		private var _textFiled:TextField ;
+		
+		private var _endTextField:TextField ;
+		public function sanguoGame()
+		{
+			addEventListener(Event.ADDED_TO_STAGE,init);
+			_textFiled = new TextField();
+			_textFiled.text = "开始战斗";
+			_textFiled.selectable = false;
+			this.addChild(_textFiled);
+			
+			_endTextField = new TextField();
+			_endTextField.text = "结束战斗";
+			_endTextField.selectable = false;
+			this.addChild(_endTextField);
+			_textFiled.x = 50 ;
+			_textFiled.y = 50;
+			
+			_endTextField.x = 50 ;
+			_endTextField.y = 50;
+			_endTextField.mouseEnabled = false;
+			_endTextField.visible = false;
+			_textFiled.addEventListener(MouseEvent.CLICK,onClick);
+			_endTextField.addEventListener(MouseEvent.CLICK,onEndClick);
+			
+		}
+		
+		protected function onClick(event:MouseEvent):void
+		{
+			// TODO Auto-generated method stub
+			Dispatcher.dispatch(BattleEvent.BATTLE_START);
+			_textFiled.visible = false;
+			_endTextField.mouseEnabled = true;
+			_endTextField.visible = true;
+		}
+		
+		protected function onEndClick(event:MouseEvent):void
+		{
+			Dispatcher.dispatch(BattleEvent.BATTLE_END);
+			_endTextField.mouseEnabled = false;
+			_endTextField.visible = false;
+			_textFiled.visible = true;
+		}
+		
+		protected function init(e:Event):void
+		{
+			App.ins.init(stage);
+			LoopManager.init(stage);
+			(new ModuleManager()).startModule()
+		}
+		
+	
+	}
+}

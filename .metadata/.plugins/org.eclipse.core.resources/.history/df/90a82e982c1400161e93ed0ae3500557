@@ -1,0 +1,14 @@
+package com.starling.battle.view.unit
+{
+	
+	public interface IDisplayUnit
+	{
+		function get campID():uint ;
+		
+		function set campID(value:uint):void;
+		
+		function get 
+		
+		
+	}
+}

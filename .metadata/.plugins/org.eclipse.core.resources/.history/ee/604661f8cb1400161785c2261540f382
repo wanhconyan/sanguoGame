@@ -1,0 +1,34 @@
+package com.core.view
+{
+	
+
+	public class BaseModule
+	{
+		protected var _baseMediator:BaseMediator;
+		
+		public function BaseModule()
+		{
+			
+			
+		}
+		
+		
+		public  function start():void
+		{
+		
+		}
+		
+		
+		protected function addModuleEvent():void
+		{
+		
+		} 
+		
+		protected function removeModuleEvent():void
+		{
+		
+		
+		}
+		
+	}
+}

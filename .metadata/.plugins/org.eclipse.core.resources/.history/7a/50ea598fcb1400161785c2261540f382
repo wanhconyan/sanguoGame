@@ -1,0 +1,9 @@
+package com.module.battle
+{
+	public class BattleModule
+	{
+		public function BattleModule()
+		{
+		}
+	}
+}

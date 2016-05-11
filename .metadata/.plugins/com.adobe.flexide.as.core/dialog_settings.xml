@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<item value="517" key="size.x"/>
+	<item value="205" key="size.y"/>
+	<section name="flexbuilder.newclass.interface.settings">
+		<item value="true" key="ShowStatusLine"/>
+		<item value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#x0A;&lt;History&gt;&#x0A;&lt;historyRootNode&gt;&#x0A;&lt;infoNode data=&quot;com.starling.battle.view.unit.IUintDisplay&quot; isClass=&quot;false&quot;/&gt;&#x0A;&lt;/historyRootNode&gt;&#x0A;&lt;/History&gt;" key="History"/>
+		<section name="DialogBoundsSettings">
+			<item value="600" key="DIALOG_WIDTH"/>
+			<item value="0" key="DIALOG_Y_ORIGIN"/>
+			<item value="500" key="DIALOG_HEIGHT"/>
+			<item value="-38" key="DIALOG_X_ORIGIN"/>
+			<item value="1|.Helvetica Neue DeskInterface|11.0|0|COCOA|1|.HelveticaNeueDeskInterface-Regular" key="DIALOG_FONT_NAME"/>
+		</section>
+	</section>
+	<section name="flexide.smartopentype.settings">
+		<item value="false" key="ShowStatusLine"/>
+		<item value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;&#x0A;&lt;History&gt;&#x0A;&lt;historyRootNode/&gt;&#x0A;&lt;/History&gt;" key="History"/>
+		<section name="DialogBoundsSettings">
+			<item value="600" key="DIALOG_WIDTH"/>
+			<item value="34" key="DIALOG_Y_ORIGIN"/>
+			<item value="500" key="DIALOG_HEIGHT"/>
+			<item value="340" key="DIALOG_X_ORIGIN"/>
+			<item value="1|.Helvetica Neue DeskInterface|11.0|0|COCOA|1|.HelveticaNeueDeskInterface-Regular" key="DIALOG_FONT_NAME"/>
+		</section>
+	</section>
+	<section name="flexide.as.quick.outline.settings">
+		<item value="500" key="com.adobe.flexide.as.core.ui.outliner.QuickActionScriptOutlineDialogDIALOG_WIDTH"/>
+		<item value="400" key="com.adobe.flexide.as.core.ui.outliner.QuickActionScriptOutlineDialogDIALOG_HEIGHT"/>
+		<item value="474" key="com.adobe.flexide.as.core.ui.outliner.QuickActionScriptOutlineDialogDIALOG_X_ORIGIN"/>
+		<item value="true" key="com.adobe.flexide.as.core.ui.outliner.QuickActionScriptOutlineDialogDIALOG_USE_PERSISTED_LOCATION"/>
+		<item value="true" key="com.adobe.flexide.as.core.ui.outliner.QuickActionScriptOutlineDialogDIALOG_USE_PERSISTED_SIZE"/>
+		<item value="167" key="com.adobe.flexide.as.core.ui.outliner.QuickActionScriptOutlineDialogDIALOG_Y_ORIGIN"/>
+	</section>
+</section>

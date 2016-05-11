@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+project: sangocraft_Web
+@class: ScreenPanel
+@author: zhouyan
+@usage: 主面板
+@since: 2013-8-23
+@modified: 2013-8-23
+@modifier: zhouyan 
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   xmlns:view="cn.sevencool.sangocraft.web.ui.mainPanel.view.*"
+				   xmlns:view1="cn.sevencool.sangocraft.web.ui.screen.view.*"
+				   contentBackgroundAlpha="0.0"
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   resize="basepanel1_resizeHandler(event)"
+				   focusEnabled="false">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.ui.mainPanel.view.ChatPanel;
+			import cn.sevencool.sangocraft.web.ui.screen.mediator.ScreenMediator;
+			
+			import mx.events.FlexEvent;
+			import mx.events.ResizeEvent;
+			
+			/**
+			 * 面板类型
+			 * */
+			public override function get type():int{
+				return UIMananger.TYPE_FRAME;
+			}
+			
+			private var _mediater:ScreenMediator = null ;
+			override public function set mediatorUI($value:AbstractMediator):void
+			{
+				_mediater = $value as ScreenMediator ;
+			}
+			
+			protected function basepanel1_resizeHandler(event:ResizeEvent):void
+			{
+				this.width = UIMananger.getInstance().container.width ;
+				this.height = UIMananger.getInstance().container.height;
+				//				portInfoAddHandler(null);
+			}
+			
+			
+			protected override function stateChanged(oldState:String, newState:String, recursive:Boolean):void
+			{
+				if(this.currentState =="city")//内城
+				{
+					_mediater.requestFriendNum();
+					_mediater.questEmailNum();
+					//					chat = UIMananger.getInstance().show(ChatPanel) as ChatPanel;
+					//					portInfoAddHandler(null);
+					//				}else//战场
+					//				{
+					//					UIMananger.getInstance().hide(chat);
+				}
+				if(this.currentState == "battleScenes")
+				{
+					combatInfo.timerControl.maxFightTimer = _mediater.getBattleFightTimer();
+					
+					var roleLevel :int = _mediater.getRoleLevel() ;
+					if(roleLevel  < 20)
+					{
+						combatInfo.timerControl.maxAcc = 1;  
+					}else if(roleLevel >= 20 && roleLevel < 49)
+					{
+						combatInfo.timerControl.maxAcc = 2;  
+					}else
+					{
+						combatInfo.timerControl.maxAcc = 4;  
+					}
+				}
+			}
+			
+			protected override function onShow():void
+			{
+				if(!initialized)
+					return;
+			}
+			
+			//			public var chat:ChatPanel = null ;
+			//			
+			//			private function portInfoAddHandler(event:Event):void
+			//			{
+			//				chat.x = 5 ;
+			//				chat.y = this.height - chat.height ;
+			//			}
+			
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				//				chat.addEventListener(UIEvent.BASE_UI_REPOSITION,portInfoAddHandler);
+				//				portInfoAddHandler(null);
+				panelID = 1;
+				_mediater.showCity(true);
+				onShow();
+			}
+			
+		]]>
+	</fx:Script>
+	<symbols:layout>
+		<s:BasicLayout/>
+	</symbols:layout>
+	<symbols:states>
+		<s:State name="city"/>
+		<s:State name="battleScenes"/>
+	</symbols:states>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<!--**********************************内城场景*************************************-->
+	<!--内城场景-->
+	<view:PlayerInfoPanel id="playerInfo" left="0" top="0" 
+						  visible.city="true" visible="false" />
+	<!--功能按钮-->
+	<view:FunctionBtnGroup right="0" bottom="0" id="gp_functionBtn"
+						   visible.city="true" visible="false"/>
+	
+	<!--聊天框-->
+	<view:ChatPanel left="0" bottom="0" visible.city="true" visible="false" id="chat"/>
+	
+	<!--**********************************战斗场景*************************************-->
+	<!--战斗场景-->
+	<view:CombatInfo id="combatInfo" visible.battleScenes="true"
+					 visible="false" left="0" top="0" />
+	<!--战况_玩家-->
+	<view:BattleUIPanel id="BattleUI_self" visible.battleScenes="true"  currentState="oneself"
+						visible="false" left="0" bottom="0"  />
+	<!--战况_对手-->
+	<view:BattleUIPanel id="BattleUI_enemy" visible.battleScenes="true" currentState="enemy"
+						visible="false" right="0" top="0"  />
+	<!--回到城内-->
+	<view:Home id="home" visible.battleScenes="true"
+			   visible="false" right="25" bottom="10" />
+	
+	<!--**************************************************************************-->
+	<!--防沉迷-->
+	<view:DenfenceWin horizontalCenter="0"/>
+	<!--声音控制-->
+	<view:SoundControl left.battleScenes="6" top.battleScenes="8" left.city="236" top.city="10"/>
+</symbols:BasePanel>

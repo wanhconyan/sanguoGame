@@ -1,0 +1,12 @@
+package com.sanguo.manager
+{
+	public class ModuleManager
+	{
+		private var modules:Array = [;
+		public function ModuleManager()
+		{
+			
+			
+		}
+	}
+}

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	project: sangocraft_Web
+	@class: Main
+	@author: zhouyan
+	@usage: 网页——主页
+	@since: 2013-8-15
+	@modified: 2013-8-15
+	@modifier: zhouyan 
+-->
+
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   minWidth="955" minHeight="520" addedToStage="application1_addedToStageHandler(event)"
+			   backgroundColor="#000000" frameRate="60"
+			   preloader="cn.sevencool.sangocraft.web.symbols.ProLoaderBar"
+			   resize="application1_resizeHandler(event)" scriptTimeLimit="30"
+			   skinClass="cn.sevencool.sangocraft.web.skin.appSkin.ApplicationSkinEp">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractManager;
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.data.manager.login.control.LoginManager;
+			import cn.sevencool.sangocraft.data.manager.login.mediator.IUIOperatableLoginMediator;
+			import cn.sevencool.sangocraft.data.manager.utils.MediatorUtil;
+			import cn.sevencool.sangocraft.data.symbols.CommonData;
+			import cn.sevencool.sangocraft.data.symbols.SoundManager;
+			import cn.sevencool.sangocraft.data.symbols.SystemModelLocator;
+			import cn.sevencool.sangocraft.web.manager.KeyboardManager;
+			import cn.sevencool.sangocraft.web.manager.LoadingManager;
+			import cn.sevencool.sangocraft.web.manager.ManagerOperator;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.ui.login.mediator.LoginMediator;
+			
+			import mx.events.ResizeEvent;
+			
+			import spark.components.Button;
+			
+			protected function application1_resizeHandler(event:ResizeEvent):void
+			{
+				UIMananger.getInstance().container.width = this.width ;
+				UIMananger.getInstance().container.height = this.height ;
+				UIMananger.getInstance().reSize();
+				SystemModelLocator.getInstance().dispatchEvent(new Event(Event.RESIZE));
+			}
+			
+			protected function application1_addedToStageHandler(event:Event):void
+			{
+				CommonData.version = '36.0';
+				UIMananger.getInstance().container = content ;
+				LoadingManager.getInstance();
+				var ma:AbstractManager = new LoginManager();
+				var me:AbstractMediator = new LoginMediator();
+				ma.mediator =me;
+				ma.startup();
+				MediatorUtil.registerMediatorInstance(me);
+				var _loginM:LoginMediator=MediatorUtil.getMediatorByInterface(IUIOperatableLoginMediator) as LoginMediator;
+				_loginM.startup();
+				_loginM.loginLanded();
+				KeyboardManager.getInstance().addListener(this.stage);
+				this.stage.addEventListener(MouseEvent.MOUSE_DOWN,onClick);
+			}
+			/**
+			 * 监听鼠标点击事件
+			 * */
+			private function onClick(e:MouseEvent):void
+			{
+				var button:Button =null;
+				if(e.target is Button)
+				{
+					SoundManager.getInstance().musicPlay("Interface01");
+				}
+				
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Style source="style.css"/>
+	<s:Group id="content" width="100%" height="100%"/>
+</s:Application>

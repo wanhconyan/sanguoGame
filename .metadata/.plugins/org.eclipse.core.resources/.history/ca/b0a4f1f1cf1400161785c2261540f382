@@ -1,0 +1,11 @@
+package com.sanguo.manager
+{
+	public class ModuleManager
+	{
+		public function ModuleManager()
+		{
+			
+			
+		}
+	}
+}

@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 creationComplete="group1_creationCompleteHandler(event)"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="53" height="86" xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.events.BeginnersGuideEvent;
+			import cn.sevencool.sangocraft.data.manager.utils.MediatorUtil;
+			import cn.sevencool.sangocraft.data.symbols.CommonData;
+			import cn.sevencool.sangocraft.data.symbols.ItemsManager;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.data.symbols.material.factory.ImageFactory;
+			import cn.sevencool.sangocraft.data.vo.FightDataVo;
+			import cn.sevencool.sangocraft.data.vo.ItemDescription;
+			import cn.sevencool.sangocraft.data.vo.SkillInfo;
+			import cn.sevencool.sangocraft.web.battle.ai.FightLogical;
+			import cn.sevencool.sangocraft.web.ui.beginnersGuide.mediator.BeginnersGuideMediator;
+			import cn.sevencool.sangocraft.web.ui.mainPanel.mediator.MainPanelMediator;
+			
+			import com.sevencool.rtslogic.Battlefield;
+			
+			import mx.events.FlexEvent;
+			
+			import spark.filters.GlowFilter;
+			
+			
+			/**
+			 * 唯一ID
+			 * */
+			private var _nNumberID:Number = -1 ;
+			
+			private var _fightDataInitVO:FightDataVo = null ;
+			/**
+			 * 图片key
+			 * */
+			private var _key:String = MaterialKeys.OTHER;
+			
+			private var _imgBack:Bitmap = null;
+			private var _imgEmptyBack:Bitmap = null;
+			private var _imgBar:Bitmap = null;
+			private var _mater:MaterialManager = null;
+			private var _imgCSName:Bitmap = null;
+			private var _imgNSName:Bitmap = null;
+			private var _imgHead:Bitmap = null;
+			private var _isUseAble:Boolean = false;
+			private var skillInfo:SkillInfo;
+			private var skillNeedPoint:int;
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_imgBack = new Bitmap();
+				_imgEmptyBack =new Bitmap();
+				_imgBar = new Bitmap();
+				_imgCSName = new Bitmap();
+				_imgNSName = new Bitmap();
+				_imgHead = new Bitmap();
+				
+				_imgNSName.addEventListener(Event.COMPLETE,onNsComplete);
+				_imgCSName.addEventListener(Event.COMPLETE,onCsComplete);
+				_imgBack.addEventListener(Event.COMPLETE,onBackComplete);
+				_imgBar.addEventListener(Event.COMPLETE,onBarComplete);
+				_imgHead.addEventListener(Event.COMPLETE,onHeadComplete);
+				_imgEmptyBack.addEventListener(Event.COMPLETE,onEmptyComplete);
+				
+				_mater = MaterialManager.getInstance();
+				var backurl:String = _mater.getURL(_key,"generalBackBar");
+				ImageFactory.getBitmap(backurl,_imgBack);
+				var emptyUrl:String = _mater.getURL(_key,"emptyGena");
+				ImageFactory.getBitmap(emptyUrl,_imgEmptyBack);
+				var armBarUrl:String = _mater.getURL(_key,"armBar");
+				ImageFactory.getBitmap(armBarUrl,_imgBar);
+			}
+			
+			public function get fightDataInitVO():FightDataVo
+			{
+				return _fightDataInitVO;
+			}
+			
+			private var battle:int = -1;
+			public function set fightDataInitVO(value:FightDataVo):void
+			{
+				_fightDataInitVO = value;
+				if(!fightDataInitVO)
+				{
+					clearDisplay();
+					return ;	
+				}
+				if(battle != fightDataInitVO.nNumberID)
+				{
+					uiDisplay();
+					battle = fightDataInitVO.nNumberID
+				}else
+				{
+					refreshUI();
+				}
+			}
+			
+			private function uiDisplay():void
+			{
+				showUI()
+				var itemDes:ItemDescription = ItemsManager.getInstance().ItemInfo[fightDataInitVO.nBaseID];
+				var headUrl:String = '';
+				if(itemDes)
+				{
+					headUrl = _mater.getURL(MaterialKeys.SMALL_HEAD,itemDes.nHeadId.toString());
+				}else
+				{
+					headUrl = _mater.getURL(MaterialKeys.SMALL_HEAD,'1');
+				}
+				ImageFactory.getBitmap(headUrl,_imgHead);
+				img_aramy.solderType = fightDataInitVO.nArmsType;
+				
+				skillInfo= ItemsManager.getInstance().skillDic[fightDataInitVO.nSkillID];
+				skill_lvl.visible = Boolean(skillInfo);
+				if(skillInfo)
+				{
+					var skillCs:String = MaterialManager.getInstance().getURL(MaterialKeys.SKILLNAMEICON,"s"+fightDataInitVO.nSkillID);
+					var skillNs:String = MaterialManager.getInstance().getURL(MaterialKeys.SKILLNAMEICON,fightDataInitVO.nSkillID);
+					ImageFactory.getBitmap(skillCs,_imgCSName);
+					ImageFactory.getBitmap(skillNs,_imgNSName);
+					skillNeedPoint =(skillInfo.nUsePoint - fightDataInitVO.nSkillLvl/skillInfo.nReducePoint)>0 ?(skillInfo.nUsePoint - fightDataInitVO.nSkillLvl/skillInfo.nReducePoint) :1 ;
+					skill_lvl.figureHandler(skillNeedPoint.toString(),MaterialKeys.SKILL_LEVEL,15);
+				}
+				lab_currValue.text = fightDataInitVO.nNowHp.toString() ;
+				if(fightDataInitVO.nNowHp == 0 && skillInfo)
+				{
+					isUseAble = false;
+				}
+			}
+			
+			private function refreshUI():void
+			{
+				lab_currValue.text =fightDataInitVO.nNowHp.toString() ;
+				if(!skillInfo)
+				{
+					return ;
+				}
+				isUseAble = fightDataInitVO.power >= skillNeedPoint ? true:false;
+			}
+			
+			private function clearDisplay():void
+			{
+				img_aramy.visible = false;
+				img_back.visible = false;
+				img_bar.visible = false;
+				img_cskillName.visible = false;
+				img_empty.visible = true;
+				img_head.visible = false;
+				img_skillName.visible =false;
+				lab_currValue.text = '';
+				//清除资源显示
+				img_head.source = null;
+				img_skillName.source = null;
+				img_cskillName.source = null;
+			}
+			private function showUI():void
+			{
+				img_aramy.visible = true;
+				img_back.visible = true;
+				img_bar.visible = true;
+				img_cskillName.visible = true;
+				img_skillName.visible = false;
+				img_empty.visible = false;
+				img_head.visible = true;
+				img_skillName.visible =true;
+				
+			}
+			
+			/*********************资源加载**************************/
+			private function onNsComplete(e:Event):void
+			{
+				
+				img_skillName.source =  _imgNSName;
+				
+			}
+			private function onCsComplete(e:Event):void
+			{
+				
+				img_cskillName.source = _imgCSName;
+				
+			}
+			private function onBackComplete(e:Event):void
+			{
+				
+				img_back.source =_imgBack;
+				
+			}
+			private function onBarComplete(e:Event):void
+			{
+				
+				img_bar.source = _imgBar;
+				
+				
+			}
+			private function onHeadComplete(e:Event):void
+			{
+				img_head.source =_imgHead;
+				
+			}
+			private function onEmptyComplete(e:Event):void
+			{
+				img_empty.source =_imgEmptyBack;
+				
+			}
+			
+			/**
+			 * 技能是否可用
+			 * */
+			public function get isUseAble():Boolean
+			{
+				return _isUseAble;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set isUseAble(value:Boolean):void
+			{
+				_isUseAble = value;
+				if(isUseAble)
+				{
+					img_skillName.visible = false;
+					img_cskillName.visible = true;
+				}else
+				{
+					img_skillName.visible = true;
+					img_cskillName.visible = false;
+				}
+			}
+			
+			
+			protected function group2_clickHandler(event:MouseEvent):void
+			{
+				if(!fightDataInitVO)
+				{
+					return ;
+				}
+				if(isUseAble)
+				{
+					var b:Boolean = FightLogical.UseSkillOperate(CommonData.dwOnlyID,fightDataInitVO.nNumberID,Battlefield.getActivityBattlefield().round + 2,fightDataInitVO.nSkillID);
+					var beginnersGuideMediator:BeginnersGuideMediator = MediatorUtil.getMediatorByInterface(BeginnersGuideMediator);
+					beginnersGuideMediator.BEGINNERSGUIDEEVENTDISPATCHER.dispatchEvent(new BeginnersGuideEvent(BeginnersGuideEvent.USESKILL));
+				}
+				var mainM:MainPanelMediator = MediatorUtil.getMediatorByInterface(MainPanelMediator) as MainPanelMediator ;
+				img_cskillName.visible = false;
+				img_skillName.visible = true;
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:Image id="img_back" width="53" height="86" horizontalCenter="0" verticalCenter="0" />
+	<s:Image id="img_empty" width="53" height="86" horizontalCenter="0" verticalCenter="0" />
+	<s:Image id="img_bar" top="-9" width="58" height="22" horizontalCenter="0"/>
+	<s:Image id="img_head" x="4" y="6"/>
+	<symbols:SolderType id="img_aramy" x="1" top="-10" width="17" height="23"/>
+	<s:Label x="18" y="-5" width="52" color="#FFFFFF" id="lab_currValue"
+			 filters="{[new spark.filters.GlowFilter(0x231f02, 100, 2, 2, 5, 1, false, false)]}" 
+			 textAlign="left" verticalAlign="middle"/>
+	<s:Group x="3" y="60" click="group2_clickHandler(event)">
+		<s:Image id="img_skillName"  width="46" height="24"/>
+		<s:Image id="img_cskillName"  width="46" height="24"/>
+	</s:Group>
+	<symbols:FigureDisplay id="skill_lvl" x="39" y="62" width="30" height="24"
+						   maxMedian="3"/>
+</s:Group>

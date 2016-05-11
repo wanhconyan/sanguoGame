@@ -1,0 +1,12 @@
+package com.module.battle
+{
+	import com.core.view.BaseModule;
+
+	public class BattleModule extends BaseModule
+	{
+		
+		public function BattleModule()
+		{
+		}
+	}
+}

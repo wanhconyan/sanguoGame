@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+project: sangocraft_Web
+@class: ExpeditionInfoPanel
+@author: wangcongyan
+@usage: 战场列表面板
+@since: 2013-8-27
+@modified: 2013-8-27
+@modifier: wangcongyan
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   width="810" height="454"
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   xmlns:view="cn.sevencool.sangocraft.web.ui.battleField.view.*">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.events.BeginnersGuideEvent;
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.data.manager.utils.MediatorUtil;
+			import cn.sevencool.sangocraft.data.model.RSLevelInfo;
+			import cn.sevencool.sangocraft.data.symbols.SystemModelLocator;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.data.vo.FightScene;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.skin.button.BattleBtnSkin;
+			import cn.sevencool.sangocraft.web.ui.battleField.mediator.BattleFieldMediator;
+			import cn.sevencool.sangocraft.web.ui.battleField.view.itemrender.CityPool;
+			import cn.sevencool.sangocraft.web.ui.beginnersGuide.mediator.BeginnersGuideMediator;
+			
+			import mx.containers.Tile;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			
+			
+			private static const  SX:Number = 666/493 ;
+			private static const  SY:Number = 410/284;
+			
+			[Bindable]
+			private var _mediator:BattleFieldMediator = null ;
+			
+			private var _sceneInfoColl:Array = [];
+			
+			/**
+			 * 接受数据刷新
+			 * */
+			private  var levelInfo :RSLevelInfo =null;
+			
+			/**
+			 * 是否通关
+			 * */
+			public var isPass:Boolean = false;
+			
+			public var dic:Dictionary= new Dictionary();
+			
+			private var _img_back:Bitmap = null;
+			
+			/**
+			 * 记录是否为第一次通关
+			 * */
+			private var _fightDic:Dictionary = null; 
+			
+			private var cityPool:CityPool = null;
+			
+			private var _battle:BattleBack;
+			
+			private var _timer:Timer ;
+			
+			private var _nowPass:int ;
+			
+			private var _isPlay:Boolean = false;
+			override public function set mediatorUI($value:AbstractMediator):void 
+			{
+				_mediator = $value as BattleFieldMediator ;
+			}
+			
+			override public function get mediatorUI():AbstractMediator
+			{
+				return _mediator;
+			}
+			
+			/**
+			 * 刷新战场列表信息
+			 * */
+			private function recLevelInfo():void
+			{
+				var visLen:int = 0;
+				var fightScene:FightScene ;
+				if(!group_city)
+				{
+					return ;
+				} 
+				levelInfo  =SystemModelLocator.getInstance().getPropertyByVo(RSLevelInfo ) as RSLevelInfo ;
+				group_city.removeAllElements(); 
+				cityPool.recycleSmallCity(); 
+				for each(var scene:FightScene in sceneInfoColl)
+				{
+					if(scene.isNowAttack ==false && scene.isPass == false)
+					{
+						scene.isNowPass = scene.isPass;
+						_fightDic[scene.nFightID] = scene
+						continue;
+					}
+					var city:SmallCity = cityPool.getSmallCity();
+					fightScene = _fightDic[scene.nFightID];
+					if(fightScene && !scene.isNowPass)
+					{
+						scene.isNowPass = true;
+						city.isNowPass = true;
+						city.visible = false;
+						isPlay = true;
+					}
+					city.battleType = 1;
+					city.fightScene = scene;
+					city.x = scene.x;
+					city.y = scene.y;
+					visLen ++;
+					group_city.addElement(city);
+				}
+				//levelInfo.btChapterid 根据所属章节  获得对应战场
+				nowPass = visLen;
+				battleName.chapterID = levelInfo.btChapterid;
+			}
+			
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+				UIMananger.getInstance().hide(this);
+			}
+			
+			protected function sgtitlewindows1_closeHandler(event:CloseEvent):void
+			{
+				UIMananger.getInstance().showOrHide(ExpeditionPanel);
+				
+			}
+			
+			
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_img_back = new Bitmap();
+				panelID = 312 ;
+				
+				_battle = new BattleBack();
+				
+				_timer = new Timer(50);
+				_timer.addEventListener(TimerEvent.TIMER,onTimer);
+				sp_back.addChild(_battle);
+				_fightDic = new Dictionary();
+				cityPool = CityPool.getPool();
+				onShow();	
+			}
+			
+			override public function get needBundleList():Array
+			{
+				var urlArr:Array = [] ;
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'backMap'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.BATTLE_BUREAU,'0'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.BATTLE_BUREAU,'1'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.BATTLE_BUREAU,'2'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.BATTLE_BUREAU,'3'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.BATTLE_BUREAU,'4'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.BATTLE_BUREAU,'5'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.BATTLE_BUREAU,'6'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.BATTLE_BUREAU,'7'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.BATTLE_BUREAU,'8'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.BATTLE_BUREAU,'9'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'smallKnife'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'wordBackBar'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'healthPoint'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'bureau'));
+				return urlArr;
+			}
+			
+			protected override function onShow():void
+			{
+				if(!initialized)
+				{
+					return ;
+				}
+				
+				battleName.dic = dic ;
+				if(sceneInfoColl.length)
+				{
+					recLevelInfo();
+					battleName.chapterID = levelInfo.btChapterid;
+				}else
+				{
+					battleName.chapterID = 101;
+				}
+				var beginnersGuideMediator:BeginnersGuideMediator = MediatorUtil.getMediatorByInterface(BeginnersGuideMediator);
+				beginnersGuideMediator.BEGINNERSGUIDEEVENTDISPATCHER.dispatchEvent(new BeginnersGuideEvent(BeginnersGuideEvent.NEXTGUIDE));
+			}
+			
+			/**
+			 * 监听播放动画帧
+			 * */
+			private function onTimer(e:TimerEvent):void
+			{
+				var nowFrame:int = _battle.roadMask.currentFrame;
+				if(nowFrame < (nowPass-1)*10)
+				{
+					nowFrame = _battle.roadMask.currentFrame + 1;
+					_battle.roadMask.gotoAndStop(nowFrame);
+				}else
+				{
+					_timer.stop();
+					_timer.reset();
+				}
+			}
+			
+			public function get sceneInfoColl():Array
+			{
+				return _sceneInfoColl;
+			}
+			
+			public function set sceneInfoColl(value:Array):void
+			{
+				_sceneInfoColl = value;
+				if(initialized)
+				{
+					recLevelInfo();
+				}
+			}
+			
+			private function get nowPass():int
+			{
+				return _nowPass;
+			}
+			
+			private function set nowPass(value:int):void
+			{
+				_nowPass = value;
+				if(nowPass < 2)
+				{
+					_battle.roadMask.gotoAndStop((nowPass -1)*10);
+					return ;
+				}
+				if(isPlay)
+				{
+					_battle.roadMask.gotoAndStop((nowPass -2)*10);
+					_timer.reset();
+					_timer.start();
+					return ;
+				}
+				_battle.roadMask.gotoAndStop((nowPass -1)*10);
+			}
+
+			/**
+			 * 是否播放动画
+			 * */
+			private function get isPlay():Boolean
+			{
+				return _isPlay;
+			}
+
+			/**
+			 * @private
+			 */
+			private function set isPlay(value:Boolean):void
+			{
+				_isPlay = value;
+			}
+			
+			
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:TitleWindow id="sg_title" width="100%" height="100%" title="戰 場" close="sgtitlewindows1_closeHandler(event)">
+		<mx:Image id="img_back" x="71" y="0" width="666" height="380"/>
+		<s:SpriteVisualElement id="sp_back" x="71" y="0" width="666" height="380"/>
+		<s:Group id="group_city" x="71" y="0" width="666" height="380"/>
+		<view:BattlefieldName id="battleName" top="10" width="245" horizontalCenter="0" mediatorUI="{_mediator}"/>
+	</s:TitleWindow>
+</symbols:BasePanel>

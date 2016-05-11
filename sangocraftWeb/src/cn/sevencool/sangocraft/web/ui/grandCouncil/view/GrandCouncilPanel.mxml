@@ -1,0 +1,571 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+project: sangocraft_Web
+@class: GrandCouncilPanel
+@author: zhoujingye
+@usage: 军机处面板
+@since: 2013-8-22
+@modified: 2013-8-22
+@modifier: zhoujingye 
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   width="805" height="445"
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   currentState="normal">  
+	<fx:Script>
+			<![CDATA[
+				import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+				import cn.sevencool.sangocraft.data.model.RArmyBuild;
+				import cn.sevencool.sangocraft.data.symbols.SoundManager;
+				import cn.sevencool.sangocraft.data.symbols.SystemModelLocator;
+				import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+				import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+				import cn.sevencool.sangocraft.data.vo.GrandcouncilArmyVO;
+				import cn.sevencool.sangocraft.web.manager.UIMananger;
+				import cn.sevencool.sangocraft.web.symbols.FigureDisplay;
+				import cn.sevencool.sangocraft.web.ui.grandCouncil.mediator.GrandCouncilMediator;
+				
+				import mx.events.CloseEvent;
+				import mx.events.FlexEvent;
+				
+				import spark.events.IndexChangeEvent;
+				/**
+				 * 军机处选项卡
+				 * */
+				private static const  MENUSTR:Array = ['枪兵系','弓兵系','骑兵系','器材系','城防系'];
+				/**
+				 * 军机处Mediator
+				 * */
+				private var _militaryM:GrandCouncilMediator = null;
+				
+				/**
+				 * 底图容器定义
+				 * */
+				private var _bottomMap1:Bitmap = null ;
+				private var _bottomMap2:Bitmap = null ;
+				private var _currentAddMap1:Bitmap = null ;
+				private var _nextAddMap1:Bitmap = null ;
+				private var _upLvMap1:Bitmap = null ;
+				private var _lvMap1:Bitmap = null ;
+				private var _costBottomMap1:Bitmap = null ;
+				private var _bottomMap3:Bitmap = null ;
+				private var _currentAddMap2:Bitmap = null ;
+				private var _nextAddMap2:Bitmap = null ;
+				private var _upLvMap2:Bitmap = null ;
+				private var _lvMap2:Bitmap = null ;
+				private var _costBottomMap2:Bitmap = null ;
+				private var _bottomMap4:Bitmap = null ;
+				private var _currentAddMap3:Bitmap = null ;
+				private var _nextAddMap3:Bitmap = null ;
+				private var _upLvMap3:Bitmap = null ;
+				private var _lvMap3:Bitmap = null ;
+				private var _costBottomMap3:Bitmap = null ;
+				private var _marinesAttackMap:Bitmap = null ;
+				private var _spearmanDefenseMap:Bitmap = null ;
+				private var _soldierNumPicMap1:Bitmap = null ;
+				private var _costRedPicMap1:Bitmap = null ;
+				private var _costPicMap1:Bitmap = null ;
+				private var _costRedPicMap2:Bitmap = null ;
+				private var _costPicMap2:Bitmap = null ;
+				private var _costRedPicMap3:Bitmap = null ;
+				private var _costPicMap3:Bitmap = null ;
+				private var _picAttackMap:Bitmap = null ;
+				private var _picDefenseMap:Bitmap = null ;
+				private var soldierNumPic:Bitmap = null ;
+				private var _soldierNumPicMap2:Bitmap = null ;
+				private var _soldierNumMap1:Bitmap = null ;
+				private var _titleNameMap1:Bitmap = null ;
+				private var _titleNameMap2:Bitmap = null ;
+				private var _titleNameMap3:Bitmap = null ;
+				private var _titleNameMap4:Bitmap = null ;
+				private var _soldierNumMap2:Bitmap = null ;
+				
+				/***
+				 * 面板打开
+				 * */
+				override protected function onShow():void
+				{
+					if(!initialized)
+						return;
+					var value:GrandcouncilArmyVO=_militaryM.armyInfoHandler(viewMenu.selectedIndex);
+					addNumImg(value);
+				} 
+				
+				
+				/**
+				 * 资源改变
+				 * */
+				protected override function resourcesChanged():void
+				{
+					dataArray=new Vector.<Class>;
+					dataArray.push(RArmyBuild);
+				}
+				
+				
+				/**
+				 * 数据改变
+				 * */
+				protected override function onDataChange(type:String=""):void
+				{
+					switch(type)
+					{
+						case 'RArmyBuild':
+							refreshArmyBuild();
+							break;
+						default:
+							throw new Error("onDataChange" + type);
+					}
+				}
+
+				
+				/**
+				 * 选项卡切换
+				 * */
+				protected function viewMenu_changeHandler(event:IndexChangeEvent):void
+				{
+					var value:GrandcouncilArmyVO=_militaryM.armyInfoHandler(viewMenu.selectedIndex);
+					addUI(viewMenu.selectedIndex);
+					addNumImg(value);
+					addSivelNum(value);
+					btn_attack.visible = Boolean(viewMenu.selectedIndex != 4);
+				}
+				
+				/**
+				 * 攻击--点击升级按钮
+				 * */
+				protected function btn_attack_clickHandler(event:MouseEvent):void
+				{
+					_militaryM.getArmyBuildBtnClick(viewMenu.selectedIndex,1);
+					
+				}
+				
+				
+				/**
+				 * 防御--点击升级按钮
+				 * */
+				protected function btn_defend_clickHandler(event:MouseEvent):void
+				{
+					_militaryM.getArmyBuildBtnClick(viewMenu.selectedIndex,2);
+					
+				}
+				
+				
+				/**
+				 * 兵量--点击升级按钮
+				 * */
+				protected function btn_num_clickHandler(event:MouseEvent):void
+				{
+					_militaryM.getArmyBuildBtnClick(viewMenu.selectedIndex,3);
+					
+				}
+				
+				protected function viewMenu_clickHandler(event:MouseEvent):void
+				{
+					SoundManager.getInstance().musicPlay("Interface04");
+				}
+				
+				
+				/**
+				 * 面板关闭
+				 * */
+				protected function win_closeHandler(event:CloseEvent):void
+				{
+					UIMananger.getInstance().hide(this);
+				}
+				
+				/**
+				 * 面板创建完成
+				 * */
+				protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+				{  	   	 	 
+					_bottomMap1 = new Bitmap();
+					_bottomMap2 = new Bitmap();
+					_currentAddMap1 = new Bitmap();
+					_nextAddMap1 = new Bitmap();
+					_upLvMap1 = new Bitmap();
+					_lvMap1 = new Bitmap();
+					_costBottomMap1 = new Bitmap();
+					_bottomMap3 = new Bitmap();
+					_currentAddMap2 = new Bitmap();
+					_nextAddMap2 = new Bitmap();
+					_upLvMap2 = new Bitmap();
+					_lvMap2 = new Bitmap();
+					_costBottomMap2 = new Bitmap();
+					_bottomMap4 = new Bitmap();
+					_currentAddMap3 = new Bitmap();
+					_nextAddMap3 = new Bitmap();
+					_upLvMap3 = new Bitmap();
+					_lvMap3 = new Bitmap();
+					_costBottomMap3 = new Bitmap();
+					_marinesAttackMap = new Bitmap();
+					_spearmanDefenseMap = new Bitmap();
+					_soldierNumPicMap1 = new Bitmap();
+					_costRedPicMap1 = new Bitmap();
+					_costPicMap1 = new Bitmap();
+					_costRedPicMap2 = new Bitmap();
+					_costPicMap2 = new Bitmap();
+					_costRedPicMap3 = new Bitmap();
+					_costPicMap3 = new Bitmap();
+					_soldierNumPicMap2 = new Bitmap();
+					_soldierNumMap1 = new Bitmap();
+					_picAttackMap = new Bitmap();
+					_picDefenseMap = new Bitmap();
+					soldierNumPic = new Bitmap();
+					_titleNameMap1 = new Bitmap();
+					_titleNameMap2 = new Bitmap();
+					_titleNameMap3 = new Bitmap();
+					_titleNameMap4 = new Bitmap();
+					_soldierNumMap2 = new Bitmap();
+					onShow();
+					addImg();
+					var value:GrandcouncilArmyVO=_militaryM.armyInfoHandler(0);
+					addSivelNum(value);
+				}
+				
+				
+				public override function get usableCount():int
+				{
+					return 1 ;
+				}
+				
+				
+				/**
+				 * 设置mediatorUI
+				 * */
+				override public function set mediatorUI($value:AbstractMediator):void
+				{
+					_militaryM = $value as GrandCouncilMediator;
+				}
+				
+					
+				override public function get needBundleList():Array
+				{
+					var urlArr:Array = [] ;
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OFFICEDIGITAL,'0'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OFFICEDIGITAL,'1'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OFFICEDIGITAL,'2'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OFFICEDIGITAL,'3'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OFFICEDIGITAL,'4'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OFFICEDIGITAL,'5'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OFFICEDIGITAL,'6'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OFFICEDIGITAL,'7'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OFFICEDIGITAL,'8'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OFFICEDIGITAL,'9'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'0'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'1'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'2'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'3'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'4'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'5'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'6'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'7'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'8'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,'9'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.GRANDCOUNCILRED,'0'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.GRANDCOUNCILRED,'1'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.GRANDCOUNCILRED,'2'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.GRANDCOUNCILRED,'3'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.GRANDCOUNCILRED,'4'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.GRANDCOUNCILRED,'5'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.GRANDCOUNCILRED,'6'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.GRANDCOUNCILRED,'7'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.GRANDCOUNCILRED,'8'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.GRANDCOUNCILRED,'9'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.GRANDCOUNCILNUM,'0'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.GRANDCOUNCILNUM,'1'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.GRANDCOUNCILNUM,'2'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.GRANDCOUNCILNUM,'3'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.GRANDCOUNCILNUM,'4'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.GRANDCOUNCILNUM,'5'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.GRANDCOUNCILNUM,'6'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.GRANDCOUNCILNUM,'7'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.GRANDCOUNCILNUM,'8'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.GRANDCOUNCILNUM,'9'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'soldierNumPic'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'grandConcilBottom'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'panelBottom'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'marinesAttack'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'currentAdd'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'UpLvlMsg'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'nextAdd'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'costPic'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'blackBottom'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'spearmanDefense'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'soldierNum1'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'attackWord1'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'defenseWord1'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLBIG,''));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'marines'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'though'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'theCavalry'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'instrument'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'wall'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'prepare'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'thoughAttack'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'BattlePic'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'instrumentAttack'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'thoughDefense'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'defensePic'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'instrumentDefense'));
+					urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'wallDefense'));
+					return urlArr;
+
+				}
+				
+				
+				/**
+				 * 选项卡切换
+				 * */
+				private function addUI(index:int):void
+				{
+					if(index==4) 
+					{
+						currentState='other';
+						pic3.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'soldierNumPic',_soldierNumPicMap2 ));
+						type3.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'soldierNum1',_soldierNumMap1));
+					}
+                  else
+                    {
+						currentState='normal'; 
+						pic1.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,_militaryM.picAttackArr[index],_picAttackMap));
+						pic2.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,_militaryM.picDefenseArr[index],_picDefenseMap));
+						pic3.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'soldierNumPic',soldierNumPic));
+					}
+						AddTypeImg(index,true);
+				}
+				
+				
+			/**
+			 * 加载枪兵、弓兵、骑兵、器械、城墙图片
+			 * */
+				private function AddTypeImg($index:int,bool:Boolean=false):void
+				{
+					var index:int=$index;
+					if(index==4)
+					{
+						index++;  
+					}
+					type1.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,_militaryM.titleNameArr[$index],_titleNameMap1));
+					type12.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'attackWord1',_titleNameMap2));
+					type2.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,_militaryM.titleNameArr[$index],_titleNameMap3));
+					type22.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'defenseWord1',_titleNameMap4));
+					type3.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,_militaryM.titleNameArr[$index],_soldierNumMap1));
+					type32.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'soldierNum1',_soldierNumMap2));
+				}
+				
+				
+				/**
+				 * 加载所需图片 
+				 * */             
+				private function addImg():void
+				{
+					Bottom.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'grandConcilBottom',_bottomMap1));
+					Bottom1.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'panelBottom',_bottomMap2));
+					currentAdd1.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'currentAdd',_currentAddMap1));
+					nextAdd1.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'nextAdd',_nextAddMap1));
+					msg1.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'UpLvlMsg',_upLvMap1));
+					lvl1.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.LVLBIG ,'',_lvMap1));
+					costBottom.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'blackBottom',_costBottomMap1));
+					Bottom2.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'panelBottom',_bottomMap3));
+					currentAdd2.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'currentAdd',_currentAddMap2));
+					nextAdd2.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'nextAdd',_nextAddMap2));
+					msg2.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'UpLvlMsg',_upLvMap2));
+					lvl2.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.LVLBIG ,'',_lvMap2));
+					costBottom2.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'blackBottom',_costBottomMap2));
+					Bottom3.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'panelBottom',_bottomMap4));
+					currentAdd3.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'currentAdd',_currentAddMap3));
+					nextAdd3.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'nextAdd',_nextAddMap3));
+					msg3.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'UpLvlMsg',_upLvMap3));
+					lvl3.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.LVLBIG ,'',_lvMap3));
+					costBottom3.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'blackBottom',_costBottomMap3));
+					pic1.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'marinesAttack',_marinesAttackMap));
+					pic2.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'spearmanDefense',_spearmanDefenseMap));
+					pic3.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'soldierNumPic',_soldierNumPicMap1));
+					AddTypeImg(0);
+				}
+				
+				
+				/**
+				 * 等级数字刷新显示
+				 * */
+				private function addNumImg(valueVO:GrandcouncilArmyVO):void
+				{
+					lvlNum1.figureHandler(valueVO.attackLevel.toString(),MaterialKeys.LVLBIG,10);
+					lvlNum2.figureHandler(valueVO.denfenceLevel.toString(),MaterialKeys.LVLBIG,10);
+					lvlNum3.figureHandler(valueVO.numLevel.toString(),MaterialKeys.LVLBIG,10);
+					currentAddValue1.figureHandler(valueVO.attackCurrentAdd.toString(),MaterialKeys.GRANDCOUNCILNUM,10);
+					currentAddValue2.figureHandler(valueVO.denfenceCurrentAdd.toString(),MaterialKeys.GRANDCOUNCILNUM,10);
+					currentAddValue3.figureHandler(valueVO.numCurrentAdd.toString(),MaterialKeys.GRANDCOUNCILNUM,10);
+					nextAddValue1.figureHandler(valueVO.attackNextAdd.toString(),MaterialKeys.GRANDCOUNCILNUM,10);
+					nextAddValue2.figureHandler(valueVO.denfenceNextAdd.toString(),MaterialKeys.GRANDCOUNCILNUM,10);
+					nextAddValue3.figureHandler(valueVO.numNextAdd.toString(),MaterialKeys.GRANDCOUNCILNUM,10);
+					if(valueVO.attackPanelState)
+					{
+						msg1.visible=false;
+					}
+					else 
+					{
+						msg1.visible=true;
+					}
+					if(valueVO.denfencePanelState)
+					{      
+						msg2.visible=false;
+					}
+					else 
+					{
+						msg2.visible=true;
+					}
+					if(valueVO.numPanelState)
+					{
+						msg3.visible=false;
+					}
+					else 
+					{
+						msg3.visible=true;
+					}
+				}
+				
+				
+				/**
+				 * 刷新军队建设后信息
+				 * */
+				private function refreshArmyBuild():void
+				{
+					var armyBuild:RArmyBuild = SystemModelLocator.getInstance().getPropertyByVo(RArmyBuild) as RArmyBuild;
+					var value:GrandcouncilArmyVO=_militaryM.armyBuildHandler(armyBuild,viewMenu.selectedIndex);
+					SoundManager.getInstance().musicPlay("Interface14")
+					addNumImg(value);
+					addSivelNum(value);
+				}
+				
+				
+				/**
+				 * 加载玩家银两
+				 * */
+				private function addSivelNum(valueVO:GrandcouncilArmyVO):void
+				{
+					if(_militaryM.getPlayerSilverNum()<valueVO.attackCost)
+					{
+						cost1.addChild(MaterialManager.getInstance().getIcon( MaterialKeys.OTHER ,'costRedPic',_costRedPicMap1));  //图片
+						costVlue1.figureHandler(valueVO.attackCost.toString(),MaterialKeys.GRANDCOUNCILRED,10);  //数字
+					}
+					else 
+					{
+						cost1.addChild(MaterialManager.getInstance().getIcon( MaterialKeys.OTHER ,'costPic',_costPicMap1));
+						costVlue1.figureHandler(valueVO.attackCost.toString(),MaterialKeys.OFFICEDIGITAL,10); 
+					}
+					
+					if(_militaryM.getPlayerSilverNum()<valueVO.denfenceCost)
+					{
+						cost2.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'costRedPic',_costRedPicMap2));
+						costVlue2.figureHandler(valueVO.denfenceCost.toString(),MaterialKeys.GRANDCOUNCILRED,10); 
+					}
+					else 
+					{
+						cost2.addChild(MaterialManager.getInstance().getIcon( MaterialKeys.OTHER ,'costPic',_costPicMap2));
+						costVlue2.figureHandler(valueVO.denfenceCost.toString(),MaterialKeys.OFFICEDIGITAL,10); 
+					}
+					
+					if(_militaryM.getPlayerSilverNum()<valueVO.numCost)
+					{
+						cost3.addChild(MaterialManager.getInstance().getIcon( MaterialKeys.OTHER ,'costRedPic',_costRedPicMap3));
+						costVlue3.figureHandler(valueVO.numCost.toString(),MaterialKeys.GRANDCOUNCILRED,10); 
+					}
+					else 
+					{
+						cost3.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER ,'costPic',_costPicMap3));
+						costVlue3.figureHandler(valueVO.numCost.toString(),MaterialKeys.OFFICEDIGITAL,10); 
+					}
+				}
+				
+				
+			]]>
+	</fx:Script>
+	<symbols:states>
+		<s:State name="other"/>
+		<s:State name="normal"/>
+	</symbols:states>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:TitleWindow id="win" x="1" y="0" width="805" height="445" title="军机处" close="win_closeHandler(event)"/>
+	<mx:Image id="Bottom"  x="-55" y="72" width="803" height="354"/>
+	<s:TabBar id="viewMenu"  x="76" y="47" width="360" height="28" mouseDown="viewMenu_clickHandler(event)"
+			  change="viewMenu_changeHandler(event)">	
+		<s:dataProvider>
+			<s:ArrayCollection source="{MENUSTR}" />
+		</s:dataProvider>
+	</s:TabBar>
+	<s:Group visible="true" visible.other="false" x="74" y="97" width="200" height="304">
+		<mx:Image  x="2" y="-4" height="304" width="197" id="Bottom1"/>
+		<mx:Image  x="4" y="28" height="249" width="197" id="pic1"/>
+		<mx:Image  x="12" y="54" height="78" width="101" id="type1"/>
+		<mx:Image  x="102" y="54" height="78" width="98" id="type12"/>
+		<mx:Image  x="71" y="113" height="29" width="40" id="lvl1"/>
+		<symbols:FigureDisplay  x="111" y="104" height="28" width="52" id="lvlNum1"
+								maxMedian="3"/>
+		<mx:Image  x="41" y="154" height="28" width="60" id="currentAdd1"/>
+		<symbols:FigureDisplay  x="130" y="145" height="28" width="52" id="currentAddValue1"
+								maxMedian="9"/>
+		<mx:Image  x="41" y="174" height="29" width="60" id="nextAdd1"/>
+		<symbols:FigureDisplay  x="130" y="165" height="28" width="52" id="nextAddValue1"
+								maxMedian="9"/>
+		<mx:Image  x="20" y="207" height="26" width="167" id="costBottom"/>
+		<mx:Image  x="25" y="213" height="26" width="60" id="cost1"/>
+		<symbols:FigureDisplay  x="111" y="204" height="26" width="52" id="costVlue1"
+								maxMedian="10"/>
+		<s:Button x="48" y="246" width="97" height="36" label="升级"
+				  click="btn_attack_clickHandler(event)" id="btn_attack"/>
+		<mx:Image id="msg1" visible="false"  width="197" height="249"
+				  x="4" y="0"/>
+	</s:Group>
+	<s:Group x="305" y="97" width="200" height="304"
+			 x.other="161" y.other="97">
+		<mx:Image  x="2" y="-4" height="304" width="197" id="Bottom2"/>
+		<mx:Image  x="4" y="28" height="249" width="197" id="pic2"/>
+		<mx:Image  x="12" y="54" height="78" width="101" id="type2"/>
+		<mx:Image  x="102" y="54" height="78" width="98" id="type22"/>
+		<mx:Image  x="71" y="113" height="29" width="40" id="lvl2"/>
+		<symbols:FigureDisplay  x="111" y="104" height="28" width="52" id="lvlNum2"
+								maxMedian="3"/>
+		<mx:Image  x="41" y="154" height="28" width="60" id="currentAdd2"/>
+		<symbols:FigureDisplay  x="130" y="145" height="28" width="52" id="currentAddValue2"
+								maxMedian="9"/>
+		<mx:Image  x="41" y="174" height="29" width="60" id="nextAdd2"/>
+		<symbols:FigureDisplay  x="130" y="165" height="28" width="52" id="nextAddValue2"
+								maxMedian="9"/>
+		<mx:Image  x="20" y="207" height="26" width="167" id="costBottom2"/>
+		<mx:Image  x="25" y="213" height="26" width="60" id="cost2"/>
+		<symbols:FigureDisplay  x="111" y="204" height="26" width="52" id="costVlue2"
+								maxMedian="10"/>
+		<s:Button x="48" y="246" width="97" height="36" label="升级"
+				  click="btn_defend_clickHandler(event)"/>
+		<mx:Image  x="4" y="0" height="249" width="197" id="msg2" visible="false"/>
+	</s:Group>
+	<s:Group x="537" y="97" width="200" height="304"
+			 x.other="456" y.other="97">
+		<mx:Image  x="2" y="-4" height="304" width="197" id="Bottom3"/>
+		<mx:Image  x="4" y="28" height="249" width="197" id="pic3"/>
+		<mx:Image  x="12" y="54" height="78" width="101" id="type3"/>
+		<mx:Image  x="102" y="54" height="78" width="98" id="type32"/>
+		<mx:Image  x="71" y="113" height="29" width="40" id="lvl3"/>
+		<symbols:FigureDisplay  x="111" y="104" height="28" width="52" id="lvlNum3"
+								maxMedian="3"/>
+		<mx:Image  x="41" y="154" height="28" width="60" id="currentAdd3"/>
+		<symbols:FigureDisplay  x="130" y="145" height="28" width="52" id="currentAddValue3"
+								maxMedian="9"/>
+		<mx:Image  x="41" y="174" height="29" width="60" id="nextAdd3"/>
+		<symbols:FigureDisplay x="130" y="165" height="28" width="52" id="nextAddValue3"
+							   maxMedian="9"/>
+		<mx:Image  x="20" y="207" height="26" width="167" id="costBottom3"/>
+		<mx:Image  x="25" y="213" height="26" width="60" id="cost3"/>
+		<symbols:FigureDisplay  x="111" y="204" height="26" width="52" id="costVlue3"
+								maxMedian="10"/>
+		<s:Button x="48" y="246" width="97" height="36" label="升级"
+				  click="btn_num_clickHandler(event)"/>
+		<mx:Image  x="4" y="0" height="249"  id="msg3" visible="false"/>
+	</s:Group>
+</symbols:BasePanel>

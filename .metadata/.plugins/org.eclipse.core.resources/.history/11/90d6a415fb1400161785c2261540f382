@@ -1,0 +1,12 @@
+package com.starling.battle.ai
+{
+	import com.starling.battle.view.GameRoot;
+
+	public class BattleField
+	{
+		public var battleContainer:GameRoot ;
+		public function BattleField()
+		{
+		}
+	}
+}

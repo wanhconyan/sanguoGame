@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	project: sangocraft_Web
+	@class: BarracksList
+	@author: zhouyan
+	@usage: 自定义下拉列表
+	@since: 2013-9-18
+	@modified: 2013-9-18
+	@modifier: zhouyan
+-->
+
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   width="75" height="20"
+				   creationComplete="basepanel1_creationCompleteHandler(event)" currentState="down">
+	<fx:Metadata>
+		[Event(name="listChange", type="flash.events.Event")]
+	</fx:Metadata>
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.barracks.mediator.IUIOperatableBarracksMediator;
+			import cn.sevencool.sangocraft.data.manager.utils.MediatorUtil;
+			import cn.sevencool.sangocraft.data.symbols.CommonData;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.web.ui.barracks.mediator.BarracksMediator;
+			
+			import mx.events.FlexEvent;
+			
+			import spark.skins.spark.ImageSkin;
+			
+			/**
+			 * 兵营Mediator
+			 * */
+			private var _militaryM:BarracksMediator= null;
+			
+			/**
+			 * 点击前的显示数字
+			 * */
+			private var oldArr:Array = [];
+			
+			/**
+			 * 装载图片的容器
+			 * */
+			private var _imgMap1:Bitmap = null;
+			private var _imgMap2:Bitmap = null;
+			private var _imgMap3:Bitmap = null;
+			private var _imgMap4:Bitmap = null;
+			
+			private var _currentSelect:Array = [];
+			/**
+			 * 默认排序
+			 * 兵种1
+			 * 兵量2
+			 * 攻击3
+			 * 防御4
+			 * */
+			public function get currentSelect():Array
+			{
+				return _currentSelect;
+			}
+			
+			/**
+			 * @private
+			 */
+			public function set currentSelect(value:Array):void
+			{
+				_currentSelect = value;
+				 img_1.addChild( MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'dropDownList_'+value[0],_imgMap1) );
+				 img_2.addChild( MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'dropDownList_'+value[1],_imgMap2) );
+				 img_3.addChild( MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'dropDownList_'+value[2],_imgMap3) );
+				 img_4.addChild( MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'dropDownList_'+value[3],_imgMap4) ); 
+				oldArr = value.concat();
+			}
+			
+			/**
+			 * 点击舞台的处理
+			 * */
+			protected function setState(evt:MouseEvent):void
+			{
+				if((evt.target is ImageSkin && evt.target.parent.parentDocument is BarracksList)
+					|| (evt.target is Button && evt.target.parent is BarracksList))
+				{
+					return;
+				}
+				if(currentState=='up')
+				{
+					currentState='down';
+					back_light.visible = false ;
+				}
+			}
+
+			/**
+			 * 面板创建完成
+			 * */
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_imgMap1 = new Bitmap();
+				_imgMap2 = new Bitmap();
+				_imgMap3 = new Bitmap();
+				_imgMap4 = new Bitmap();
+				currentState='down';
+				back_light.visible = false ;
+				_militaryM=MediatorUtil.getMediatorByInterface(IUIOperatableBarracksMediator);
+				CommonData.stage.addEventListener(MouseEvent.CLICK , setState) ;
+				currentSelect = [1,2,3,4];
+			}
+			
+			/**
+			 * 点击下拉框
+			 * */
+			protected function btn_clickHandler(event:MouseEvent):void
+			{
+				switch(currentState)
+				{
+					case 'up':
+					{
+						currentState='down';
+						back_light.visible = false ;
+						break;
+					}
+					case 'down':
+					{
+						currentState='up';
+						break;
+					}
+					default:
+					{
+						throw new Error('btn_clickHandler' + currentState);
+					}
+				}
+			}
+
+
+			/**
+			 * 图片被点击
+			 * */
+			protected function img_clickHandler(event:MouseEvent):void
+			{
+				var img:* = event.currentTarget;
+				var indx:int = int(img.id.charAt(img.id.length-1))-1;
+				if(indx == 0)
+				{
+					currentState = 'up';
+				}else{
+					currentState='down';
+					back_light.visible = false ;
+				}
+				var targetID:int =  oldArr[indx];
+				oldArr.splice(indx, 1);
+				oldArr.unshift(targetID);
+				
+				var changeBool:Boolean = false ;
+				var len:int=oldArr.length;
+				for(var i:int = 0 ; i < len ;i++ )
+				{
+					if(oldArr[i] != currentSelect[i])
+					{
+						changeBool = true;
+					}
+				}
+				if(changeBool)
+				{
+					currentSelect = oldArr ;
+					this.dispatchEvent(new Event("listChange"));
+				}
+			}
+			
+			protected function img_mouseOverHandler(event:MouseEvent):void
+			{
+				var img:* = event.currentTarget;
+				var indx:int = int(img.id.charAt(img.id.length-1))-1;
+				if(currentState == 'up')
+				{
+					back_light.visible = true ;
+					back_light.y = indx*19;
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<symbols:layout>
+		<s:BasicLayout/>
+	</symbols:layout>
+	<symbols:states>
+		<s:State name="up"/>
+		<s:State name="down"/>
+	</symbols:states>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	
+	<s:BitmapImage smooth="true"
+					source="@Embed('../../../../../../assets/images/dropDownList/bottom.png')"/>
+
+	<s:VGroup visible="false" width="58"  x="0" y="19" gap="0"
+			  visible.up="true">
+		<s:BitmapImage smooth="true"
+						source="@Embed('../../../../../../assets/images/dropDownList/bottom.png')"/>
+		<s:BitmapImage smooth="true"
+						source="@Embed('../../../../../../assets/images/dropDownList/bottom.png')"/>
+		<s:BitmapImage smooth="true"
+						source="@Embed('../../../../../../assets/images/dropDownList/bottom.png')"/>
+	</s:VGroup>
+	
+	<s:Button id="btn" x="57" y="0" click="btn_clickHandler(event)"
+			  skinClass.down="cn.sevencool.sangocraft.web.skin.dropDownList.DropDownListDownSkin"
+			  skinClass.up="cn.sevencool.sangocraft.web.skin.dropDownList.DropDownListUpSkin"/>
+	<s:BitmapImage smooth="true" id="back_light" visible="false"
+				   source="@Embed('../../../../../../assets/images/dropDownList/over.png')"/>
+	<mx:Image id="img_1" click="img_clickHandler(event)"
+			 width="56" height="18"  mouseOver="img_mouseOverHandler(event)"/>
+	<s:VGroup visible="false" width="58"  x="0" y="19" gap="0"
+			 visible.up="true" >
+		<mx:Image id="img_2" click="img_clickHandler(event)"
+				 mouseOver="img_mouseOverHandler(event)"
+				 width="56" height="18"/>
+		<mx:Image id="img_3" click="img_clickHandler(event)"
+				 mouseOver="img_mouseOverHandler(event)"
+				 width="56" height="18"/>
+		<mx:Image id="img_4" click="img_clickHandler(event)"
+				 mouseOver="img_mouseOverHandler(event)"
+				 width="56" height="18"/>
+	</s:VGroup>
+</symbols:BasePanel>

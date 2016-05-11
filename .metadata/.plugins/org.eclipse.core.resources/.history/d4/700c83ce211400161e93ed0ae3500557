@@ -1,0 +1,7 @@
+package com.starling.battle.view.unit
+{
+	public interface IDisplayUnit
+	{
+		
+	}
+}

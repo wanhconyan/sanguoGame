@@ -1,0 +1,9 @@
+package com.module.battle
+{
+	public class BattleModule extends BaseModule
+	{
+		public function BattleModule()
+		{
+		}
+	}
+}

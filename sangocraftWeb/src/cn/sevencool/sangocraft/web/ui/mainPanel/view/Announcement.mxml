@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	project: sangocraft_Web
+	@class: Announcement
+	@author: zhouyan
+	@usage: 公告显示
+	@since: 2013-9-9
+	@modified: 2013-9-9
+	@modifier: zhouyan 
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   mouseFocusEnabled="false"  mouseEnabled="false"
+				   focusEnabled="false" mouseChildren="false"
+				   width="1000" height="27">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.ui.mainPanel.mediator.MainPanelMediator;
+			
+			import mx.events.FlexEvent;
+			import mx.events.ResizeEvent;
+			import flash.filters.GlowFilter;
+			
+			private var _mediatorUI:MainPanelMediator = null;
+			override public function set mediatorUI($value:AbstractMediator):void
+			{
+				_mediatorUI = $value as MainPanelMediator;
+			}
+			
+			/**
+			 * 公告显示字体颜色
+			 * @param $str显示文字
+			 * */
+			public function set setData($str:String):void
+			{
+				txt.htmlText = $str;
+			}
+			
+			
+			protected function basepanel1_resizeHandler(event:Event):void
+			{
+				setLocation();
+			}
+			
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				this.stage.addEventListener(Event.RESIZE,basepanel1_resizeHandler);
+				setLocation();
+			}
+			
+			
+			internal function setLocation():void
+			{
+				var centerX:Number = UIMananger.getInstance().container.width / 2 ;
+				var centerY:Number = UIMananger.getInstance().container.height / 2 ;
+				var tx:int = centerX - this.width / 2 ;
+				var ty:int = centerY - this.height / 2 ;
+				if(tx < 0){
+					tx = 0 ;
+				}
+				if(ty < 0){
+					ty = 0 ;
+				}
+				this.x = tx;
+				this.y = ty;
+				txt.y = -190 ;
+			}
+			
+			override public function get type():int
+			{
+				return UIMananger.TYPE_CHAT;
+			}
+			
+		]]>
+	</fx:Script>
+	<symbols:layout>
+		<s:BasicLayout/>
+	</symbols:layout>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<mx:Text id="txt" width="100%" color="#FE0101" textAlign="center"
+			 filters="{[new GlowFilter(0,100,2,2,5,1,false,false)]}" fontSize="17"/>
+</symbols:BasePanel>

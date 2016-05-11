@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				width="209" height="126" autoDrawBackground="false"
+				xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				click="sp_clickHandler(event)"
+				mouseOver="itemrenderer1_mouseOverHandler(event)"
+				mouseOut="itemrenderer1_mouseOutHandler(event)"
+				creationComplete="itemrenderer1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.events.BeginnersGuideEvent;
+			import cn.sevencool.sangocraft.data.manager.utils.MediatorUtil;
+			import cn.sevencool.sangocraft.data.symbols.ItemsManager;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.data.symbols.material.factory.ImageFactory;
+			import cn.sevencool.sangocraft.data.vo.ItemDescription;
+			import cn.sevencool.sangocraft.data.vo.ReinDisplayVO;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.symbols.ItemMenuPopup;
+			import cn.sevencool.sangocraft.web.ui.beginnersGuide.mediator.BeginnersGuideMediator;
+			import cn.sevencool.sangocraft.web.ui.reinforce.mediator.ReinforceMediator;
+			
+			import mx.events.FlexEvent;
+			
+			import spark.filters.GlowFilter;
+			
+			/**
+			 * 菜单栏
+			 * */
+			private var _menu:ItemMenuPopup = null;			
+			
+			/**
+			 * 后端数据 VO
+			 * */
+			private var _reinforceVo:ReinDisplayVO = null;
+				
+			/**
+			 * 援军Mediator
+			 * 
+			 * */
+			private var _reinforceMediator:ReinforceMediator = null;
+			
+			/**
+			 * 物品描述
+			 * */
+			private var _item:ItemDescription = null ; 
+			
+			private var _rein:ReinforcePanel = null;
+			
+			private var _border:Bitmap = null;
+			
+			override public function set data(value:Object):void
+			{
+				if(value is ReinDisplayVO){
+					_reinforceVo = value as ReinDisplayVO;
+				}
+				super.data = value;
+				
+				var reinforcePanel:ReinforcePanel = this.parentDocument as ReinforcePanel;
+				_reinforceMediator = reinforcePanel.mediator;
+				
+				switch(_reinforceMediator.refreshIndex)
+				{
+						
+					case 2:
+					{
+						refreshAttack.visible = refreshDefense.visible = false;
+						refreshnSoldierNumber.visible = Boolean(reinforcePanel.refreshCount == 1);
+						img_lvSmall.visible = lv_small.visible = !Boolean(reinforcePanel.refreshCount == 1);
+						break;
+					}
+					case 3:
+					{
+						refreshnSoldierNumber.visible = refreshDefense.visible = false;
+						refreshAttack.visible = Boolean(reinforcePanel.refreshCount == 1);
+						img_lvSmall.visible = lv_small.visible = !Boolean(reinforcePanel.refreshCount == 1);
+						break;
+					}
+					case 4:
+					{
+						refreshnSoldierNumber.visible = refreshAttack.visible = false;
+						refreshDefense.visible = Boolean(reinforcePanel.refreshCount == 1);
+						img_lvSmall.visible = lv_small.visible = !Boolean(reinforcePanel.refreshCount == 1);
+						break;
+					}
+					default:
+					  {
+						refreshDefense.visible = refreshAttack.visible = refreshnSoldierNumber.visible =  false;
+						img_lvSmall.visible = lv_small.visible = true;
+					}  
+				}
+				
+				lv_big.figureHandler(_reinforceVo.btLevel.toString(),MaterialKeys.LVLBIG,10);
+				if(!_item || _reinforceVo.nCommanderId != _item.nID)
+				{
+					_item = ItemsManager.getInstance().ItemInfo[_reinforceVo.nCommanderId];
+					lbl_name.text = _item.szName;
+					sp.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.BIG_HEAD , _item.nHeadId.toString()));
+					soldierType.solderType = _item.nArmType;
+				}
+				
+				lab_name.text = _reinforceVo.szName;
+				
+				refreshnSoldierNumber.figureHandler(_reinforceVo.nSoldierNumber.toString(),MaterialKeys.BARRCKSATTRIBUTE,8,-1);
+				refreshAttack.figureHandler(_reinforceVo.nAttack.toString(),MaterialKeys.BARRCKSATTRIBUTE,8,-1);
+				refreshDefense.figureHandler(_reinforceVo.nDefense.toString(),MaterialKeys.BARRCKSATTRIBUTE,8,-1);
+				lv_small.figureHandler(_reinforceVo.btCommanderLevel.toString(),MaterialKeys.LVLSMALL,6,-1);
+				theType( _reinforceVo.btType);	
+				
+			}
+
+			
+			/**
+			 * 点击头像
+			 * */
+			protected function sp_clickHandler(event:MouseEvent):void
+			{
+				_rein.showAlitialsInfo(_reinforceVo);
+				var beginnersGuideMediator:BeginnersGuideMediator = MediatorUtil.getMediatorByInterface(BeginnersGuideMediator);
+				beginnersGuideMediator.BEGINNERSGUIDEEVENTDISPATCHER.dispatchEvent(new BeginnersGuideEvent(BeginnersGuideEvent.HIDEGUIDE));
+			}
+			
+			protected function itemrenderer1_creationCompleteHandler(event:FlexEvent):void
+			{
+				frame.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'frame1'));
+				titleBottom.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'titleBottom'));
+				img_lvlBig.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.LVLBIG,''));
+				friendArmyDot.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'reginPoint'));
+				generalCell.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'generalCell'));
+				generalName.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'generalName'));
+				img_lvSmall.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.LVLSMALL , ''));
+		
+				_rein =  UIMananger.getInstance().getUIObj(ReinforcePanel) as ReinforcePanel;
+				_border = new Bitmap();
+				var url:String = MaterialManager.getInstance().getURL(MaterialKeys.OTHER,"reinOver");
+				ImageFactory.getBitmap(url,_border);
+				_border.addEventListener(Event.COMPLETE,onBorderComplete);
+			}
+			
+			private function onBorderComplete(e:Event):void
+			{
+				img_over.source = _border ;
+			}
+			
+			
+			/**
+			 * 援军、义军 判断
+			 * @$temp 援军类型
+			 * */			
+			private function theType($temp:int):void
+			{	
+				if(selectType($temp) == reinforceDot.figure)
+				{
+					return ;
+				}
+				switch($temp)
+				{
+					case 1:
+						friendArmy.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'friendArmy'));
+						txt_dot.text = '10';
+						reinforceDot.figureHandler(txt_dot.text,MaterialKeys.LVLBIG,10);
+						break;
+					case 2:
+						friendArmy.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,'volArmy'));
+						txt_dot.text = '5';
+						reinforceDot.figureHandler(txt_dot.text,MaterialKeys.LVLBIG,10);
+						break;
+					default:
+						throw new Error('theType' + $temp);					
+				}				
+			}
+			
+			/**
+			 * 援军、义军 判断
+			 * @$type 援军类型
+			 * */
+			internal function selectType($type:int):int
+			{
+				var type:int = -1 ;
+				switch($type)
+				{
+					case 1:
+					{
+						type = 10 ;
+						break;
+					}
+					case 2:
+					{
+						type = 5 ;
+						break;
+					}
+					default:
+					{
+						throw new Error('selectType' + $type) ;
+					}
+				}
+				return type ;
+			}
+			
+			protected function itemrenderer1_mouseOverHandler(event:MouseEvent):void
+			{
+				img_over.visible = true;
+			}
+			
+			protected function itemrenderer1_mouseOutHandler(event:MouseEvent):void
+			{
+				img_over.visible = false;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+	</fx:Declarations>
+	<s:Group y="2" width="209" height="126" horizontalCenter="0">
+		<s:Group x="74" y="1" width="122" height="96">
+			<mx:Image id="frame" x="6" y="0"/>
+			<mx:Image id="titleBottom" x="14" y="9"/>
+			<mx:Image id="friendArmy" x="23" y="45" height="8"/>
+			<mx:Image id="img_lvlBig" x="83" y="44" width="22" height="21"/>
+			<symbols:FigureDisplay id="lv_big" x="115" y="35" width="16" height="15"  maxMedian="3"/>
+			<mx:Image id="friendArmyDot" x="27" y="76"/>
+			<symbols:FigureDisplay id="reinforceDot" x="104" y="62" width="15" height="13"  maxMedian="6"/>
+			<mx:Text id="txt_dot" x="96" y="62" width="15" height="13" visible="false"/>
+			<s:Label id="lab_name" x="6" y="14" width="137" height="20" fontSize="14" color="0xeee6dc"
+					 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"
+					 text="玩家名字比较长" textAlign="center" verticalAlign="middle"/>
+		</s:Group>
+		<s:Group x="2" y="0" width="69" height="96">
+			<mx:Image id="generalCell"/>
+			<mx:Image id="generalName" x="5" y="80" height="14"/>
+			<s:SpriteVisualElement x="9" y="12" width="46" height="42" id="sp" />
+			<mx:Image id="img_lvSmall" x="34" y="59" width="21" height="20"/>
+			<symbols:FigureDisplay id="refreshnSoldierNumber" x="60" y="49" width="15" height="14"  maxMedian="10"/>	
+			<symbols:FigureDisplay id="refreshAttack" x="60" y="49" width="15" height="14"  maxMedian="10"/>	
+			<symbols:FigureDisplay id="refreshDefense" x="60" y="49" width="15" height="14"  maxMedian="10"/>	
+			<symbols:FigureDisplay id="lv_small" x="60" y="49" width="15" height="14"  maxMedian="3"/>	
+		<!--	
+			<s:Label id="img_lvSmall" x="34" y="59" width="21" height="20" text="Lv"/>
+			<s:Label id="refreshNum" x="60" y="49" width="15" height="14"/>	
+			<s:Label id="lv_small" x="60" y="49" width="15" height="14"/>	
+			-->
+			<symbols:SolderType x="8" y="10" id="soldierType"/>
+			<s:Label id="lbl_name" x="28" y="85" color="0xa2a3b8"
+					 filters="{[new spark.filters.GlowFilter(0, 100, 2, 2, 5,1, false, false)]}"
+					 textAlign="center" verticalAlign="middle"/>
+		</s:Group>
+	</s:Group>
+	<s:Image id="img_over" horizontalCenter="13" verticalCenter="-8" visible="false"/>
+</s:ItemRenderer>

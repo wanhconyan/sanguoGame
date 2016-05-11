@@ -1,0 +1,399 @@
+package  com.core.manager
+{
+	import com.core.Global;
+	import com.core.util.plist.PList;
+	
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display.Loader;
+	import flash.display.LoaderInfo;
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.events.FileListEvent;
+	import flash.filesystem.File;
+	import flash.filesystem.FileMode;
+	import flash.filesystem.FileStream;
+	import flash.geom.Matrix;
+	import flash.net.FileFilter;
+	import flash.utils.ByteArray;
+	import flash.utils.Endian;
+	
+	import mx.controls.Alert;
+	import mx.graphics.codec.PNGEncoder;
+	
+	import spark.core.SpriteVisualElement;
+	
+	public class FileManagers extends EventDispatcher
+	{
+		private var docsDir:File = File.documentsDirectory;
+		
+		private var objFilter:FileFilter = new FileFilter("Map", "*.bmap;");
+		
+		private var plistFilter:FileFilter = new FileFilter("plist", "*.plist;*.png");
+		
+		private var bmpFilter:FileFilter = new FileFilter("Image", "*.jpg;*.png;*.gif");
+		
+		public var boatModelByte:ByteArray;
+		
+		public var bmpLoader:Loader = new Loader();
+		
+		public var fileUrl:String;
+		
+		private var modelFile:File;
+		
+		public var container:SpriteVisualElement ;
+		
+		public var bmpData:Bitmap ;
+		
+		public function FileManagers( access:Private ):void
+		{
+			if ( access != null )
+			{				
+				if ( instance == null )
+				{				
+					instance = this;
+					this.init();
+				}
+			}
+			else
+			{
+				throw new Error( "Singleton Class" );
+			}
+		}
+		
+		/** 定义单例模式的getInstance方法 */
+		public static function getInstance():FileManagers
+		{
+			if ( instance == null )
+			{
+				instance = new FileManagers( new Private() );
+			}
+			
+			return instance;
+		}
+		
+		/** 单例模式 */
+		private static var instance:FileManagers;
+		
+		private function init():void
+		{
+			
+		}
+		
+		public function save(data:ByteArray):void
+		{
+			var stream:FileStream = new FileStream();
+			stream.open(modelFile, FileMode.WRITE);
+			stream.writeBytes(data);
+			stream.close();
+		}
+		
+		private var _data:ByteArray;
+		
+		private var _extension:String;
+		public function saveAs(data:ByteArray,extension:String):void
+		{
+			_data = data;
+			_extension = extension;
+			try
+			{
+				docsDir.browseForSave("Save As " + _extension);
+				docsDir.addEventListener(Event.SELECT, saveData);
+			}
+			catch (error:Error)
+			{
+				trace("Failed:", error.message);
+			}
+			
+		}
+		
+		
+		public function savePngAs(data:ByteArray,fileName:String):void
+		{
+			var newFile:File = new File();
+			newFile.url = Global.LOCAL_UR + "/effect/" + fileName ;
+			trace("saveDataas " + fileName);
+			var stream:FileStream = new FileStream();
+			stream.open(newFile, FileMode.WRITE);
+			stream.writeBytes(data,0,data.bytesAvailable);
+			stream.close();
+		}
+		
+		public function saveDataAs(data:ByteArray,fileName:String):void
+		{
+			var newFile:File = new File();
+			newFile.url = fileName ;
+			trace("saveDataas " + fileName);
+			var stream:FileStream = new FileStream();
+			stream.open(newFile, FileMode.WRITE);
+			stream.writeBytes(data,0,data.bytesAvailable);
+			stream.close();
+			compressSource();
+		}
+		
+		
+		private function saveData(event:Event):void 
+		{
+			//隐藏loading
+			var newFile:File = event.target as File;
+			if (!newFile.exists)
+			{
+				newFile.url += "." + _extension;
+			}
+			var stream:FileStream = new FileStream();
+			stream.open(newFile, FileMode.WRITE);
+			stream.writeBytes(_data);
+			stream.close();
+			
+			//隐藏loading
+		}
+		
+		public function openMod():void
+		{
+			var fileToOpen:File = new File();
+			try 
+			{
+				fileToOpen.browseForOpen("Open", [objFilter]);
+				fileToOpen.addEventListener(Event.SELECT, fileSelected);
+			}
+			catch (error:Error)
+			{
+				trace("Failed:", error.message);
+			}
+		}
+		
+		
+		private function fileSelected(event:Event):void 
+		{
+			modelFile = event.currentTarget as File;
+			fileUrl = modelFile.url;
+			boatModelByte = new ByteArray()
+			var stream:FileStream = new FileStream();
+			stream.open(modelFile, FileMode.READ);
+			stream.readBytes(boatModelByte,0,stream.bytesAvailable);
+			stream.readUTF();
+			this.dispatchEvent(new Event(Event.COMPLETE));
+		}
+		
+		public function openImg():void
+		{
+			var fileToOpen:File = new File();
+			try 
+			{
+				fileToOpen.browseForOpen("Open", [bmpFilter]);
+				fileToOpen.addEventListener(Event.SELECT, imgSelected);
+			}
+			catch (error:Error)
+			{
+				trace("Failed:", error.message);
+			}
+			
+		}
+		
+		
+		
+		
+		
+		public function openFloder():void
+		{
+			var floder:File = new File();
+			floder.browseForDirectory("选择需要压缩的文件夹");
+			floder.addEventListener(Event.SELECT,onFloderSelect);	
+			
+		}
+		
+		
+		private var targetFloderFiles:Array = [];
+		protected function onFloderSelect(event:Event):void
+		{
+			var targetFloder:File = event.currentTarget as File ;
+			if(targetFloder.isDirectory)
+			{
+				targetFloderFiles =  targetFloder.getDirectoryListing();
+				for each(var file :File in targetFloderFiles)
+				{
+					if(file.extension == "obj")
+					{
+						file.deleteFile();
+					}
+				}
+				compressSource();
+			}
+			
+		}		
+		
+		
+		
+		private var targetFile:File ;
+		private var compareFile:File;
+		private function compressSource():void
+		{
+			loadount =  0 ;
+			if(targetFloderFiles.length == 0)
+			{
+				Alert.show("compressComplete");
+				return ;
+			}
+			var i:int = 0  ;
+			targetFile = targetFloderFiles.pop() ;
+			var len:int = targetFloderFiles.length
+			targetFile.addEventListener(Event.COMPLETE,onComplete);
+			targetFile.load() ;
+			for(i = 0 ; i < len ; i ++)
+			{
+				compareFile = targetFloderFiles[i] ;
+				if(compareFile == null)
+				{
+					continue ;
+				}
+				if(compareUrl(compareFile,targetFile))
+				{
+					targetFloderFiles.splice(i,1);
+					
+					//					len = targetFloderFiles.length ;
+					break;
+				}
+			}
+			compareFile.load() ;
+			compareFile.addEventListener(Event.COMPLETE,onComplete);
+			
+			
+			
+			
+			
+		}
+		
+		private var loadount:int = 0 ;
+		protected function onComplete(event:Event):void
+		{
+			// TODO Auto-generated method stub
+			loadount ++ ;
+			
+			var target:File = (event.target as File) ;
+			var fileName:String = target.url.substr(0,target.url.length-3) + "obj";
+			//			if(target.hasEventListener(Event.COMPLETE))
+			//				target.removeEventListener(Event.COMPLETE,onComplete);
+			if(loadount >= 2)
+			{
+				var byte:ByteArray = new ByteArray();
+				byte.endian = Endian.LITTLE_ENDIAN ;
+				//				byte.writeUTF("7road");
+				if(targetFile.extension == "xml")
+				{
+					byte.writeInt(targetFile.data.bytesAvailable);
+					byte.writeBytes(targetFile.data);
+					byte.writeInt(compareFile.data.bytesAvailable);
+					byte.writeBytes(compareFile.data);
+				}else
+				{
+					byte.writeInt(compareFile.data.bytesAvailable);
+					byte.writeBytes(compareFile.data);
+					byte.writeInt(targetFile.data.bytesAvailable);
+					byte.writeBytes(targetFile.data);
+				}
+				byte.compress();
+				saveDataAs(byte,fileName);
+			}
+			
+		}
+		
+		private function compareUrl(targetA:File,targetB:File):Boolean
+		{
+			var urlA:String = targetA.url ;
+			var urlB:String = targetB.url ;
+			return urlA.substr(0,urlA.length - 3) == urlB.substr(0,urlB.length - 3) ;
+		}
+		
+		private function imgSelected(event:Event):void 
+		{
+			var file:File = event.currentTarget as File;
+			fileUrl = file.url;
+			var bmpByte:ByteArray = new ByteArray()
+			var stream:FileStream = new FileStream();
+			stream.open(event.target as File, FileMode.READ);
+			stream.readBytes(bmpByte,0,stream.bytesAvailable);
+			bmpLoader.loadBytes(bmpByte);
+			if(!bmpLoader.hasEventListener(Event.COMPLETE))
+			{
+				bmpLoader.contentLoaderInfo.addEventListener(Event.COMPLETE,imgLoadcompleteHandler);
+			}
+		}
+		
+		
+		private function imgLoadcompleteHandler(event:Event):void
+		{
+			bmpData = (event.target as LoaderInfo).content as Bitmap ;
+			this.dispatchEvent(new Event(Event.COMPLETE));
+		}
+		
+		/**
+		 *打开需要还原的资源 
+		 */		
+		public function openRefineFile():void
+		{
+			var fileToOpen:File = new File();
+			try 
+			{
+				refineFiles = [];
+				fileToOpen.browseForOpenMultiple("open",[plistFilter]);
+				fileToOpen.addEventListener(FileListEvent.SELECT_MULTIPLE, onOPenRefineFile);
+			}
+			catch (error:Error)
+			{
+				trace("Failed:", error.message);
+			}
+		}
+		
+		
+		
+		/**
+		 *需要还原的文件数组 
+		 */		
+		private var refineFiles:Array = [];
+		
+		private var refineBmp:BitmapData;
+		
+		private var config:XML ;
+		
+		private var anysisCount:int ;
+		
+		private var refineUrl:String ;
+		/**
+		 * 选中需要还原的资源 
+		 * @param event
+		 */		
+		protected function onOPenRefineFile(event:FileListEvent):void
+		{
+			
+			refineFiles = event.files ;
+			var byteArray:ByteArray = new ByteArray();
+			
+			var stream:FileStream = new FileStream();
+			for each(var file:File in refineFiles)
+			{
+				if(file.extension =="png")
+				{
+					var loader:Loader = new Loader();
+					loader.contentLoaderInfo.addEventListener(Event.COMPLETE,onLoadPngComplete);
+					stream.open(file, FileMode.READ);
+					stream.readBytes(byteArray,0,stream.bytesAvailable);
+					
+					loader.loadBytes(byteArray);
+				}else if(file.extension == "plist")
+				{
+					
+					stream.open(file, FileMode.READ);
+					stream.readBytes(byteArray,0,stream.bytesAvailable);
+					config = XML(byteArray) ;
+					onLoadPngComplete();
+				}
+			}
+			
+			
+			
+		}
+		
+	}
+	
+}
+class Private {}

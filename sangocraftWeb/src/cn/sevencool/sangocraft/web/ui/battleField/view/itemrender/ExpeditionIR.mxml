@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				xmlns:battle="com.sevencool.rtslogic.ai.teamai.battle.*"
+				height="195" autoDrawBackground="false" buttonMode="true"
+				dataChange="itemrenderer1_dataChangeHandler(event)"
+				width.complete="162" width.unComplete="162" 
+				creationComplete="itemrenderer1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.data.vo.ChapterParam;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.symbols.FigureDisplay;
+			import cn.sevencool.sangocraft.web.ui.battleField.mediator.BattleFieldMediator;
+			import cn.sevencool.sangocraft.web.ui.battleField.view.ExpeditionPanel;
+			
+			import mx.events.FlexEvent;
+			
+			import spark.filters.GlowFilter;
+			
+			private var chap:ChapterParam  = null ; 
+			
+			private var _warBar:Bitmap = null;
+			private var _discriptionBar:Bitmap = null;
+			private var _img_over:Bitmap = null;
+			private var _finish:Bitmap = null;
+			private var _numMark:Bitmap = null;
+			private var _img_back:Bitmap = null;
+			private var _bottom:Bitmap = null;
+			private var _img_notUse:Bitmap = null;
+			private var _img_state1:Bitmap = null;
+			private var _img_state2:Bitmap = null;
+			
+			protected function itemrenderer1_dataChangeHandler(event:FlexEvent):void
+			{
+				chap = data as ChapterParam;
+				if(!chap)
+				{
+					return ;
+				}
+				
+				if(chap.btFactor == 100)
+				{
+					setVisable();
+					lbl_chapter.setStyle("color","0x54b300");
+					num.figureHandler(chap.btFactor.toString(),MaterialKeys.COMPLETENUM,15,-1);
+					loadCompelteUI();
+				}else if(chap.btFactor <100 && chap.btFactor != 0||chap.isOpen )
+				{
+					setVisable();
+					lbl_chapter.setStyle("color","0xde0000");
+					num.figureHandler(chap.btFactor.toString(),MaterialKeys.COMPLETENUM,15,-1);
+					
+					loadCompelteUI();
+				}else
+				{
+					setVisable(false);
+					lbl_chapter.setStyle("color","0x838383");
+				}
+				addImg();
+				
+				lbl_chapter.text = chap.szChapterName ;
+				if(chap.festivalDes == '')
+				{
+					awardBottom.visible = false;
+					lbl_des.visible = false;
+					
+				}else
+				{
+					awardBottom.visible = true;
+					lbl_des.visible = true;
+					lbl_des.text = chap.festivalDes ;
+				}
+				
+				loadUI();
+			}
+			
+			private function loadUI():void
+			{
+				if(chap.btFactor==100){
+					currentState='complete';
+					
+					
+				}else {
+					currentState='unComplete';
+				}
+				if(!chap.isOpen)
+				{
+					img_notUse.visible = true;
+					/* while(img_notUse.numChildren !=0)
+					{
+					img_notUse.removeChildAt(0);
+					} */
+					img_notUse.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,"cannotUse",_img_notUse));
+				}else
+				{
+					img_notUse.visible = false;
+				}
+			}
+			
+			/**
+			 * 设置完成度
+			 * */
+			private function setVisable($bool:Boolean = true):void
+			{
+				numMark.visible = $bool;
+				num.visible = $bool;
+				finish.visible = $bool;
+				img_state.visible = !$bool; 
+			}
+			
+			
+			/**
+			 * 加载人物图片
+			 * */
+			private function addImg():void
+			{
+				img_back.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.FIGHTCHAPTERBACK,chap.nChapterID.toString(),_img_back));
+				if(bottom.numChildren == 0)
+				{
+					bottom.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,"battleBar",_bottom));
+				}
+			}
+			
+			
+			/**
+			 * 加载完成度信息
+			 * */
+			private function loadCompelteUI():void
+			{
+				/* while(finish.numChildren != 0)
+				{
+				finish.removeChildAt(0);
+				}
+				if(numMark.numChildren != 0)
+				{
+				numMark.removeChildAt(0);
+				
+				}
+				*/
+				finish.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.COMPLETENUM,"complete",_finish));
+				numMark.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.COMPLETENUM,"percent",_numMark));
+			}
+			
+			
+			/**
+			 * 点击图片弹出相应的面板
+			 * */
+			protected function itemrenderer1_clickHandler(event:MouseEvent):void
+			{
+				if(!chap.isOpen)
+				{
+					return ;
+				}else
+				{
+					var expeditionPanel:ExpeditionPanel= UIMananger.getInstance().getUIObj(ExpeditionPanel) as ExpeditionPanel;
+					var _mediator:BattleFieldMediator  = expeditionPanel.mediatorUI as BattleFieldMediator;
+					
+					var isPass:Boolean = chap.btFactor == 100 ? true:false ;
+					
+					_mediator.chapterLevelInfo(chap.nChapterID,0,isPass);
+					
+				}
+				
+			}
+			
+			
+			protected function itemrenderer1_mouseOverHandler(event:MouseEvent):void
+			{
+				
+				if(img_over.numChildren ==0)
+				{
+					img_over.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,"battleOver",_img_over));
+				}else
+				{
+					img_over.visible = true;
+				}
+			}
+			
+			protected function itemrenderer1_mouseOutHandler(event:MouseEvent):void
+			{
+				img_over.visible = false;
+			}
+			
+			/**
+			 * 完成
+			 * */
+			protected function itemrenderer1_creationCompleteHandler(event:FlexEvent):void
+			{
+				_warBar = new Bitmap();
+				_discriptionBar = new Bitmap();
+				_img_over = new Bitmap();
+				_finish = new Bitmap();
+				_numMark = new Bitmap();
+				_img_back = new Bitmap();
+				_bottom = new Bitmap();
+				_img_notUse = new Bitmap();
+				_img_state1 = new Bitmap();
+				_img_state2 = new Bitmap();
+				tilteBottom.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,"warBar",_warBar));
+				awardBottom.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,"discriptionBar",_discriptionBar));
+				img_state1.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,"completeAlready",_img_state2));
+				img_state.addChild(MaterialManager.getInstance().getIcon(MaterialKeys.OTHER,"notOpen",_img_state1));
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="unComplete"/>
+		<s:State name="complete"/>
+	</s:states>
+	<mx:Image id="tilteBottom" x="0" y="2" width="178" height="32"/>
+	<s:Label id="lbl_chapter" x="13" y="16" width="150" height="21" color="#FFE0AB"
+			 filters="{[new spark.filters.GlowFilter(0x200c06, 100, 2, 2, 5, 1, false, false)]}"
+			 text="群雄逐鹿" textAlign="center" verticalAlign="middle"/>
+	<mx:Image id="img_back" x="0" y="36" width="172" height="110" 
+			  x.unComplete="3" y.unComplete="36"/>
+	<mx:Image id="finish" x="27" y="79" width="85" height="35"
+			  x.complete="17" y.complete="79"/>
+	<symbols:FigureDisplay id="num" x="107" y="70" width="65"  height="35" 
+						   maxMedian="3"/>
+	<mx:Image id="numMark" x="100" y="77" width="58" height="35"
+			  x.complete="125" 
+			  x.unComplete="125" />
+	<mx:Image  x="1" y="148" height="27" width="178"  id="awardBottom"/>
+	<mx:Image id="img_over" x="-5" y="30"
+			  x.unComplete="-2" width="184" height="123"/>
+	<mx:Image id="img_state" width="173" height="112"
+			  x="1" y="34"/>
+	<mx:Image id="img_state1" visible.complete="true" visible="false" width="173" height="112"
+			  x="1" y="34"/>
+	<mx:Image id="img_notUse"/>
+	<s:Group x="-2" y="34" width="177" height="117" click="itemrenderer1_clickHandler(event)"
+			 mouseOut="itemrenderer1_mouseOutHandler(event)"
+			 mouseOver="itemrenderer1_mouseOverHandler(event)"
+			 x.unComplete="-1" y.unComplete="34">
+		<mx:Image id="bottom" width="177" height="117"
+				  x.unComplete="1" y.unComplete="0"/>
+	</s:Group>
+	<s:Label id="lbl_des" x="0" bottom="5" width="100%" color="#FFE0AB" text="将领掉落几率增加1.5倍"
+			 textAlign="center" verticalAlign="middle"
+			 filters="{[new spark.filters.GlowFilter(0x201712, 100, 2, 2, 5, 1, false, false)]}"/>
+</s:ItemRenderer>

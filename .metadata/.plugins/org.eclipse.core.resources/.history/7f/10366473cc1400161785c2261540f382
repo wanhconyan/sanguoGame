@@ -1,0 +1,9 @@
+package com.core.event
+{
+	public class BattleEvent
+	{
+		public function BattleEvent()
+		{
+		}
+	}
+}

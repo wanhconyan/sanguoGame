@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				dataChange="itemrenderer1_dataChangeHandler(event)"
+				autoDrawBackground="false"
+				width="80" height="107"  xmlns:view="cn.sevencool.sangocraft.web.ui.battleField.view.*">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.vo.MonsterInfo;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.ui.battleField.mediator.BattleFieldMediator;
+			import cn.sevencool.sangocraft.web.ui.battleField.view.PreBattlePanel;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.FlexEvent;
+			import mx.events.ItemClickEvent;
+			
+			import spark.events.IndexChangeEvent;
+			import spark.filters.GlowFilter;
+			
+			public var mediator:BattleFieldMediator = null;
+			protected function itemrenderer1_dataChangeHandler(event:FlexEvent):void
+			{
+				var preBattlePanel:PreBattlePanel = UIMananger.getInstance().getUIObj(PreBattlePanel) as PreBattlePanel;
+				mediator = preBattlePanel.mediatorUI as BattleFieldMediator;
+				var monster:MonsterInfo = data as MonsterInfo;
+				form_general.monster = monster;
+				form_general.mediator = mediator;
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<view:FormationItem id="form_general" height="107" width="80"  itemIndex="{itemIndex}"  isState="0"/>
+	
+</s:ItemRenderer>

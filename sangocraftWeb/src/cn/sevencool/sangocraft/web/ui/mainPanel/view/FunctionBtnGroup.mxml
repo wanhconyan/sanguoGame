@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	project: sangocraft_Web
+	@class: FunctionBtnGroup
+	@author: zhouyan
+	@usage: 主面板——右下角功能按钮组
+	@since: 2013-8-23
+	@modified: 2013-8-23
+	@modifier: zhouyan 
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*" 
+				   width="315" height="57" >
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.data.manager.formation.mediator.IUIOperatableFormationMediator;
+			import cn.sevencool.sangocraft.data.manager.utils.MediatorUtil;
+			import cn.sevencool.sangocraft.data.model.RFriendNumVO;
+			import cn.sevencool.sangocraft.data.model.RGetCurrency;
+			import cn.sevencool.sangocraft.data.model.RReinforcementPointsVO;
+			import cn.sevencool.sangocraft.data.model.SRGetMailNumVO;
+			import cn.sevencool.sangocraft.data.symbols.ItemsManager;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.symbols.AlertPanel;
+			import cn.sevencool.sangocraft.web.ui.formation.mediator.FormationMediator;
+			import cn.sevencool.sangocraft.web.ui.formation.view.FormationPanel;
+			import cn.sevencool.sangocraft.web.ui.mainPanel.mediator.MainPanelMediator;
+			import cn.sevencool.sangocraft.web.ui.militaryOffice.view.BarracksSpace;
+			
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			
+			private var _mediator:MainPanelMediator = null ;
+			
+			/**
+			 * 招贤府显示
+			 * */
+			private var _fameNum:int = -1;
+			
+			/**
+			 * 社交显示
+			 * */
+			private var _friendNum:int = -1;
+			override public function set mediatorUI($value:AbstractMediator):void
+			{
+				_mediator = $value as MainPanelMediator ;
+			}
+			
+			/**
+			 * 点击按钮‘战场’
+			 * */
+			protected function btnClickHandler(event:MouseEvent):void
+			{
+				var btnType:int = -1 ;
+				var formation:FormationMediator = MediatorUtil.getMediatorByInterface(IUIOperatableFormationMediator) as FormationMediator;
+				if(!_mediator)
+				{
+					return ;
+				}
+				switch(event.target)
+				{
+					case btn_Battlefield:
+					{
+						btnType = 1;
+						if(ItemsManager.getInstance().getItems().length>ItemsManager.getInstance().packageCount)
+						{
+							UIMananger.getInstance().show(BarracksSpace) ;
+							var barr:BarracksSpace  = UIMananger.getInstance().getUIObj(BarracksSpace) as BarracksSpace;
+							barr.isBattle = true;; 
+						}else if(formation.vaildateCommader())
+						{
+							Alert.okLabel = "重新编队";
+							AlertPanel.show("编队中统率力超出","",Alert.OK,onCloseHandle);
+						
+							return ;
+						}
+						else 
+						{
+							_mediator.showFunctionPanel(btnType);
+						}	
+						break;
+					}
+					case btn_Barrack:
+					{
+						btnType = 2;
+						_mediator.showFunctionPanel(btnType);
+						
+						break;
+					}
+					case btn_FindGenerals:
+					{
+						btnType = 3;
+						if(ItemsManager.getInstance().getItems().length>=ItemsManager.getInstance().packageCount)
+						{
+							UIMananger.getInstance().show(BarracksSpace);
+						}
+						else
+						{
+							_mediator.showFunctionPanel(btnType);
+						}	
+						break;
+					}
+					case btn_MilitaryOffice:
+					{
+						btnType = 4;
+						_mediator.showFunctionPanel(btnType);
+						break;
+					}
+					case btn_Social:
+					{
+						btnType = 5;
+						_mediator.showFunctionPanel(btnType);
+						break;
+					}
+//					case btn_Other:
+//					{
+//						btnType = 6;
+//						break;
+//					}
+					default:
+					{
+						throw new Error('btn_Battlefield_clickHandler' + event.target);
+					}
+				}
+			}	
+			
+			/**
+			 * 数据监听
+			 * */
+			protected override function onDataChange(type:String=""):void
+			{
+				switch(type)
+				{
+				
+					case "RReinforcementPointsVO":
+					case "RGetCurrency":
+						
+						_fameNum = _mediator.getFameNum()
+						
+						if(_fameNum==0)
+						{
+							fame.visible = false;
+						}
+						if(_fameNum>9)
+						{
+							fame.visible = true;
+							fame.figureHandler("N",MaterialKeys.MAINFIGURE,15);
+						}else if(_fameNum<9 && _fameNum != -1 &&_fameNum !=0)
+						{
+							fame.visible = true;
+							fame.figureHandler(_fameNum.toString(),MaterialKeys.MAINFIGURE,15);
+						}
+						
+					break;	
+					case "RFriendNumVO":
+					case "SRGetMailNumVO"	:
+						_friendNum = _mediator.socialNum();
+						if(_friendNum == 0)
+						{
+							social.visible = false;
+						}
+						else if(_friendNum > 9)
+						{
+							social.visible = true;
+							social.figureHandler("N",MaterialKeys.MAINFIGURE,15);
+						}else if(_friendNum <= 9&&_friendNum!= 0 && _friendNum != -1)
+						{
+							social.visible = true;
+							social.figureHandler(_friendNum.toString(),MaterialKeys.MAINFIGURE,15);
+						}
+					break;
+					default:
+						throw new Error("type"+type);
+				}
+			
+			}
+			
+			/**
+			 * 添加监听数据
+			 * */
+			protected override function resourcesChanged():void
+			{
+				dataArray = new Vector.<Class>();
+				dataArray.push(RReinforcementPointsVO,RGetCurrency,SRGetMailNumVO,RFriendNumVO);
+			
+			
+			}
+			
+			private function onCloseHandle(e:CloseEvent):void
+			{
+			
+				if(e.detail == Alert.OK)
+				{
+					var format:FormationPanel = UIMananger.getInstance().getUIObj(FormationPanel)  as FormationPanel;; 
+					format.openType = 1;
+					UIMananger.getInstance().showOrHide(FormationPanel);
+				}
+			
+			}
+
+			
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				panelID =3 ;
+			}
+			
+		]]>
+	</fx:Script>
+	<symbols:layout>
+		<s:BasicLayout/>
+	</symbols:layout>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:HGroup height="57">
+		<s:Button label="战场" id="btn_Battlefield" click="btnClickHandler(event)" skinClass="cn.sevencool.sangocraft.web.skin.button.BattleBtnSkin"/>
+		<s:Button label="兵营" id="btn_Barrack" click="btnClickHandler(event)" skinClass="cn.sevencool.sangocraft.web.skin.button.BarrackBtnSkin"/>
+		<s:Button label="求将" id="btn_FindGenerals" click="btnClickHandler(event)" skinClass="cn.sevencool.sangocraft.web.skin.button.GeneralBtnSkin"/>
+		<s:Button label="军机" id="btn_MilitaryOffice" click="btnClickHandler(event)" skinClass="cn.sevencool.sangocraft.web.skin.button.MiliatryBtnSkin"/>
+		<s:Button label="社交" id="btn_Social" click="btnClickHandler(event)" skinClass="cn.sevencool.sangocraft.web.skin.button.SocialBtnSkin"/>
+		<!--<s:Button label="其他" id="btn_Other" click="btnClickHandler(event)"/>-->
+	</s:HGroup>
+		<symbols:FigureDisplay id="social" x="278" y="-6" width="37" height="32"
+							   maxMedian="1"/>
+		<symbols:FigureDisplay id="fame" x="153" y="-6" width="37" height="33"
+							   maxMedian="1"/>
+</symbols:BasePanel>

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	project: sangocraft_Web
+	@class: ExtractionResults
+	@author: zhouyan
+	@usage: 招贤府——抽取结果面板
+	@since: 2013-8-16
+	@modified: 2013-8-16
+	@modifier: zhouyan 
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:mx="library://ns.adobe.com/flex/mx"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   width="600" height="355">
+	<fx:Script>
+		<![CDATA[
+			import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+			import cn.sevencool.sangocraft.data.model.RMilitaryOfficeInfo;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+			import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+			import cn.sevencool.sangocraft.web.manager.UIMananger;
+			import cn.sevencool.sangocraft.web.ui.militaryOffice.mediator.MilitaryOfficMediator;
+			
+			import mx.collections.ArrayCollection;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			
+			
+			private var _mater:MaterialManager = MaterialManager.getInstance();
+			
+			private var _miliMediator:MilitaryOfficMediator = null;
+			
+			protected override function resourcesChanged():void
+			{
+				dataArray=new Vector.<Class>;
+				dataArray.push(RMilitaryOfficeInfo);
+			}
+			override public function set mediatorUI($value:AbstractMediator):void
+			{
+				_miliMediator = $value  as MilitaryOfficMediator;
+			
+			}
+			
+			
+			public override function get usableCount():int
+			{
+				return 1 ;
+			}
+			
+			protected function tw_extraction_closeHandler(event:CloseEvent):void
+			{
+						
+				UIMananger.getInstance().showOrHide(MilitaryOfficePanel);
+			}
+			
+			
+			override public function get needBundleList():Array
+			{
+				var urlArr:Array = [] ;
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'0'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'1'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'2'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'3'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'4'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'5'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'6'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'7'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'8'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.LVLSMALL,'9'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'generalName'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'generalCell'));
+				urlArr.push(MaterialManager.getInstance().getURL(MaterialKeys.OTHER,'lv'));
+				return urlArr;
+			}
+			
+			
+			protected function btn_camp_clickHandler(event:MouseEvent):void
+			{
+				_miliMediator.goCamp();
+				
+			}
+			
+			protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+			{
+				onShow();
+			}
+			
+			/**
+			 * 显示面板
+			 * */
+			protected override function onShow():void
+			{
+				if(!initialized)
+				{
+					return ;
+				}
+				dataGroup_homewill.dataProvider = _miliMediator.homewill;
+			}
+			
+		]]>
+	</fx:Script>
+	<symbols:layout>
+		<s:BasicLayout/>
+	</symbols:layout>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+	</fx:Declarations>
+	<s:TitleWindow width="100%" height="100%" id="tw_extraction" close="tw_extraction_closeHandler(event)" title="招贤府">
+	<s:Group y="12" width="480" height="220" horizontalCenter="10">
+	<s:DataGroup id="dataGroup_homewill" x="0" y="1" width="480" height="220"  
+				 itemRenderer="cn.sevencool.sangocraft.web.ui.militaryOffice.view.ExtractionResultsIR">
+		<s:layout>
+			<s:TileLayout requestedColumnCount="5" requestedRowCount="2" paddingLeft="20" paddingTop="15" />
+		</s:layout>
+	</s:DataGroup>
+	</s:Group>
+	<s:Button id="btn_camp" bottom="35" click="btn_camp_clickHandler(event)" horizontalCenter="0" skinClass="cn.sevencool.sangocraft.web.skin.button.GoBarrackSeeBtnSkin"/>
+	</s:TitleWindow>
+</symbols:BasePanel>

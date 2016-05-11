@@ -1,0 +1,21 @@
+package com.starling.battle.view.component
+{
+	import flash.display.BitmapData;
+	
+	import starling.display.Sprite;
+	import starling.textures.Texture;
+	
+	public class BattlePolygon extends Sprite
+	{
+		/**
+		 * 
+		 */
+		private var  mulitPolygon:MulitPolygon
+		public function BattlePolygon()
+		{
+			var bitmapData:BitmapData = new BitmapData(1,1,true,0x0);
+			var texture:Texture = Texture.fromBitmapData(bitmapData);
+			this.addChild(_polygon);
+		}
+	}
+}

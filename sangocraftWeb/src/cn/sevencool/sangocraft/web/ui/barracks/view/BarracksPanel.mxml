@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+project: sangocraft_Web
+@class: BarracksPanel
+@author: zhoujingye
+@usage: 兵营面板
+@since: 2013-8-23
+@modified: 2013-8-23
+@modifier: zhoujingye 
+-->
+<symbols:BasePanel xmlns:fx="http://ns.adobe.com/mxml/2009" 
+				   xmlns:s="library://ns.adobe.com/flex/spark" 
+				   xmlns:mx="library://ns.adobe.com/flex/mx" 
+				   creationComplete="basepanel1_creationCompleteHandler(event)"
+				   xmlns:symbols="cn.sevencool.sangocraft.web.symbols.*"
+				   xmlns:itemsBox="cn.sevencool.sangocraft.web.symbols.itemsBox.*"
+				   xmlns:view="cn.sevencool.sangocraft.web.ui.barracks.view.*"
+				   xmlns:skin="cn.sevencool.sangocraft.web.skin.*"  
+				   width="657" height="458">
+	<fx:Script>
+			<![CDATA[
+				import cn.sevencool.sangocraft.data.events.ItemsEvent;
+				import cn.sevencool.sangocraft.data.manager.abstract.AbstractMediator;
+				import cn.sevencool.sangocraft.data.model.RSExtensionPackage;
+				import cn.sevencool.sangocraft.data.symbols.ItemManager;
+				import cn.sevencool.sangocraft.data.symbols.SystemModelLocator;
+				import cn.sevencool.sangocraft.data.symbols.material.MaterialKeys;
+				import cn.sevencool.sangocraft.data.symbols.material.MaterialManager;
+				import cn.sevencool.sangocraft.data.vo.BagVO;
+				import cn.sevencool.sangocraft.data.vo.ItemOperationVO;
+				import cn.sevencool.sangocraft.web.events.SmallPanelEvent;
+				import cn.sevencool.sangocraft.web.manager.UIMananger;
+				import cn.sevencool.sangocraft.web.symbols.*;
+				import cn.sevencool.sangocraft.web.symbols.itemsBox.LatticeItem;
+				import cn.sevencool.sangocraft.web.symbols.itemsBox.LatticeUltra;
+				import cn.sevencool.sangocraft.web.symbols.itemsBox.LatticeUltraGroups;
+				import cn.sevencool.sangocraft.web.ui.barracks.mediator.BarracksMediator;
+				import cn.sevencool.sangocraft.web.ui.formation.view.FormationPanel;
+				import cn.sevencool.sangocraft.web.ui.sell.view.ChoosePanel;
+				
+				import com.greensock.TweenLite;
+				
+				import mx.controls.Alert;
+				import mx.events.CloseEvent;
+				import mx.events.FlexEvent;
+				/**
+				 * 兵营Mediator
+				 * */
+				private var _militaryM:BarracksMediator = null;
+				/**
+				 * 选择面板
+				 * */
+				private  var _choosePanel:ChoosePanel=null; 
+				/**
+				 * 排序索引
+				 * */
+				private var _dropListIndex:int = -1;
+				/**
+				 * 装载图片容器
+				 * */
+				private var _slashMap:Bitmap = null;
+				/**
+				 * 装载图片容器
+				 * */
+				private var _bottomMap:Bitmap = null;
+				
+				/**
+				 * 显示管理器
+				 * */
+				private var _uiManager:UIMananger = null;
+				/**
+				 * 物品管理器
+				 * */
+				private var _itemsMananger:ItemManager = null;
+				/**
+				 * 资源管理器
+				 * */
+				private var _materialManager:MaterialManager = null;
+				/**
+				 * 包管理器
+				 * */
+				private var _systemModelLocator:SystemModelLocator=null;
+				/**
+				 * 可以使用次数
+				 * */
+				public override function get usableCount():int
+				{
+					return 1 ;
+				}
+				
+				
+				/**
+				 * 重写加载图片
+				 * */
+				override public function get needBundleList():Array
+				{
+					var urlArr:Array = [] ;
+					_materialManager=MaterialManager.getInstance();
+					urlArr.push(_materialManager.getURL(MaterialKeys.BARRACKSLVL,'0'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.BARRACKSLVL,'1'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.BARRACKSLVL,'2'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.BARRACKSLVL,'3'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.BARRACKSLVL,'4'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.BARRACKSLVL,'5'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.BARRACKSLVL,'6'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.BARRACKSLVL,'7'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.BARRACKSLVL,'8'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.BARRACKSLVL,'9'));  
+					urlArr.push(_materialManager.getURL(MaterialKeys.BARRACKSLVL,'Slash'));  
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'barracksBottom'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'lineNew'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'smallPanelBottom'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'dropDownList_1'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'dropDownList_2'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'dropDownList_3'));
+					urlArr.push(_materialManager.getURL(MaterialKeys.OTHER,'dropDownList_4'));
+					return urlArr;
+				}
+				
+				
+				/**
+				 * 设置mediatorUI
+				 * */
+				override public function set mediatorUI($value:AbstractMediator):void
+				{
+					_militaryM = $value as BarracksMediator;
+				}
+				
+				
+				/**
+				 * 打开面板
+				 * */
+				override protected function onShow():void
+				{
+					if(!initialized)
+						return;
+					fasten();
+					if(!_itemsMananger.hasEventListener(ItemsEvent.BAGUPDATE))
+					{
+						_itemsMananger.addEventListener(ItemsEvent.BAGUPDATE , itemsInitializeHandler) ;
+					}
+					if(!details.hasEventListener(SmallPanelEvent.CLOSEPANEL))
+					{
+						details.addEventListener(SmallPanelEvent.CLOSEPANEL,closeSmallPanel);
+					}
+				} 
+				
+				
+				/**
+				 *面板打开时调用  需要override 
+				 * 
+				 */		
+				protected override function onClose():void
+				{
+					details.visible=false;
+					baglist.removeItemTimer();
+					setPanelVisible();
+					if(_itemsMananger.hasEventListener(ItemsEvent.BAGUPDATE))
+					{
+						_itemsMananger.removeEventListener(ItemsEvent.BAGUPDATE , itemsInitializeHandler) ;
+					}
+					if(details.hasEventListener(SmallPanelEvent.CLOSEPANEL))
+					{
+						details.removeEventListener(SmallPanelEvent.CLOSEPANEL,closeSmallPanel);
+					}
+				}
+				
+				
+				/**
+				 * 面板关闭
+				 * */
+				protected function win_closeHandler(event:CloseEvent):void
+				{
+					baglist.removeItemTimer();
+					_uiManager.hide(this);
+					_militaryM.clearItemsStateInterface();
+					setPanelVisible();
+				}
+				
+				
+				/**
+				 * 资源改变
+				 * */
+				protected override function resourcesChanged():void
+				{
+					dataArray=new Vector.<Class>;
+					dataArray.push(RSExtensionPackage);
+				}
+				
+				
+				/**
+				 * 数据改变
+				 * */
+				protected override function onDataChange(type:String=""):void
+				{
+					if(type=='RSExtensionPackage')
+					{
+						refreshBagsNum();
+					}
+				}
+				
+				/**
+				 * 点击出售按钮
+				 * */
+				protected function sell_clickHandler(event:MouseEvent):void
+				{
+					_uiManager.hide(this);
+					_choosePanel = _uiManager.getUIObj(ChoosePanel) as ChoosePanel ;
+					_uiManager.show(ChoosePanel);
+					_choosePanel.panelType=5;
+				}
+				
+				/**
+				 * 点击排序
+				 * */
+				protected function dropList_listChangeHandler(event:Event):void
+				{
+					_dropListIndex = dropList.currentSelect[0];
+					fasten();
+				}
+				
+				
+				/**
+				 * 点击编队按钮
+				 * */
+				protected function formation_clickHandler(event:MouseEvent):void
+				{
+					_uiManager.showOrHide(FormationPanel);
+				}
+				
+				/**
+				 * 面板创建完成
+				 * */
+				protected function basepanel1_creationCompleteHandler(event:FlexEvent):void
+				{
+					_slashMap = new Bitmap();
+					_bottomMap = new Bitmap();
+					_uiManager=UIMananger.getInstance();
+					_itemsMananger=ItemManager.getInstance();
+					_systemModelLocator=SystemModelLocator.getInstance();
+					_dropListIndex=1;
+					onShow();
+					_choosePanel = _uiManager.getUIObj(ChoosePanel) as ChoosePanel ;
+					slash.addChild(_materialManager.getIcon(MaterialKeys.BARRACKSLVL,'Slash',_slashMap));
+					Bottom.addChild(_materialManager.getIcon(MaterialKeys.OTHER,'barracksBottom',_bottomMap));
+					_systemModelLocator.addEventListener(Event.RESIZE , screenResizeHandler);
+				}
+				
+				
+				/**
+				 * 刷新包裹格子信息
+				 * */
+				private function refreshBagsNum():void
+				{
+					var extensionPackage:RSExtensionPackage = _systemModelLocator.getPropertyByVo(RSExtensionPackage) as RSExtensionPackage;
+					if(extensionPackage.nErrorCode_tip==0)
+					{
+						fasten();
+					}
+				}
+			
+				/**
+				 * 装入数据
+				 * */
+				private function fasten():void
+				{
+					var bag:BagVO=_militaryM.showItems(_dropListIndex);
+					setBagOpenCell(bag);
+					baglist.data = bag.bagItemArr;
+					baglist.startRefreshItemTimer();
+				}
+				
+				
+				/**
+				 * 设置开启背包格子数量
+				 * */
+				private function setBagOpenCell(bag:BagVO):void
+				{
+					var open:int=bag.openBox;
+					var len:int=bag.bagItemArr.length;
+					var bool:Boolean=Boolean(open<len);
+					openCell.figureHandler(len.toString(),MaterialKeys.BARRACKSLVL,10,-1);
+					if(bool)
+					{
+						baglist.row=_militaryM.getBagRow(len);
+					}
+					if(!bool)
+					{
+						baglist.row=_militaryM.getBagRow(open);
+					}
+					baglist.paint();
+					if(baglist.lockCount>=0&&bool)
+					{
+						baglist.lockCount=len;
+					}
+					if(baglist.lockCount>=0&&!bool)
+					{
+						baglist.lockCount=open;
+					}
+					allCell.figureHandler(open.toString(),MaterialKeys.BARRACKSLVL,12);
+				}
+				
+				
+				/**
+				 * 关闭面板
+				 * */
+				private function closeSmallPanel(event:SmallPanelEvent):void
+				{
+					var detailsX:int = int(details.x - details.width) ;
+					var panelX:int = int(this.x +(details.width/2)) ;
+					TweenLite.to(details,0.3,{x:detailsX,alpha:0,onComplete:setPanelVisible}); 
+					TweenLite.to(this,0.3,{x:panelX}); 
+				}
+				
+				/**
+				 * 隐藏详细面板
+				 * */
+				private function setPanelVisible():void
+				{
+					details.visible=false;
+					details.x = 416 ;
+				}
+				
+				/**
+				 * 还原面板位置
+				 * */
+				private function screenResizeHandler(e:Event):void
+				{
+					if(details.visible)
+					{
+						this.x = this.x - (details.width/2) ;
+					}
+				}
+				
+				
+				/**
+				 * 单击
+				 * */
+				private function listClickHandler(lattice:LatticeUltra):void
+				{
+					var item:ItemOperationVO = lattice.data as ItemOperationVO ;
+					if(!item)
+					{
+						Alert.okLabel = "确认";
+						Alert.cancelLabel = "取消";
+						AlertPanel.show('是否花费6元宝扩充5个兵营空间','',Alert.OK|Alert.CANCEL,alertHandle);
+						return;
+					} 
+					if(item)
+					{
+						if(!details.visible)
+						{
+							details.visible=true;
+							details.setMediatorUI(_militaryM);
+							var detailsX:int = int(details.x + details.width) ;
+							var panelX:int = int(this.x - (details.width/2) );
+							TweenLite.to(details,0.3,{x:detailsX,alpha:1});
+							TweenLite.to(this,0.3,{x:panelX}); 
+						}
+						item.isSelect=true;
+						details.itemVO=item;
+						return;
+					}
+				}
+				
+				
+				/**
+				 * 开启格子，二次确认框
+				 * */
+				private function alertHandle($event:CloseEvent):void
+				{
+					if ($event.detail == Alert.OK ) 
+					{
+						_militaryM.extensionPackages();
+					}
+				}
+				
+				/**
+				 * 所有物品初始化
+				 * */
+				private function itemsInitializeHandler(evt:ItemsEvent):void
+				{
+					fasten() ;
+				}
+				
+			]]>
+	</fx:Script>
+	<fx:Declarations>
+	</fx:Declarations>
+	<view:DetailsPanel id="details" visible="false" x="416" y="17" height="448"/>
+	<s:TitleWindow id="win" title="兵 營" width="100%" height="100%" close="win_closeHandler(event)">
+		<mx:Image id="Bottom"  y="52" width="620" height="314" horizontalCenter="0"/>
+        <symbols:FigureDisplay  x="452" y="16" height="20" width="24"  id="openCell"
+								maxMedian="3"/>
+		<mx:Image  x="464" y="24" height="20" width="27"  id="slash"/>
+        <symbols:FigureDisplay  x="477" y="16" height="20" width="48"  id="allCell"
+								maxMedian="3"/>		
+	<s:HGroup gap="32" x="70" y="12" >
+		<s:Button id="formation" click="formation_clickHandler(event)" label="编队" width="100" height="36"/>
+		<s:Button id="sell" click="sell_clickHandler(event)" label="出售" width="100" height="36"/>
+	</s:HGroup>
+		<s:VScrollBar id="vscol" height="268" viewport="{baglist}"
+								x="570" y="70"/>
+		<s:Group y="49" width="575" height="275" horizontalCenter="0" x="19" id="groupContainer">
+			<itemsBox:LatticeList id="baglist" y="7" width="520" height="275" col="6"
+								  latticeClickFunction="listClickHandler" margin="{[6 ,6 , 6 ,6]}"
+								  renderer="cn.sevencool.sangocraft.web.symbols.itemsBox.LatticeItem"
+								  horizontalCenter="-21"/>
+			<s:Group id="groupCover"/>
+		</s:Group>
+	<symbols:BarracksList x="518" y="26" id="dropList" listChange="dropList_listChangeHandler(event)"/>
+	</s:TitleWindow>
+</symbols:BasePanel>

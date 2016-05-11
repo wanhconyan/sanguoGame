@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+project: sangocraft_Web
+@class: SellBtnSkin
+@author: wangtaofeng
+@usage: 兵营——出售按钮皮肤
+@since: 2013-9-4
+@modified: 2013-9-4
+@modifier: wangtaofeng
+-->
+
+<!--
+
+    ADOBE SYSTEMS INCORPORATED
+    Copyright 2008 Adobe Systems Incorporated
+    All Rights Reserved.
+
+    NOTICE: Adobe permits you to use, modify, and distribute this file
+    in accordance with the terms of the license agreement accompanying it.
+
+-->
+
+<!--- The default skin class for the Spark Button component.  
+
+       @see spark.components.Button
+        
+      @langversion 3.0
+      @playerversion Flash 10
+      @playerversion AIR 1.5
+      @productversion Flex 4
+-->
+<s:SparkButtonSkin xmlns:fx="http://ns.adobe.com/mxml/2009"
+				   xmlns:s="library://ns.adobe.com/flex/spark"
+				   xmlns:fb="http://ns.adobe.com/flashbuilder/2009"
+				   minWidth="21" minHeight="21"
+				   alpha.disabled="0.5"
+				   width="71" height="73">
+     
+    <fx:Metadata>
+       
+        [HostComponent("spark.components.Button")]
+      
+    </fx:Metadata>
+          
+    <!-- states -->
+    <s:states>
+        <s:State name="up" />
+        <s:State name="over" />
+        <s:State name="down" />
+        <s:State name="disabled" />
+    </s:states>
+    
+	<s:BitmapImage width="51" height="53" horizontalCenter="0" smooth="true"
+				   source="@Embed('../../../../../../../assets/images/button/battleCombat/cityButton.png')"
+				   verticalCenter="0"
+				   horizontalCenter.down="2" verticalCenter.down="2"/>
+	<s:BitmapImage includeIn="over" x="0" y="2" smooth="true"
+				   source="@Embed('../../../../../../../assets/images/button/battleCombat/citySelect.png')"/>
+	<s:BitmapImage includeIn="down" x="1" y="1" width="71" height="73" smooth="true"
+				   source="@Embed('../../../../../../../assets/images/button/battleCombat/citySelect.png')"/>
+	<!-- layer 1: shadow -->
+</s:SparkButtonSkin>

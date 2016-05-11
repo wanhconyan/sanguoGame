@@ -1,0 +1,82 @@
+package  com.core.starling.battle.ai
+{
+	import com.core.starling.battle.view.unit.view.UnitView;
+	import com.core.vo.fraction.FractionNode;
+	
+	import flash.utils.Dictionary;
+	
+	import starling.textures.TextureAtlas;
+	import starling.utils.AssetManager;
+
+	/**
+	 * @author wcy
+	 */	
+	public class UnitCreator
+	{
+		private static var _instance:UnitCreator ;
+		
+		private var assetManager:AssetManager ;
+		
+		private var atlasDic:Dictionary = null;
+		public function UnitCreator()
+		{
+			assetManager = new AssetManager(); 
+			atlasDic = new Dictionary();
+		}
+		
+		
+		public static function get instance():UnitCreator
+		{
+			if(!_instance)
+			{
+				_instance = new UnitCreator();
+				
+			}
+			return _instance ;
+		}
+		
+		/**
+		 * save textureatlas by key  
+		 * @param $key
+		 * @return 
+		 */		
+		public function addAtlasByKey($key:String,atlas:TextureAtlas):void
+		{
+			atlasDic[$key] = atlas ;
+		}
+		
+		/**
+		 * get textureatlas by key  
+		 * @param $key
+		 * @return 
+		 */		
+		public function getAtlasByKey($key:String):TextureAtlas
+		{
+			var textureAtlas:TextureAtlas = atlasDic[$key];
+			return textureAtlas ;
+		}
+		
+		
+		/**
+		 *创建部队 
+		 */		
+		public function createUnitByTeam($team:Team):Vector.<UnitView>
+		{
+			var unitViews:Vector.<UnitView> = new Vector.<UnitView>();
+			var unitView:UnitView ;
+			var formationNode:FractionNode ;
+			var textures:TextureAtlas ;
+			for(var i:int = 0 ; i < $team.formation.nodes.length; i ++)
+			{
+				formationNode = $team.formation.nodes[i];
+				unitView = new UnitView($team.type.toString());
+				unitView.x = formationNode.xNode *25 + $team.x ;
+				unitView.y = formationNode.yNode *25 + $team.y + 300;
+				unitView.direction = $team.course ;
+				$team.addMember(unitView);
+				unitView.play();
+			}
+			return unitViews ;
+		}
+	}
+}

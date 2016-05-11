@@ -1,0 +1,95 @@
+package com.starling.battle.view.unit.view
+{
+	import com.starling.battle.view.unit.IUintDisplay;
+	
+	import starling.display.Sprite;
+	import starling.textures.Texture;
+	
+	public class BaseView extends Sprite implements IUintDisplay
+	{
+		protected var baseTexture:Texture ;
+		
+		public function BaseView()
+		{
+			//TODO: implement function
+			super();
+			if(!baseTexture)
+			{
+				baseTexture = Texture.fromColor(2,2);
+			}
+		}
+		
+		public function reset():void
+		{
+			//TODO: implement function
+		}
+		
+		public function set actions(value:Vector.<int>):void
+		{
+			//TODO: implement function
+		}
+		
+		public function get actions():Vector.<int>
+		{
+			//TODO: implement function
+			return null;
+		}
+		
+		public function get action():int
+		{
+			//TODO: implement function
+			return 0;
+		}
+		
+		public function set action(value:int):void
+		{
+			//TODO: implement function
+		}
+		
+		public function set course(value:Number):void
+		{
+			//TODO: implement function
+		}
+		
+		public function get course():Number
+		{
+			//TODO: implement function
+			return 0;
+		}
+		
+		public function set pointAt(value:Number):void
+		{
+			//TODO: implement function
+		}
+		
+		public function set state(value:int):void
+		{
+			//TODO: implement function
+		}
+		
+		public function set visiable(value:Boolean):void
+		{
+			//TODO: implement function
+		}
+		
+		public function get visiable():Boolean
+		{
+			//TODO: implement function
+			return false;
+		}
+		
+		public function get frameRate():int
+		{
+			//TODO: implement function
+			return 0;
+		}
+		
+		public function get onPlay():Boolean
+		{
+			//TODO: implement function
+			return false;
+		}
+		
+	
+	}
+}
